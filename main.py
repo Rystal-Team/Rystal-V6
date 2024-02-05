@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
 from nextcord.ext import commands
 
 TOKEN = os.getenv("TOKEN")

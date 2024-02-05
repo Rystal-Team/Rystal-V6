@@ -35,3 +35,5 @@ want to then go ahead, the error logging should be more than enough though.!!!
 enable_activity_logging = False
 # the channel id for logging (only required if activity logging is enabled, type None or "" if you don't need it)
 logging_channe_id = 1203866958487879680
+
+
