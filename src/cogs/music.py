@@ -18,6 +18,7 @@ class_title = "🎵 | Music Module"
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.now_playing_menus = []
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -44,13 +45,20 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_queue_track_start(self, interaction, song, player):
-        await interaction.channel.send(
-            embed=Embeds.message(
-                title=class_title,
-                message=f"Playing **{song.name}**",
-                message_type="info",
+        for menu in self.now_playing_menus:
+            if menu.is_timeout == True:
+                self.now_playing_menus.remove(menu)
+            else:
+                await menu.update()
+
+        if not player.silent_mode:
+            await interaction.channel.send(
+                embed=Embeds.message(
+                    title=class_title,
+                    message=f"Playing **{song.name}**",
+                    message_type="info",
+                )
             )
-        )
 
     @nextcord.slash_command(description="🎵 | Play a song!")
     async def play(
@@ -71,9 +79,7 @@ class Music(commands.Cog):
             pass
 
         if not interaction.guild.voice_client:
-            if not interaction.user.voice.channel is None:
-                await interaction.user.voice.channel.connect()
-            else:
+            if interaction.user.voice is None:
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=class_title,
@@ -81,6 +87,10 @@ class Music(commands.Cog):
                         message_type="warn",
                     )
                 )
+
+                return
+            else:
+                await interaction.user.voice.channel.connect()
 
         player = music.get_player(guild_id=interaction.guild.id)
         if not player:
@@ -766,6 +776,7 @@ class Music(commands.Cog):
             )
 
             await menu.update()
+            self.now_playing_menus.append(menu)
 
         else:
             await interaction.followup.send(

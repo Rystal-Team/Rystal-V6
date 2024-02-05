@@ -1,10 +1,11 @@
-import nextcord
+import nextcord, time
 from config.config import type_color
 from typing import Callable
 from module.musicPlayer import Song, MusicPlayer, NotPlaying, EmptyQueue
 from datetime import timedelta
 from module.progressBar import progressBar
 from config.config import music_class_title
+from multiprocessing import Process
 
 
 class Embeds:
@@ -56,14 +57,15 @@ class NowPlayingMenu(nextcord.ui.View):
         self.thumbnail = thumbnail
         self.song = song
         self.follow_up = None
+        self.is_timeout = False
 
         super().__init__(timeout=180)
 
     async def update(self):
-        self.title = self.player.now_playing().title
         self.song = self.player.now_playing()
-        self.thumbnail = self.player.now_playing().thumbnail
-        
+        self.title = self.song.title
+        self.thumbnail = self.song.thumbnail
+
         embed = nextcord.Embed(
             title=self.title,
             color=(type_color[self.message_type]),
@@ -118,7 +120,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title="🤖 | System",
                     message="Unknown Error Occured!",
                     message_type="error",
-                )
+                ),
             )
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id, view=None
@@ -130,7 +132,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title="🤖 | System",
                     message="Unknown Error Occured!",
                     message_type="error",
-                )
+                ),
             )
 
             await self.interaction.followup.edit_message(
@@ -151,7 +153,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title=music_class_title,
                     message="Nothing is playing!",
                     message_type="warn",
-                )
+                ),
             )
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id, view=None
@@ -163,7 +165,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title="🤖 | System",
                     message="Unknown Error Occured!",
                     message_type="error",
-                )
+                ),
             )
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id, view=None
@@ -181,7 +183,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title=music_class_title,
                     message="Nothing is playing!",
                     message_type="warn",
-                )
+                ),
             )
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id, view=None
@@ -193,7 +195,7 @@ class NowPlayingMenu(nextcord.ui.View):
                     title="🤖 | System",
                     message="Unknown Error Occured!",
                     message_type="error",
-                )
+                ),
             )
 
             await self.interaction.followup.edit_message(
@@ -211,3 +213,5 @@ class NowPlayingMenu(nextcord.ui.View):
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )
+
+        self.is_timeout = True

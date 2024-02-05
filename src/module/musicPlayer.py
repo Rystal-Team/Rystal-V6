@@ -181,6 +181,7 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
         song = music.queue[interaction.guild.id][0]
     except IndexError:
         return
+
     if player.music_loop is None:
         try:
             music.queue[interaction.guild.id].pop(0)
@@ -223,15 +224,14 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
             song.timer = CountTimer()
             song.timer.start()
 
-            if not player.silent_mode:
-                asyncio.run(
-                    bot.dispatch(
-                        "queue_track_start",
-                        interaction,
-                        song,
-                        player,
-                    )
+            asyncio.run(
+                bot.dispatch(
+                    "queue_track_start",
+                    interaction,
+                    song,
+                    player,
                 )
+            )
 
             if on_play:
                 loop.create_task(on_play(interaction, song))
@@ -254,15 +254,14 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
         song.timer = CountTimer()
         song.timer.start()
 
-        if not player.silent_mode:
-            asyncio.run(
-                bot.dispatch(
-                    "queue_track_start",
-                    interaction,
-                    song,
-                    player,
-                )
+        asyncio.run(
+            bot.dispatch(
+                "queue_track_start",
+                interaction,
+                song,
+                player,
             )
+        )
 
         if on_play:
             loop.create_task(on_play(interaction, song))
@@ -302,15 +301,14 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
 
             player.current_playing = song
 
-            if not player.silent_mode:
-                asyncio.run(
-                    bot.dispatch(
-                        "queue_track_start",
-                        interaction,
-                        song,
-                        player,
-                    )
+            asyncio.run(
+                bot.dispatch(
+                    "queue_track_start",
+                    interaction,
+                    song,
+                    player,
                 )
+            )
 
             if on_play:
                 loop.create_task(on_play(interaction, song))
@@ -520,13 +518,15 @@ class MusicPlayer(object):
                 # shift two places backwards
                 # e.g. from [1, 4, 5, 6, 7, 8, 9, 12] to [9, 12, 1, 4, 5, 6, 7, 8]
 
-                self.music.queue[self.interaction.guild.id][
+                first = self.music.queue[self.interaction.guild.id][
+                    : len(self.music.queue[self.interaction.guild.id]) - 2
+                ]
+                last = self.music.queue[self.interaction.guild.id][
                     len(self.music.queue[self.interaction.guild.id]) - 2 :
-                ].extend(
-                    self.music.queue[self.interaction.guild.id][
-                        : len(self.music.queue[self.interaction.guild.id]) - 2
-                    ]
-                )
+                ]
+                last.extend(first)
+
+                self.music.queue[self.interaction.guild.id] = last
 
                 if not len(self.music.queue[self.interaction.guild.id]) > 1:
                     self.music.queue[self.interaction.guild.id].append(
