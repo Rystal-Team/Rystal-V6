@@ -1,14 +1,11 @@
 import asyncio
 import aiohttp
-import re
-from urllib import parse
-from youtube_search import YoutubeSearch
-from nextcord.ext import commands
 import yt_dlp
 import nextcord
 import random
+from urllib import parse
+from youtube_search import YoutubeSearch
 from module.timer import CountTimer
-import sys, os
 
 
 def video_id(value):
@@ -153,7 +150,9 @@ async def get_video_data(url, search, query, loop):
                 data = data["entries"][0]
             except KeyError or TypeError:
                 pass
+
             del ytdl
+
             source = data["url"]
             url = "https://www.youtube.com/watch?v=" + data["id"]
             title = data["title"]

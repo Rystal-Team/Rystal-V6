@@ -1,16 +1,14 @@
-import nextcord, os
+import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 from module.musicPlayer import Music as MusicModule
 from pytube import Playlist
-from module.pagination import Pagination, Description_Pagination
+from module.pagination import Pagination
 from datetime import timedelta
 from module.progressBar import progressBar
 from config.config import type_color
 from config.config import music_class_title as class_title
 from module.embed import Embeds, NowPlayingMenu
-from typing import Optional
-import aiohttp
 
 
 class_title = "🎵 | Music Module"

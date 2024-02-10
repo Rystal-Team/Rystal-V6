@@ -1,11 +1,10 @@
-import nextcord, time
+import nextcord
 from config.config import type_color
 from typing import Callable
 from module.musicPlayer import Song, MusicPlayer, NotPlaying, EmptyQueue
 from datetime import timedelta
 from module.progressBar import progressBar
 from config.config import music_class_title
-from multiprocessing import Process
 
 
 class Embeds:

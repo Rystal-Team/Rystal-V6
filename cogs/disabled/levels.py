@@ -1,14 +1,9 @@
 import nextcord
 import json
-import os
-import time
-import asyncio
-
 from typing import Optional
 from nextcord.ext import commands
 from easy_pil import Editor, load_image_async, Font
 from nextcord import File
-from config.config import level_class_title
 
 
 class RankSystem(commands.Cog):

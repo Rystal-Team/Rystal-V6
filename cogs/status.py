@@ -1,11 +1,5 @@
-import nextcord
-import json
-import os
-import time
-import asyncio
-from typing import Optional
+import nextcord, psutil, platform, os, datetime
 from module.embed import Embeds
-
 from nextcord.ext import commands
 from nextcord import Interaction
 
@@ -34,8 +28,18 @@ class system(commands.Cog):
         ping = round((self.bot.latency) * 1000)
 
         await interaction.send(
-            embed=Embeds.message(title="🏓 | Pong!", message=f"{ping}ms", message_type="info")
+            embed=Embeds.message(
+                title="🏓 | Pong!", message=f"{ping}ms", message_type="info"
+            )
         )
+
+    @nextcord.slash_command(description="🤖 | Pong!")
+    async def info(self, interaction: Interaction):
+        cpu = psutil.cpu_percent()
+        ram_used, ram_total = psutil.virtual_memory()[3], psutil.virtual_memory()[0]
+        os_platform, os_version, os_time = platform.system(), platform.version()
+
+        await interaction.send()
 
 
 async def setup(bot):

@@ -3,8 +3,7 @@ import os
 import asyncio
 import traceback
 from module.embed import Embeds
-from config.config import type_color, bot_owner_id, error_log_channel_id
-import datetime
+from config.config import bot_owner_id, error_log_channel_id
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -78,7 +77,7 @@ async def on_application_command_error(interaction, exception):
             exception_str += line
 
         message = f"""
-            **Error Logged!**
+        **Error Logged!**
         | Command: **/{identifier}**
         | User: {interaction.user.name}
         | Channel: {interaction.channel.name} | {interaction.channel.mention}
