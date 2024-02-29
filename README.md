@@ -1,7 +1,7 @@
 <br />
 <div align="center">
-  <a href="https://github.com/Rystal-Team/Rystal-V6/blob/main/assets/logo.png">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/Rystal-Team/Rystal-V6/blob/main/assets/logo.png?raw=true">
+    <img src="assets/logo.png" alt="Logo" width="80" height="80">
   </a>
   <h3 align="center">Rystal V6</h3>
   <p align="center">
