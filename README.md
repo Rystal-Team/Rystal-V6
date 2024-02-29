@@ -43,11 +43,8 @@ This Bot is built with and powered by the followings
 - [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
 - [![FFMpeg](https://img.shields.io/badge/ffmpeg-ffffff?style=for-the-badge&logo=ffmpeg&logoColor=388e3c)](https://ffmpeg.org/)
 
-<br><br><br><br>
+<br><br><br>
 
----
 <div align="center">
   <p><small>Copyright © 2024 <a href="https://rystal.xyz">RystalTeam</a>. All rights reserved.</small></p>
 </div>
-
----
