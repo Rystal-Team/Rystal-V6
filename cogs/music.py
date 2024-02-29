@@ -9,7 +9,10 @@ from module.progressBar import progressBar
 from config.config import type_color
 from config.config import music_class_title as class_title
 from module.embed import Embeds, NowPlayingMenu
+from typing import Optional
 
+"""from module.lyrics_handler import Handler
+"""
 
 class_title = "🎵 | Music Module"
 
@@ -43,6 +46,20 @@ class Music(commands.Cog):
                     message_type="info",
                 )
             )
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        voice_state = member.guild.voice_client
+        if voice_state is None:
+            return
+
+        if len(voice_state.channel.members) == 1:
+            player = music.get_player(guild_id=member.guild.id)
+            if player is not None:
+                if player.leave_when_empty:
+                    await player.stop()
+                else:
+                    return
 
     @commands.Cog.listener()
     async def on_queue_track_start(self, interaction, song, player):
@@ -747,6 +764,121 @@ class Music(commands.Cog):
                 )
             )
 
+    @nextcord.slash_command(description="🎵 | Remove from queue!")
+    async def remove(
+        self,
+        interaction: Interaction,
+        index: int = nextcord.SlashOption(
+            name="index",
+            description="The position of the song in the queue!",
+            required=False,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+
+        player = music.get_player(guild_id=interaction.guild.id)
+
+        if player:
+            if len(player.current_queue()) == 0:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message="Nothing is playing!",
+                        message_type="warn",
+                    )
+                )
+                return
+
+            if len(player.current_queue()) < index:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message="Invalid index!",
+                        message_type="warn",
+                    )
+                )
+                return
+            else:
+                song = await player.remove_from_queue(index)
+
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message=f"Removed **{song.name}**!",
+                        message_type="success",
+                    )
+                )
+        else:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=class_title,
+                    message="Nothing is playing!",
+                    message_type="warn",
+                )
+            )
+
+    @nextcord.slash_command(description="🎵 | Jump to...")
+    async def jump(
+        self,
+        interaction: Interaction,
+        index: int = nextcord.SlashOption(
+            name="index",
+            description="The position of the song in the queue!",
+            required=False,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+
+        player = music.get_player(guild_id=interaction.guild.id)
+
+        if player:
+            if len(player.current_queue()) == 0:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message="Nothing is playing!",
+                        message_type="warn",
+                    )
+                )
+                return
+
+            if len(player.current_queue()) < index or index == 0:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message="Invalid index!",
+                        message_type="warn",
+                    )
+                )
+                return
+            else:
+                old, new = await player.jump(index)
+
+                if not new is None:
+                    await interaction.followup.send(
+                        embed=Embeds.message(
+                            title=class_title,
+                            message=f"Jumped from **{old.name}** to **{new.name}**!",
+                            message_type="success",
+                        )
+                    )
+                else:
+                    await interaction.followup.send(
+                        embed=Embeds.message(
+                            title=class_title,
+                            message=f"Jumped **{old.name}**!",
+                            message_type="success",
+                        )
+                    )
+        else:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=class_title,
+                    message="Nothing is playing!",
+                    message_type="warn",
+                )
+            )
+
     @nextcord.slash_command(description="🎵 | Now playing...")
     async def nowplaying(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
@@ -787,6 +919,44 @@ class Music(commands.Cog):
                     message_type="warn",
                 )
             )
+
+    """@nextcord.slash_command(description="🎵 | Get the lyrics of a song!")
+    async def lyrics(
+        self,
+        interaction: Interaction,
+        song: Optional[str] = nextcord.SlashOption(
+            name="song",
+            description="Enter the song name!",
+            required=False,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        
+        player = music.get_player(guild_id=interaction.guild.id)
+
+        if song is None:
+            if player:
+                if len(player.current_queue()) == 0:
+                    await interaction.followup.send(
+                        embed=Embeds.message(
+                            title=class_title,
+                            message="Nothing is playing!",
+                            message_type="warn",
+                        )
+                    )
+                    return
+
+                await Handler.search(interaction, song)
+            else:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=class_title,
+                        message="Nothing is playing!",
+                        message_type="warn",
+                    )
+                )
+        else:
+            await Handler.search(interaction, song)"""
 
 
 def setup(bot):

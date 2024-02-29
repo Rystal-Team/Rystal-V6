@@ -18,4 +18,3 @@ while True:
     sys.stdout.write(
         f"CPU: {cpu}%\nRAM: {ram_used}/{ram_total} GB\nOS: {os_platform} Version: {os_version} Release: {os_release}\nUp Time: {uptime_str}\n",
     )
-    sys.stdout.flush

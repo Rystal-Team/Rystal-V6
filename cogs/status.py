@@ -1,9 +1,10 @@
-import nextcord, psutil, platform, os, datetime
+import nextcord, psutil, platform, datetime, time, sys
 from module.embed import Embeds
 from nextcord.ext import commands
 from nextcord import Interaction
 
 emcolor = 0x8042A9
+start_time = time.time()
 
 
 class system(commands.Cog):
@@ -29,17 +30,28 @@ class system(commands.Cog):
 
         await interaction.send(
             embed=Embeds.message(
-                title="🏓 | Pong!", message=f"{ping}ms", message_type="info"
+                title="🤖 | System", message=f"Pong! {ping}ms", message_type="info"
             )
         )
 
-    @nextcord.slash_command(description="🤖 | Pong!")
+    @nextcord.slash_command(description="🤖 | Get the system info of the bot!")
     async def info(self, interaction: Interaction):
-        cpu = psutil.cpu_percent()
-        ram_used, ram_total = psutil.virtual_memory()[3], psutil.virtual_memory()[0]
-        os_platform, os_version, os_time = platform.system(), platform.version()
+        cpu = psutil.cpu_percent(0.5)
+        ram_used = round(psutil.virtual_memory()[3] / 1000000000, 1)
+        ram_total = round(psutil.virtual_memory()[0] / 1000000000, 1)
+        os_platform = platform.system()
+        os_version = platform.version()
+        os_release = platform.release()
+        os_time = datetime.datetime.now()
+        os_time = os_time.strftime("%H:%M:%S %d/%m/%y")
 
-        await interaction.send()
+        uptime_str = str(datetime.timedelta(seconds=(round(time.time() - start_time))))
+
+        await interaction.send(
+            embed=Embeds.message(
+                title="🤖 | System", message=f"CPU: {cpu}%\nRAM: {ram_used}/{ram_total} GB\nOS: {os_platform}\nVersion: {os_version}\nRelease: {os_release}\nUp Time: {uptime_str}\n", message_type="info"
+            )
+        )
 
 
 async def setup(bot):

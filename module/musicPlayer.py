@@ -60,14 +60,17 @@ async def ytbettersearch(query):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             html = await resp.text()
+
     index = html.find("watch?v")
     url = ""
+
     while True:
         char = html[index]
         if char == '"':
             break
         url += char
         index += 1
+
     url = f"https://www.youtube.com/{url}"
     return url
 
@@ -342,18 +345,21 @@ class Music(object):
                     return player
                 else:
                     self.players.remove(player)
+                    del player
                     return None
             elif not guild and channel and player.voice.channel.id == channel:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
                     self.players.remove(player)
+                    del player
                     return None
             elif not channel and guild and player.interaction.guild.id == guild:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
                     self.players.remove(player)
+                    del player
                     return None
         else:
             return None
@@ -370,6 +376,7 @@ class MusicPlayer(object):
         self.silent_mode = False
         self.paused = False
         self.current_playing = None
+        self.leave_when_empty = False
         if self.interaction.guild.id not in self.music.queue.keys():
             self.music.queue[self.interaction.guild.id] = []
 
@@ -506,6 +513,30 @@ class MusicPlayer(object):
 
                 return old, None
 
+    async def jump(self, index: int):
+        if len(self.music.queue[self.interaction.guild.id]) == 0:
+            raise NotPlaying("Cannot skip because nothing is being played")
+        else:
+            old = self.current_playing
+            self.voice.stop()
+
+            try:
+                for _ in range(index - 1):
+                    last = self.music.queue[self.interaction.guild.id].pop(0)
+                    self.music.queue[self.interaction.guild.id].append(last)
+
+                new = self.music.queue[self.interaction.guild.id][1]
+
+                if self.on_skip_func:
+                    await self.on_skip_func(self.interaction, old, new)
+
+                return old, new
+            except IndexError:
+                if self.on_skip_func:
+                    await self.on_skip_func(self.interaction, old)
+
+                return old, None
+
     async def previous(self):
         if len(self.music.queue[self.interaction.guild.id]) == 0:
             raise NotPlaying("Cannot replay because nothing is being played")
@@ -547,7 +578,10 @@ class MusicPlayer(object):
     async def stop(self):
         try:
             self.music.queue[self.interaction.guild.id] = []
+            
             self.voice.stop()
+            await self.voice.disconnect()
+            
             self.music.players.remove(self)
         except:
             raise NotPlaying("Cannot loop because nothing is being played")
@@ -671,8 +705,10 @@ class MusicPlayer(object):
                 song = self.current_playing
             except:
                 raise NotPlaying("Cannot loop because nothing is being played")
+            
             await self.skip(force=True)
             return song
+        
         song = self.music.queue[self.interaction.guild.id][index]
         self.music.queue[self.interaction.guild.id].pop(index)
 

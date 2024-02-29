@@ -134,8 +134,12 @@ async def setup():
                 print(f"Cogs: {filename[:-3]} is ready!")
 
                 cogs += 1
-            except Exception as e:
-                print(f"Unable to load {filename[:-3]} Error: {e}")
+            except Exception as exception:
+                full_error = traceback.format_exception(
+                    type(exception), exception, exception.__traceback__
+                )
+                print(f"Unable to load {filename[:-3]} Error: {full_error}")
+                
         else:
             print(f"Passed file/folder {filename[:-3]}")
 

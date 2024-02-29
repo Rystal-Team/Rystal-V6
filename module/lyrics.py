@@ -1,38 +1,49 @@
-import os
+"""import os, json, nextcord
 from lyricsgenius import Genius
-from lyricsgenius.genius import Artist as GeniusArtist
 
 genius = Genius(os.getenv("GENIUS_APIKEY"))
 
 
-class SongLyrics(object):
-    def __init__(self, lyrics: str):
-        self.lyrics = lyrics
+class Song(object):
+    def __init__(self, title, lyrics, thumbnail, url):
+        self._title = title
+        self._lyrics = lyrics
+        self._thumbnail = thumbnail
+        self._url = url
 
     @property
-    def word_count(self) -> int:
-        return len(self.lyrics.split())
-
-
-class Artist:
-    def __init__(self):
-        self._artist = None
-
-    async def get_artist(self, artist_name: str) -> GeniusArtist:
-        artist = genius.search_artist(artist_name, max_songs=10, sort="popularity")
-
-        self.artist = artist
-        return artist
-
-    async def get_lyrics(self, song_name) -> SongLyrics:
-        song = genius.search_song(song_name, self.artist)
-
-        try:
-            lyrics = SongLyrics(lyrics=song.lyrics)
-            return lyrics
-        except Exception:
-            return None
+    def title(self) -> str:
+        return self._title
 
     @property
-    def artist(self) -> GeniusArtist:
-        return self._artist
+    def lyrics(self) -> str:
+        return self._lyrics
+
+    @property
+    def thumbnail(self) -> str:
+        return self._thumbnail
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+
+class Searcher:
+    @staticmethod
+    async def search_song(term):
+        return_dump = []
+        result = genius.search_songs(term)
+
+        for song in result["hits"]:
+            if song["type"] == "song":
+                song_object = Song(
+                    song["result"]["title"],
+                    genius.lyrics(song["result"]["id"]),
+                    song["result"]["song_art_image_url"],
+                    song["result"]["url"],
+                )
+
+                return_dump.append(song_object)
+
+        return return_dump
+"""
