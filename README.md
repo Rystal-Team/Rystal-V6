@@ -39,8 +39,8 @@ Customisations for the bot can be found in `config/config.py`.
 
 ## Built With
 This Bot is built with and powered by the followings
-- [![YouTube](https://img.shields.io/badge/YTDLP-ff0000?style=for-the-badge&logo=youtube&logoColor=ffffff)](https://github.com/yt-dlp/yt-dlp)
-- [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
+- [![YouTube](https://img.shields.io/badge/YTDLP-ffffff?style=for-the-badge&logo=youtube&logoColor=ff0000)](https://github.com/yt-dlp/yt-dlp)
+- [![Python](https://img.shields.io/badge/python-ffffff?style=for-the-badge&logo=python&logoColor=3670A0)](https://www.python.org/)
 - [![FFMpeg](https://img.shields.io/badge/ffmpeg-ffffff?style=for-the-badge&logo=ffmpeg&logoColor=388e3c)](https://ffmpeg.org/)
 
 <br><br><br>
