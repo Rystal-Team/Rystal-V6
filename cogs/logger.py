@@ -8,9 +8,9 @@ class logger(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    """@commands.Cog.listener()
     async def on_ready(self):
-        print("Music Cog Ready!")
+        print("Music Cog Ready!")"""
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Integration):

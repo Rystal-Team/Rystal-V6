@@ -9,7 +9,6 @@ from module.progressBar import progressBar
 from config.config import type_color
 from config.config import music_class_title as class_title
 from module.embed import Embeds, NowPlayingMenu
-from typing import Optional
 
 """from module.lyrics_handler import Handler
 """
@@ -24,9 +23,9 @@ class Music(commands.Cog):
         self.bot = bot
         self.now_playing_menus = []
 
-    @commands.Cog.listener()
+    """@commands.Cog.listener()
     async def on_ready(self):
-        print("Music Cog Ready!")
+        print("Music Cog Ready!")"""
 
     @commands.Cog.listener()
     async def on_queue_ended(self, interaction):
@@ -136,9 +135,8 @@ class Music(commands.Cog):
                                 message_type="info",
                             ),
                         )
-                        que_suc, feed = await player.queue(
-                            url, search=False, query=True
-                        )
+
+                        que_suc, feed = await player.queue(url, query=False)
 
                         if not que_suc:
                             await interaction.channel.send(
@@ -151,9 +149,7 @@ class Music(commands.Cog):
                             return
 
                         if i == 0:
-                            suc, song = await player.play(
-                                query, search=False, query=True
-                            )
+                            suc, song = await player.play(query, query=True)
 
                             if suc:
                                 await interaction.channel.send(
@@ -182,7 +178,7 @@ class Music(commands.Cog):
                         ),
                     )
             else:
-                que_suc, feed = await player.queue(query, search=False, query=True)
+                que_suc, feed = await player.queue(query, query=True)
 
                 if not que_suc:
                     await interaction.followup.send(
@@ -194,7 +190,7 @@ class Music(commands.Cog):
                     )
                     return
 
-                suc, song = await player.play(query, search=False, query=True)
+                suc, song = await player.play(query, query=True)
 
                 if suc:
                     await interaction.followup.send(
@@ -231,9 +227,7 @@ class Music(commands.Cog):
                                 message_type="info",
                             ),
                         )
-                        que_suc, feed = await player.queue(
-                            url, search=False, query=True
-                        )
+                        que_suc, feed = await player.queue(url, query=False)
 
                         if not que_suc:
                             await interaction.channel.send(
@@ -263,7 +257,7 @@ class Music(commands.Cog):
                         ),
                     )
             else:
-                que_suc, song = await player.queue(query, search=False, query=True)
+                que_suc, song = await player.queue(query, query=True)
 
                 if not que_suc:
                     await interaction.followup.send(
@@ -771,7 +765,7 @@ class Music(commands.Cog):
         index: int = nextcord.SlashOption(
             name="index",
             description="The position of the song in the queue!",
-            required=False,
+            required=True,
         ),
     ):
         await interaction.response.defer(with_message=True)

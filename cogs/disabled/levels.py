@@ -10,9 +10,9 @@ class RankSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.Cog.listener()
+    """@commands.Cog.listener()
     async def on_ready(self):
-        print("Leveling Cog Ready!")
+        print("Leveling Cog Ready!")"""
 
     @commands.Cog.listener()
     async def on_message(self, message):

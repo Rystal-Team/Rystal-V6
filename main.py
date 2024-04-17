@@ -5,6 +5,7 @@ import traceback
 from module.embed import Embeds
 from config.config import bot_owner_id, error_log_channel_id
 from dotenv import load_dotenv
+from termcolor import colored
 
 load_dotenv()
 
@@ -16,13 +17,6 @@ emcolor = 0x8042A9
 
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
-
-
-@bot.event
-async def on_ready():
-    print("========= Rystal Bot is Online =========")
-    for guild in bot.guilds:
-        print(f"Guild: {guild.name} | Member: {guild.member_count}")
 
 
 @bot.event
@@ -131,17 +125,17 @@ async def setup():
         if filename.endswith(".py"):
             try:
                 bot.load_extension(f"cogs.{filename[:-3]}")
-                print(f"Cogs: {filename[:-3]} is ready!")
+                print(colored(text=f"Cogs: {filename[:-3]} is ready!", color="green"))
 
                 cogs += 1
             except Exception as exception:
                 full_error = traceback.format_exception(
                     type(exception), exception, exception.__traceback__
                 )
-                print(f"Unable to load {filename[:-3]} Error: {full_error}")
-                
+                print(colored(text=f"Unable to load {filename[:-3]} Error: {full_error}", color="red"))
+
         else:
-            print(f"Passed file/folder {filename[:-3]}")
+            print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
 
     return cogs
 
@@ -152,12 +146,12 @@ async def reloadSetup():
         if filename.endswith(".py"):
             try:
                 bot.reload_extension(f"cogs.{filename[:-3]}")
-                print(f"Cogs: {filename[:-3]} is reloaded!")
+                print(colored(text=f"Cogs: {filename[:-3]} is reloaded!", color="green"))
                 cogs += 1
             except Exception as e:
-                print(f"Unable to reload {filename[:-3]} Error: {e}")
+                print(colored(text=f"Unable to reload {filename[:-3]} Error: {e}", color="red"))
         else:
-            print(f"Passed file/folder {filename[:-3]}")
+            print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
 
     return cogs
 

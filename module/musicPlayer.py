@@ -3,9 +3,12 @@ import aiohttp
 import yt_dlp
 import nextcord
 import random
+import time
+import datetime
 from urllib import parse
 from youtube_search import YoutubeSearch
 from module.timer import CountTimer
+from termcolor import colored
 
 
 def video_id(value):
@@ -31,12 +34,11 @@ ydl = yt_dlp.YoutubeDL(
     {
         "format": "bestaudio/best",
         "restrictfilenames": True,
-        "noplaylist": False,
-        "nocheckcertificate": True,
-        "ignoreerrors": False,
+        "noplaylist": True,
+        "ignoreerrors": True,
         "logtostderr": False,
         "quiet": True,
-        "no_warnings": False,
+        "no_warnings": True,
         "source_address": "0.0.0.0",
         "forceip": "4",
     }
@@ -75,12 +77,14 @@ async def ytbettersearch(query):
     return url
 
 
-async def get_video_data(url, search, query, loop):
-    if not search and not query:
+async def get_video_data(url, query, loop):
+    timer = time.time()
+
+    if not query:
+        print(colored(text="(FROM URL)", color="dark_grey"))
         data = await loop.run_in_executor(
             None, lambda: ydl.extract_info(url, download=False)
         )
-        source = data["url"]
         url = "https://www.youtube.com/watch?v=" + data["id"]
         title = data["title"]
         description = data["description"]
@@ -89,93 +93,39 @@ async def get_video_data(url, search, query, loop):
         thumbnail = data["thumbnail"]
         channel = data["uploader"]
         channel_url = data["uploader_url"]
-        return Song(
-            source,
-            url,
-            title,
-            description,
-            views,
-            duration,
-            thumbnail,
-            channel,
-            channel_url,
-        )
     else:
-        if query:
-            result = video_id(url)
-            if result is None:
-                ytresult = YoutubeSearch(url, max_results=1).to_dict()
-                result = ytresult[0]["id"]
+        print(colored(text="(FROM QUERY)", color="dark_grey"))
+        result = video_id(url)
+        if result is None:
+            ytresult = YoutubeSearch(url, max_results=1).to_dict()
+            result = ytresult[0]["id"]
 
-            url = f"https://www.youtube.com/watch?v={result}"
-            data = await loop.run_in_executor(
-                None, lambda: ydl.extract_info(url, download=False)
-            )
-            source = data["url"]
-            url = "https://www.youtube.com/watch?v=" + data["id"]
-            title = data["title"]
-            description = data["description"]
-            views = data["view_count"]
-            duration = data["duration"]
-            thumbnail = data["thumbnail"]
-            channel = data["uploader"]
-            channel_url = data["uploader_url"]
-            return Song(
-                source,
-                url,
-                title,
-                description,
-                views,
-                duration,
-                thumbnail,
-                channel,
-                channel_url,
-            )
-        elif search:
-            ytdl = yt_dlp.YoutubeDL(
-                {
-                    "format": "bestaudio/best",
-                    "restrictfilenames": True,
-                    "noplaylist": True,
-                    "nocheckcertificate": True,
-                    "ignoreerrors": True,
-                    "logtostderr": False,
-                    "quiet": True,
-                    "no_warnings": True,
-                    "default_search": "auto",
-                    "source_address": "0.0.0.0",
-                }
-            )
-            data = await loop.run_in_executor(
-                None, lambda: ytdl.extract_info(url, download=False)
-            )
-            try:
-                data = data["entries"][0]
-            except KeyError or TypeError:
-                pass
+        url = f"https://www.youtube.com/watch?v={result}"
+        data = await loop.run_in_executor(
+            None, lambda: ydl.extract_info(url, download=False)
+        )
+        url = "https://www.youtube.com/watch?v=" + data["id"]
+        title = data["title"]
+        description = data["description"]
+        views = data["view_count"]
+        duration = data["duration"]
+        thumbnail = data["thumbnail"]
+        channel = data["uploader"]
+        channel_url = data["uploader_url"]
 
-            del ytdl
+    print(colored(text=f"{title} [{url}]", color="magenta"))
+    print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
 
-            source = data["url"]
-            url = "https://www.youtube.com/watch?v=" + data["id"]
-            title = data["title"]
-            description = data["description"]
-            views = data["view_count"]
-            duration = data["duration"]
-            thumbnail = data["thumbnail"]
-            channel = data["uploader"]
-            channel_url = data["uploader_url"]
-            return Song(
-                source,
-                url,
-                title,
-                description,
-                views,
-                duration,
-                thumbnail,
-                channel,
-                channel_url,
-            )
+    return Song(
+        url,
+        title,
+        description,
+        views,
+        duration,
+        thumbnail,
+        channel,
+        channel_url,
+    )
 
 
 async def check_queue(player, interaction, opts, music, after, on_play, loop, bot):
@@ -206,10 +156,32 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
 
             return
         elif len(music.queue[interaction.guild.id]) > 0:
-            source = nextcord.PCMVolumeTransformer(
-                nextcord.FFmpegPCMAudio(
-                    music.queue[interaction.guild.id][0].source, **opts
+            data = await loop.run_in_executor(
+                None,
+                lambda: ydl.extract_info(
+                    music.queue[interaction.guild.id][0].url, download=False
+                ),
+            )
+            source_url = data["url"]
+
+            print(
+                colored(
+                    text=f"[PLAYING] {music.queue[interaction.guild.id][0].title}",
+                    color="light_blue",
                 )
+            )
+            expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)[
+                "expire"
+            ][0]
+            print(
+                colored(
+                    text=f"Queue Source (Expire: {datetime.datetime.fromtimestamp(int(expire_unix_time))}):\n{source_url}",
+                    color="dark_grey",
+                )
+            )
+
+            source = nextcord.PCMVolumeTransformer(
+                nextcord.FFmpegPCMAudio(source_url, **opts)
             )
 
             interaction.guild.voice_client.play(
@@ -238,8 +210,30 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
             if on_play:
                 loop.create_task(on_play(interaction, song))
     elif player.music_loop == "single":
+        data = await loop.run_in_executor(
+            None,
+            lambda: ydl.extract_info(
+                music.queue[interaction.guild.id][0].url, download=False
+            ),
+        )
+        source_url = data["url"]
+
+        print(
+            colored(
+                text=f"[PLAYING] {music.queue[interaction.guild.id][0].title}",
+                color="light_blue",
+            )
+        )
+        expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)["expire"][0]
+        print(
+            colored(
+                text=f"Queue Source (Expire: {datetime.datetime.fromtimestamp(int(expire_unix_time))}):\n{source_url}",
+                color="dark_grey",
+            )
+        )
+
         source = nextcord.PCMVolumeTransformer(
-            nextcord.FFmpegPCMAudio(music.queue[interaction.guild.id][0].source, **opts)
+            nextcord.FFmpegPCMAudio(source_url, **opts)
         )
 
         interaction.guild.voice_client.play(
@@ -280,11 +274,34 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
             music.queue[interaction.guild.id].append(popped_song)
 
         if len(music.queue[interaction.guild.id]) > 0:
-            source = nextcord.PCMVolumeTransformer(
-                nextcord.FFmpegPCMAudio(
-                    music.queue[interaction.guild.id][0].source, **opts
+            data = await loop.run_in_executor(
+                None,
+                lambda: ydl.extract_info(
+                    music.queue[interaction.guild.id][0].url, download=False
+                ),
+            )
+            source_url = data["url"]
+
+            print(
+                colored(
+                    text=f"[PLAYING] {music.queue[interaction.guild.id][0].title}",
+                    color="light_blue",
                 )
             )
+            expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)[
+                "expire"
+            ][0]
+            print(
+                colored(
+                    text=f"Queue Source (Expire: {datetime.datetime.fromtimestamp(int(expire_unix_time))}):\n{source_url}",
+                    color="dark_grey",
+                )
+            )
+
+            source = nextcord.PCMVolumeTransformer(
+                nextcord.FFmpegPCMAudio(source_url, **opts)
+            )
+
             interaction.guild.voice_client.play(
                 source,
                 after=lambda error: after(
@@ -329,6 +346,12 @@ class Music(object):
 
         player = MusicPlayer(interaction, self, **kwargs)
         self.players.append(player)
+        print(
+            colored(
+                text=f"Created Player (Guild: {interaction.guild.name} [{interaction.guild.id}])",
+                color="dark_grey",
+            )
+        )
         return player
 
     def get_player(self, **kwargs):
@@ -344,22 +367,19 @@ class Music(object):
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    self.players.remove(player)
-                    del player
+                    player.delete()
                     return None
             elif not guild and channel and player.voice.channel.id == channel:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    self.players.remove(player)
-                    del player
+                    player.delete()
                     return None
             elif not channel and guild and player.interaction.guild.id == guild:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    self.players.remove(player)
-                    del player
+                    player.delete()
                     return None
         else:
             return None
@@ -404,8 +424,16 @@ class MusicPlayer(object):
         else:
             self.ffmpeg_opts = {"options": "-vn", "before_options": "-nostdin"}
 
-    def disable(self):
+    def delete(self):
+        print(
+            colored(
+                text=f"Deleted Player (Guild: {self.interaction.guild.name} [{self.interaction.guild.id}])",
+                color="dark_grey",
+            )
+        )
+        del self.music.queue[self.interaction.guild.id]
         self.music.players.remove(self)
+        del self
 
     def on_queue(self, func):
         self.on_queue_func = func
@@ -440,9 +468,9 @@ class MusicPlayer(object):
     def on_remove_from_queue(self, func):
         self.on_remove_from_queue_func = func
 
-    async def queue(self, url, search=False, query=True):
+    async def queue(self, url, query=True):
         try:
-            song = await get_video_data(url, search, query, self.loop)
+            song = await get_video_data(url, query, self.loop)
             self.music.queue[self.interaction.guild.id].append(song)
 
             if self.on_queue_func:
@@ -454,10 +482,34 @@ class MusicPlayer(object):
 
     async def play(self, url, search=False, query=True):
         try:
+            data = await self.loop.run_in_executor(
+                None,
+                lambda: ydl.extract_info(
+                    self.music.queue[self.interaction.guild.id][0].url, download=False
+                ),
+            )
+            source_url = data["url"]
+
             source = nextcord.PCMVolumeTransformer(
                 nextcord.FFmpegPCMAudio(
-                    self.music.queue[self.interaction.guild.id][0].source,
+                    source_url,
                     **self.ffmpeg_opts,
+                )
+            )
+
+            print(
+                colored(
+                    text=f"[PLAYING] {self.music.queue[self.interaction.guild.id][0].title}",
+                    color="light_blue",
+                )
+            )
+            expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)[
+                "expire"
+            ][0]
+            print(
+                colored(
+                    text=f"Queue Source (Expire: {datetime.datetime.fromtimestamp(int(expire_unix_time))}):\n{source_url}",
+                    color="dark_grey",
                 )
             )
 
@@ -486,7 +538,8 @@ class MusicPlayer(object):
                 await self.on_play_func(self.interaction, song)
 
             return True, song
-        except:
+        except Exception as e:
+            print(e)
             song = await self.queue(url, search, query)
 
             return False, song
@@ -577,12 +630,10 @@ class MusicPlayer(object):
 
     async def stop(self):
         try:
-            self.music.queue[self.interaction.guild.id] = []
-            
+
+            self.delete()
             self.voice.stop()
             await self.voice.disconnect()
-            
-            self.music.players.remove(self)
         except:
             raise NotPlaying("Cannot loop because nothing is being played")
 
@@ -705,10 +756,10 @@ class MusicPlayer(object):
                 song = self.current_playing
             except:
                 raise NotPlaying("Cannot loop because nothing is being played")
-            
+
             await self.skip(force=True)
             return song
-        
+
         song = self.music.queue[self.interaction.guild.id][index]
         self.music.queue[self.interaction.guild.id].pop(index)
 
@@ -727,7 +778,6 @@ class MusicPlayer(object):
 class Song(object):
     def __init__(
         self,
-        source,
         url,
         title,
         description,
@@ -737,7 +787,6 @@ class Song(object):
         channel,
         channel_url,
     ):
-        self.source = source
         self.url = url
         self.title = title
         self.description = description

@@ -2,6 +2,7 @@ import nextcord, psutil, platform, datetime, time, sys
 from module.embed import Embeds
 from nextcord.ext import commands
 from nextcord import Interaction
+from termcolor import colored
 
 emcolor = 0x8042A9
 start_time = time.time()
@@ -19,10 +20,26 @@ class system(commands.Cog):
             ),
             status=nextcord.Status.online,
         )
-        print("Processing.....")
-        print("|||||||||||||||")
-        print("Bot has Successfully logged onto nextcord...")
-        print("Successfully logged in as {0.user}...".format(self.bot))
+        print(
+            colored(
+                text="|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||",
+                color="white",
+            )
+        )
+        print(
+            colored(
+                text="Successfully logged in as {0.user}...".format(self.bot),
+                color="green",
+            )
+        )
+
+        for guild in self.bot.guilds:
+            print(
+                colored(
+                    text=f"Guild: {guild.name} | Member: {guild.member_count}",
+                    color="white",
+                )
+            )
 
     @nextcord.slash_command(description="🤖 | Pong!")
     async def ping(self, interaction: Interaction):
@@ -49,7 +66,9 @@ class system(commands.Cog):
 
         await interaction.send(
             embed=Embeds.message(
-                title="🤖 | System", message=f"CPU: {cpu}%\nRAM: {ram_used}/{ram_total} GB\nOS: {os_platform}\nVersion: {os_version}\nRelease: {os_release}\nUp Time: {uptime_str}\n", message_type="info"
+                title="🤖 | System",
+                message=f"CPU: {cpu}%\nRAM: {ram_used}/{ram_total} GB\nOS: {os_platform}\nVersion: {os_version}\nRelease: {os_release}\nUp Time: {uptime_str}\n",
+                message_type="info",
             )
         )
 
