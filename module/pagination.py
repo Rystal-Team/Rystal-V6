@@ -1,6 +1,6 @@
 import nextcord
 from typing import Callable, Optional
-
+from config.config import lang
 
 class Pagination(nextcord.ui.View):
     def __init__(self, interaction: nextcord.Interaction, get_page: Callable):
@@ -87,7 +87,7 @@ class Description_Pagination(nextcord.ui.View):
             return True
         else:
             emb = nextcord.Embed(
-                description=f"Only the author of the command can perform this action.",
+                description=lang["author_only_interactions"],
                 color=16711680,
             )
             await interaction.response.send_message(embed=emb, ephemeral=True)
@@ -156,7 +156,7 @@ class Selector(nextcord.ui.View):
             return True
         else:
             emb = nextcord.Embed(
-                description=f"Only the author of the command can perform this action.",
+                description=lang["author_only_interactions"],
                 color=16711680,
             )
             await interaction.response.send_message(embed=emb, ephemeral=True)

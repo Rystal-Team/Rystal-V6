@@ -3,6 +3,7 @@ from module.embed import Embeds
 from nextcord.ext import commands
 from nextcord import Interaction
 from termcolor import colored
+from config.config import lang
 
 emcolor = 0x8042A9
 start_time = time.time()
@@ -47,7 +48,7 @@ class system(commands.Cog):
 
         await interaction.send(
             embed=Embeds.message(
-                title="🤖 | System", message=f"Pong! {ping}ms", message_type="info"
+                title=lang["system_class_title"], message=lang["ping"].format(ping=ping), message_type="info"
             )
         )
 
@@ -62,16 +63,28 @@ class system(commands.Cog):
         os_time = datetime.datetime.now()
         os_time = os_time.strftime("%H:%M:%S %d/%m/%y")
 
-        uptime_str = str(datetime.timedelta(seconds=(round(time.time() - start_time))))
+        uptime_time_str = str(
+            datetime.timedelta(seconds=(round(time.time() - start_time)))
+        )
+
+        cpu_str = lang["cpu"].format(cpu=cpu)
+        ram_str = lang["ram"].format(ram_used=ram_used, ram_total=ram_total)
+        os_str = lang["os"].format(platform=os_platform)
+        version_str = lang["version"].format(os_version=os_version)
+        release_str = lang["release"].format(os_release=os_release)
+        uptime_str = lang["uptime"].format(uptime=uptime_time_str)
+
+        message_str = f"{cpu_str}\n{ram_str}\n{os_str}\n{version_str}\n{release_str}\n{uptime_str}"
 
         await interaction.send(
             embed=Embeds.message(
-                title="🤖 | System",
-                message=f"CPU: {cpu}%\nRAM: {ram_used}/{ram_total} GB\nOS: {os_platform}\nVersion: {os_version}\nRelease: {os_release}\nUp Time: {uptime_str}\n",
+                title=lang["system_class_title"],
+                message=message_str,
                 message_type="info",
             )
         )
 
 
 async def setup(bot):
+
     bot.add_cog(system(bot))

@@ -5,6 +5,7 @@ from module.musicPlayer import Song, MusicPlayer, NotPlaying, EmptyQueue
 from datetime import timedelta
 from module.progressBar import progressBar
 from config.config import music_class_title
+from config.config import lang
 
 """from module.lyrics import Searcher
 """
@@ -119,8 +120,8 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title="🤖 | System",
-                    message="Unknown Error Occured!",
+                    title=lang["system_class_title"],
+                    message=lang["unknown_error"],
                     message_type="error",
                 ),
             )
@@ -131,8 +132,8 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title="🤖 | System",
-                    message="Unknown Error Occured!",
+                    title=lang["system_class_title"],
+                    message=lang["unknown_error"],
                     message_type="error",
                 ),
             )
@@ -153,7 +154,7 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
                     title=music_class_title,
-                    message="Nothing is playing!",
+                    message=lang["nothing_is_playing"],
                     message_type="warn",
                 ),
             )
@@ -164,8 +165,8 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title="🤖 | System",
-                    message="Unknown Error Occured!",
+                    title=lang["system_class_title"],
+                    message=lang["unknown_error"],
                     message_type="error",
                 ),
             )
@@ -183,7 +184,7 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
                     title=music_class_title,
-                    message="Nothing is playing!",
+                    message=lang["nothing_is_playing"],
                     message_type="warn",
                 ),
             )
@@ -194,8 +195,8 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title="🤖 | System",
-                    message="Unknown Error Occured!",
+                    title=lang["system_class_title"],
+                    message=lang["unknown_error"],
                     message_type="error",
                 ),
             )
@@ -252,7 +253,7 @@ class UpdateDropdownLyricsView(nextcord.ui.View):
             return True
         else:
             emb = nextcord.Embed(
-                description=f"Only the author of the command can perform this action.",
+                description=lang["author_only_interactions"],
                 color=16711680,
             )
             await interaction.response.send_message(embed=emb, ephemeral=True)

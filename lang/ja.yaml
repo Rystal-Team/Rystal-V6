@@ -1,0 +1,54 @@
+# Japanese
+# embed titles
+music_class_title: "🎵 | 音楽モジュール"
+level_class_title: "🎖️ | レベリングモジュール"
+system_class_title: "🤖 | 系統"
+
+# status
+ram: "RAM: {cpu}%"
+cpu: "CPU: {ram_used}/{ram_total} GB"
+os: "オペレーティングシステム: {platform}"
+version: "バージョン: {os_version}"
+release: "リリース: {os_release}"
+uptime: "稼働時間: {uptime}"
+ping: "ポン! {ping}ms"
+
+# music
+queued_playlist: "キュー **{playlist}** の取得は成功しました"
+queue_ended: "キューが終了しました。"
+player_disconnected: "音楽プレーヤーが切断されました"
+loading_playlist: "プレイリストを取得しています..."
+not_in_voice: "あなたはボイスチャンネルにいません！"
+failed_to_add_song: "曲 **{title}** の追加は失敗しました。"
+invalid_playlist: "プレイリストが無効です！"
+playing_song: "**{title}** を再生中！"
+queued_song: "**{title}** をキューに入れました！"
+removed_song: "**{title}** をキューに消します！"
+nothing_is_playing: "今再生中の曲はありません。"
+stopped_player: "音楽を終了しました！"
+changed_volume: "**{title}** の音量を {volume}% に変更しました。"
+currently_playing: "今再生中... {title}"
+shuffled_queue: "キューがシャッフルされました"
+toggle_silent_mode: "サイレントモード {toggle}"
+invalid_index: "インデックスが無効です！"
+
+enabled_loop_queue: "キューのループを有効にする！"
+disabled_loop_queue: "キューのループを無効にする！"
+enabled_loop_single: "**{title}** のループを無効にする！"
+disabled_loop_single: "**{title}** のループを無効にする！"
+music_already_paused: "音楽はすでに一時停止しています！ 音楽を再開するには `/resume` を使用してください。"
+music_already_playing: "音楽はすでに再生されています! 音楽を一時停止するには `/pause` を使用してください。"
+paused_queue: "キューが一時停止しました！"
+resumed_queue: "キューが再開しました！"
+
+skipped_from: "**{old}** から **{new}** スキップされました！"
+skipped: "**{old}** がスキップしました！"
+replayed_from: "**{old}** から **{new}** まで再生されました！"
+replayed: "**{old}** を再生しました！"
+jumped_from: "**{old}** から **{new}** ジャンプされました！"
+jumped: "**{old}** にジャンプしました！"
+
+# system
+unknown_error: "予想外のエラーが発生しました！"
+missing_permission: "あなたはこのアクションを実行する権限がありません！"
+author_only_interactions: "あなたはこのアクションを実行できません。"

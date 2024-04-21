@@ -26,8 +26,9 @@
 ## Key Features
 - Music Player
   - Player works without any remote server setup such as lavalink/wavelink
-  - Provides rich features compared to most of discord bots out there written in python
-- Rank System
+  - Provides rich features compared to most discord bots out there written in Python
+- Rank System (Removed temporarily to update the code to use a different database than JSON)
+- Multi-Language Support (English, Japanese and Traditional Chinese (*<- Google Translate*) are included by default, you can create your own translation to any desired language)
 
 ## Setup
 Download the latest [release](https://github.com/Rystal-Team/Rystal-V6/releases/latest) from [Releases](https://github.com/Rystal-Team/Rystal-V6/releases).

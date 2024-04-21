@@ -6,6 +6,7 @@ from module.embed import Embeds
 from config.config import bot_owner_id, error_log_channel_id
 from dotenv import load_dotenv
 from termcolor import colored
+from config.config import lang
 
 load_dotenv()
 
@@ -27,8 +28,8 @@ async def on_application_command_error(interaction, exception):
         try:
             await interaction.followup.send(
                 embed=Embeds.message(
-                    title="🤖 | System",
-                    message="Unknown Error Occured!",
+                    title=lang["system_class_title"],
+                    message=lang["unknown_error"],
                     message_type="error",
                 )
             )
@@ -39,8 +40,8 @@ async def on_application_command_error(interaction, exception):
             try:
                 await interaction.send(
                     embed=Embeds.message(
-                        title="🤖 | System",
-                        message="Unknown Error Occured!",
+                        title=lang["system_class_title"],
+                        message=lang["unknown_error"],
                         message_type="error",
                     )
                 )
@@ -132,7 +133,12 @@ async def setup():
                 full_error = traceback.format_exception(
                     type(exception), exception, exception.__traceback__
                 )
-                print(colored(text=f"Unable to load {filename[:-3]} Error: {full_error}", color="red"))
+                print(
+                    colored(
+                        text=f"Unable to load {filename[:-3]} Error: {full_error}",
+                        color="red",
+                    )
+                )
 
         else:
             print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
@@ -146,10 +152,16 @@ async def reloadSetup():
         if filename.endswith(".py"):
             try:
                 bot.reload_extension(f"cogs.{filename[:-3]}")
-                print(colored(text=f"Cogs: {filename[:-3]} is reloaded!", color="green"))
+                print(
+                    colored(text=f"Cogs: {filename[:-3]} is reloaded!", color="green")
+                )
                 cogs += 1
             except Exception as e:
-                print(colored(text=f"Unable to reload {filename[:-3]} Error: {e}", color="red"))
+                print(
+                    colored(
+                        text=f"Unable to reload {filename[:-3]} Error: {e}", color="red"
+                    )
+                )
         else:
             print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
 
@@ -163,7 +175,7 @@ async def reloadcogs(ctx):
         reloadedcogs = await reloadSetup()
         await ctx.send(
             embed=Embeds.message(
-                title="🤖 | System",
+                title=lang["system_class_title"],
                 message=f"Reloaded {reloadedcogs} cogs, loaded {newcogs} new cogs.",
                 message_type="info",
             )
@@ -171,7 +183,7 @@ async def reloadcogs(ctx):
     else:
         await ctx.send(
             embed=Embeds.message(
-                title="🤖 | System", message=f"BRO TRIED LMAO", message_type="error"
+                title=lang["system_class_title"], message=lang["missing_permission"], message_type="error"
             )
         )
 

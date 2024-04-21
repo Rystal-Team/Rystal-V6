@@ -1,0 +1,54 @@
+# English
+# embed titles
+music_class_title: "🎵 | Music Module"
+level_class_title: "🎖️ | Leveling Module"
+system_class_title: "🤖 | System"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "Operating System: {platform}"
+version: "Version: {os_version}"
+release: "Release: {os_release}"
+uptime: "Uptime: {uptime}"
+ping: "Pong! {ping}ms"
+
+# music
+queued_playlist: "Queued Playlist **{playlist}**!"
+queue_ended: "Queue Ended!"
+player_disconnected: "Music Player has been disconnected!"
+loading_playlist: "Loading Playlist..."
+not_in_voice: "You are not in a voice channel!"
+failed_to_add_song: "Failed to add song **{title}**!"
+invalid_playlist: "Invalid Playlist!"
+playing_song: "Playing **{title}**!"
+queued_song: "Queued **{title}**!"
+removed_song: "Removed **{title}**!"
+nothing_is_playing: "Nothing is playing!"
+stopped_player: "Stopped the player!"
+changed_volume: "Changed volume for **{title}** to {volume}%!"
+currently_playing: "Currently Playing... {title}"
+shuffled_queue: "Shuffled the queue!"
+toggle_silent_mode: "Silent mode is {toggle}"
+invalid_index: "Invalid index!"
+
+enabled_loop_single: "Enabled loop mode for **{title}**!"
+enabled_loop_queue: "Enabled loop mode for this queue!"
+disabled_loop_single: "Disabled loop mode for **{title}**!"
+disabled_loop_queue: "Disabled loop mode for this queue!"
+music_already_paused: "Music already paused! use `/resume` to resume the music!"
+music_already_playing: "Music already playing! use `/pause` to pause the music!"
+paused_queue: "Paused the queue!"
+resumed_queue: "Resumed the queue!"
+
+skipped_from: "Skipped from **{old}** to **{new}**!"
+skipped: "Skipped **{old}**!"
+replayed_from: "Replayed from **{old}** to **{new}**!"
+replayed: "Replayed **{old}**!"
+jumped_from: "Jumped from **{old}** to **{new}**!"
+jumped: "Jumped **{old}**!"
+
+# system
+unknown_error: "An unknown error has occured!"
+missing_permission: "You are missing permission to execute this action!"
+author_only_interactions: "Only the author of the command can perform this action."

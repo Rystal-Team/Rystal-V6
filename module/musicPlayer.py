@@ -771,9 +771,6 @@ class MusicPlayer(object):
 
         return self.silent_mode
 
-    def delete(self):
-        self.music.players.remove(self)
-
 
 class Song(object):
     def __init__(
