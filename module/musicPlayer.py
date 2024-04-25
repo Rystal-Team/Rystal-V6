@@ -1,17 +1,21 @@
 import asyncio
-import aiohttp
-import yt_dlp
-import nextcord
+import datetime
 import random
 import time
-import datetime
 from urllib import parse
-from youtube_search import YoutubeSearch
-from module.timer import CountTimer
+
+import aiohttp
+import nextcord
+import yt_dlp
 from termcolor import colored
+from youtube_search import YoutubeSearch
+from module import meta_yt
+from config.config import lang, use_ytdlp
+from database.guild_handler import get_guild_language
+from module.timer import CountTimer
 
 
-def video_id(value):
+def get_video_id(value):
     query = parse.urlparse(value)
 
     if query.hostname == "youtu.be":
@@ -33,14 +37,15 @@ yt_dlp.utils.bug_reports_message = lambda: ""
 ydl = yt_dlp.YoutubeDL(
     {
         "format": "bestaudio/best",
-        "restrictfilenames": True,
         "noplaylist": True,
         "ignoreerrors": True,
-        "logtostderr": False,
         "quiet": True,
         "no_warnings": True,
         "source_address": "0.0.0.0",
         "forceip": "4",
+        "skip_download": True,
+        "extract_flat": True,
+        "default_search": "auto",
     }
 )
 
@@ -77,41 +82,28 @@ async def ytbettersearch(query):
     return url
 
 
-async def get_video_data(url, query, loop):
+async def extract_video_data(query, loop):
     timer = time.time()
 
-    if not query:
-        print(colored(text="(FROM URL)", color="dark_grey"))
+    if use_ytdlp:
         data = await loop.run_in_executor(
-            None, lambda: ydl.extract_info(url, download=False)
+            None,
+            lambda: ydl.extract_info(
+                query,
+                download=False,
+            ),
         )
         url = "https://www.youtube.com/watch?v=" + data["id"]
         title = data["title"]
-        description = data["description"]
         views = data["view_count"]
         duration = data["duration"]
         thumbnail = data["thumbnail"]
         channel = data["uploader"]
         channel_url = data["uploader_url"]
     else:
-        print(colored(text="(FROM QUERY)", color="dark_grey"))
-        result = video_id(url)
-        if result is None:
-            ytresult = YoutubeSearch(url, max_results=1).to_dict()
-            result = ytresult[0]["id"]
-
-        url = f"https://www.youtube.com/watch?v={result}"
-        data = await loop.run_in_executor(
-            None, lambda: ydl.extract_info(url, download=False)
+        url, title, views, duration, thumbnail, channel, channel_url = (
+            await loop.run_in_executor(None, lambda: meta_yt.extract_info(query))
         )
-        url = "https://www.youtube.com/watch?v=" + data["id"]
-        title = data["title"]
-        description = data["description"]
-        views = data["view_count"]
-        duration = data["duration"]
-        thumbnail = data["thumbnail"]
-        channel = data["uploader"]
-        channel_url = data["uploader_url"]
 
     print(colored(text=f"{title} [{url}]", color="magenta"))
     print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
@@ -119,7 +111,6 @@ async def get_video_data(url, query, loop):
     return Song(
         url,
         title,
-        description,
         views,
         duration,
         thumbnail,
@@ -128,16 +119,30 @@ async def get_video_data(url, query, loop):
     )
 
 
+async def get_video_data(url, query, loop):
+    videoId = get_video_id(url)
+    if videoId is None:
+        ytresult = YoutubeSearch(url, max_results=1).to_dict()
+        videoId = ytresult[0]["id"]
+
+    print(colored(text=f"Started fetching: {url}", color="dark_grey"))
+    song = await extract_video_data(videoId, loop)
+
+    return song
+
+
 async def check_queue(player, interaction, opts, music, after, on_play, loop, bot):
     try:
         song = music.queue[interaction.guild.id][0]
-    except IndexError:
+    except IndexError as e:
+        print(e)
         return
 
     if player.music_loop is None:
         try:
             music.queue[interaction.guild.id].pop(0)
-        except IndexError:
+        except IndexError as e:
+            print(e)
             return
 
         if (
@@ -159,7 +164,8 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
             data = await loop.run_in_executor(
                 None,
                 lambda: ydl.extract_info(
-                    music.queue[interaction.guild.id][0].url, download=False
+                    music.queue[interaction.guild.id][0].url,
+                    download=False,
                 ),
             )
             source_url = data["url"]
@@ -213,7 +219,8 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
         data = await loop.run_in_executor(
             None,
             lambda: ydl.extract_info(
-                music.queue[interaction.guild.id][0].url, download=False
+                music.queue[interaction.guild.id][0].url,
+                download=False,
             ),
         )
         source_url = data["url"]
@@ -266,7 +273,8 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
         try:
             popped_song = music.queue[interaction.guild.id][0]
             music.queue[interaction.guild.id].pop(0)
-        except IndexError:
+        except IndexError as e:
+            print(e)
             return
 
         if len(music.queue[interaction.guild.id]) == 0:
@@ -277,7 +285,8 @@ async def check_queue(player, interaction, opts, music, after, on_play, loop, bo
             data = await loop.run_in_executor(
                 None,
                 lambda: ydl.extract_info(
-                    music.queue[interaction.guild.id][0].url, download=False
+                    music.queue[interaction.guild.id][0].url,
+                    download=False,
                 ),
             )
             source_url = data["url"]
@@ -367,22 +376,36 @@ class Music(object):
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    player.delete()
+                    self.remove_player(guild)
                     return None
             elif not guild and channel and player.voice.channel.id == channel:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    player.delete()
+                    self.remove_player(guild)
                     return None
             elif not channel and guild and player.interaction.guild.id == guild:
                 if player.voice and player.voice.is_connected():
                     return player
                 else:
-                    player.delete()
+                    self.remove_player(guild)
                     return None
         else:
             return None
+
+    def remove_player(self, guild):
+        for player in self.players:
+            if guild and player.interaction.guild.id == guild:
+                guild_name = player.interaction.guild.name
+                del self.queue[player.interaction.guild.id]
+                self.players.remove(player)
+                del player
+                print(
+                    colored(
+                        text=f"Deleted Player (Guild: {guild_name} [{guild}])",
+                        color="dark_grey",
+                    )
+                )
 
 
 class MusicPlayer(object):
@@ -393,7 +416,6 @@ class MusicPlayer(object):
         self.loop = interaction.guild.voice_client.loop
         self.music_loop = None
         self.music = music
-        self.silent_mode = False
         self.paused = False
         self.current_playing = None
         self.leave_when_empty = False
@@ -423,17 +445,6 @@ class MusicPlayer(object):
             }
         else:
             self.ffmpeg_opts = {"options": "-vn", "before_options": "-nostdin"}
-
-    def delete(self):
-        print(
-            colored(
-                text=f"Deleted Player (Guild: {self.interaction.guild.name} [{self.interaction.guild.id}])",
-                color="dark_grey",
-            )
-        )
-        del self.music.queue[self.interaction.guild.id]
-        self.music.players.remove(self)
-        del self
 
     def on_queue(self, func):
         self.on_queue_func = func
@@ -485,7 +496,8 @@ class MusicPlayer(object):
             data = await self.loop.run_in_executor(
                 None,
                 lambda: ydl.extract_info(
-                    self.music.queue[self.interaction.guild.id][0].url, download=False
+                    self.music.queue[self.interaction.guild.id][0].url,
+                    download=False,
                 ),
             )
             source_url = data["url"]
@@ -539,7 +551,6 @@ class MusicPlayer(object):
 
             return True, song
         except Exception as e:
-            print(e)
             song = await self.queue(url, search, query)
 
             return False, song
@@ -630,10 +641,9 @@ class MusicPlayer(object):
 
     async def stop(self):
         try:
-
-            self.delete()
             self.voice.stop()
             await self.voice.disconnect()
+
         except:
             raise NotPlaying("Cannot loop because nothing is being played")
 
@@ -758,18 +768,28 @@ class MusicPlayer(object):
                 raise NotPlaying("Cannot loop because nothing is being played")
 
             await self.skip(force=True)
-            return song
+        elif index == -1:
+            song = Song(
+                None,
+                lang[await get_guild_language(self.interaction.guild.id)]["all_songs"],
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
 
-        song = self.music.queue[self.interaction.guild.id][index]
-        self.music.queue[self.interaction.guild.id].pop(index)
+            self.voice.stop()
+            self.music.queue[self.interaction.guild.id] = []
+        else:
+            song = self.music.queue[self.interaction.guild.id][index]
+            self.music.queue[self.interaction.guild.id].pop(index)
 
         if self.on_remove_from_queue_func:
             await self.on_remove_from_queue_func(self.interaction, song)
 
-    async def toggle_silent_mode(self):
-        self.silent_mode = not self.silent_mode
-
-        return self.silent_mode
+        return song
 
 
 class Song(object):
@@ -777,7 +797,6 @@ class Song(object):
         self,
         url,
         title,
-        description,
         views,
         duration,
         thumbnail,
@@ -786,7 +805,6 @@ class Song(object):
     ):
         self.url = url
         self.title = title
-        self.description = description
         self.views = views
         self.name = title
         self.duration = duration

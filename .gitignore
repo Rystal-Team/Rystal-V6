@@ -157,3 +157,6 @@ cython_debug/
 
 # test
 /test
+
+#config
+config/example.config.py

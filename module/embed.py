@@ -1,14 +1,16 @@
-import nextcord, asyncio
-from config.config import type_color
-from typing import Callable, Optional
-from module.musicPlayer import Song, MusicPlayer, NotPlaying, EmptyQueue
 from datetime import timedelta
+from typing import Callable
+
+import nextcord
+
+from config.config import lang, type_color
+from database.guild_handler import get_guild_language
+from module.musicPlayer import EmptyQueue, MusicPlayer, NotPlaying, Song
 from module.progressBar import progressBar
-from config.config import music_class_title
-from config.config import lang
 
 """from module.lyrics import Searcher
 """
+class_namespace = "music_class_title"
 
 
 class Embeds:
@@ -106,8 +108,9 @@ class NowPlayingMenu(nextcord.ui.View):
 
     @nextcord.ui.button(emoji="▶️", style=nextcord.ButtonStyle.blurple)
     async def toggle_playing(
-        self, interaction: nextcord.Interaction, button: nextcord.Button
+        self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        await interaction.response.defer()
         try:
             if self.playing:
                 await self.player.pause()
@@ -120,8 +123,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=lang["system_class_title"],
-                    message=lang["unknown_error"],
+                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "unknown_error"
+                    ],
                     message_type="error",
                 ),
             )
@@ -132,8 +139,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=lang["system_class_title"],
-                    message=lang["unknown_error"],
+                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "unknown_error"
+                    ],
                     message_type="error",
                 ),
             )
@@ -144,8 +155,9 @@ class NowPlayingMenu(nextcord.ui.View):
 
     @nextcord.ui.button(emoji="⏪", style=nextcord.ButtonStyle.blurple)
     async def previous(
-        self, interaction: nextcord.Interaction, button: nextcord.Button
+        self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        await interaction.response.defer()
         try:
             await self.player.previous()
             await self.update()
@@ -153,8 +165,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=music_class_title,
-                    message=lang["nothing_is_playing"],
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
                     message_type="warn",
                 ),
             )
@@ -165,8 +181,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=lang["system_class_title"],
-                    message=lang["unknown_error"],
+                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "unknown_error"
+                    ],
                     message_type="error",
                 ),
             )
@@ -175,7 +195,8 @@ class NowPlayingMenu(nextcord.ui.View):
             )
 
     @nextcord.ui.button(emoji="⏩", style=nextcord.ButtonStyle.blurple)
-    async def next(self, interaction: nextcord.Interaction, button: nextcord.Button):
+    async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        await interaction.response.defer()
         try:
             await self.player.skip()
             await self.update()
@@ -183,8 +204,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=music_class_title,
-                    message=lang["nothing_is_playing"],
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
                     message_type="warn",
                 ),
             )
@@ -195,8 +220,12 @@ class NowPlayingMenu(nextcord.ui.View):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
-                    title=lang["system_class_title"],
-                    message=lang["unknown_error"],
+                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "unknown_error"
+                    ],
                     message_type="error",
                 ),
             )
@@ -207,15 +236,10 @@ class NowPlayingMenu(nextcord.ui.View):
 
     @nextcord.ui.button(emoji="🔃", style=nextcord.ButtonStyle.blurple)
     async def update_embed(
-        self, interaction: nextcord.Interaction, button: nextcord.Button
+        self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        await interaction.response.defer()
         await self.update()
-
-    """@nextcord.ui.button(emoji="📜", style=nextcord.ButtonStyle.blurple)
-    async def update_embed(
-        self, interaction: nextcord.Interaction, button: nextcord.Button
-    ):
-        await self.update()"""
 
     async def on_timeout(self):
         # remove buttons on timeout
@@ -224,106 +248,3 @@ class NowPlayingMenu(nextcord.ui.View):
         )
 
         self.is_timeout = True
-
-
-"""
-class UpdateDropdownLyricsView(nextcord.ui.View):
-    def __init__(
-        self, interaction: nextcord.Interaction, get_page: Callable, song: str
-    ):
-        self.interaction = interaction
-        self.results = None
-        self.follow_up = None
-        self.get_page = get_page
-        self.query = song
-        self.total_pages: Optional[int] = None
-        self.index = 1
-        super().__init__(timeout=180)
-
-    def get_options(self):
-        options = []
-
-        for song in self.results:
-            options.append(nextcord.SelectOption(label=f"{song.title[:24]}"))
-
-        return options
-
-    async def interaction_check(self, interaction: nextcord.Interaction) -> bool:
-        if interaction.user == self.interaction.user:
-            return True
-        else:
-            emb = nextcord.Embed(
-                description=lang["author_only_interactions"],
-                color=16711680,
-            )
-            await interaction.response.send_message(embed=emb, ephemeral=True)
-            return False
-
-    async def navegate(self):
-        self.results = await Searcher.search_song(self.query)
-        print(len(self.results))
-        emb, self.total_pages = await self.get_page(self.index)
-
-        if self.total_pages == 1:
-            follow_up_msg: nextcord.Message = await self.interaction.followup.send(
-                embed=emb
-            )
-
-            self.follow_up = follow_up_msg
-        elif self.total_pages > 1:
-            self.update_buttons()
-            follow_up_msg: nextcord.Message = await self.interaction.followup.send(
-                embed=emb, view=self
-            )
-
-            self.follow_up = follow_up_msg
-
-    async def edit_page(self, interaction: nextcord.Interaction):
-        emb, self.total_pages = await self.get_page(self.index)
-        self.update_buttons()
-
-        await self.interaction.followup.edit_message(
-            message_id=self.follow_up.id, embed=emb, view=self
-        )
-
-    def update_buttons(self):
-        options = self.get_options()
-        self.children[0].options = options
-        self.children[1].disabled = self.index == 1
-        self.children[2].disabled = self.index == self.total_pages
-
-    @nextcord.ui.select(
-        placeholder="Waiting for selection...",
-        min_values=1,
-        max_values=1,
-        options=[nextcord.SelectOption(label="dwadaw")],
-    )
-    async def select_callback(
-        self, interaction: nextcord.Interaction, select: nextcord.ui.Select
-    ):
-        options = self.get_options()
-        print(options)
-        super().__init__(options=options)
-        print(select)
-
-    @nextcord.ui.button(emoji="◀️", style=nextcord.ButtonStyle.blurple)
-    async def previous(
-        self, interaction: nextcord.Interaction, button: nextcord.Button
-    ):
-        self.index -= 1
-        await self.edit_page(interaction)
-
-    @nextcord.ui.button(emoji="▶️", style=nextcord.ButtonStyle.blurple)
-    async def next(self, interaction: nextcord.Interaction, button: nextcord.Button):
-        self.index += 1
-        await self.edit_page(interaction)
-
-    async def on_timeout(self):
-        await self.interaction.followup.edit_message(
-            message_id=self.follow_up.id, view=None
-        )
-
-    @staticmethod
-    def compute_total_pages(total_results: int, results_per_page: int) -> int:
-        return ((total_results - 1) // results_per_page) + 1
-"""

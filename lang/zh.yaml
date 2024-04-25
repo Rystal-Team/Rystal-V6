@@ -1,0 +1,67 @@
+# Simplified Chinese
+name: "中文(简体)"
+
+# embed titles
+music_class_title: "🎵 | 音乐模组"
+level_class_title: "🎖️ | 升级模组"
+system_class_title: "🤖 | 系统"
+setting_class_title: "⚙️ | 设定"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "记忆体: {ram_used}/{ram_total} GB"
+os: "作业系统: {platform}"
+version: "版本: {os_version}"
+release: "发布: {os_release}"
+uptime: "运作时间: {uptime}"
+ping: "乒乓！{ping}ms"
+
+# settings
+language_changed: "已将语言改为{language}！"
+
+# music
+queued_playlist: "队排播放清单 **{playlist}**！"
+queue_ended: "队列结束！"
+all_songs: "全部歌"
+player_disconnected: "音乐播放器已断线！"
+loading_playlist: "正在载入播放清单..."
+not_in_voice: "您不在语音频道！"
+failed_to_add_song: "新增歌曲 **{title}** 失败！"
+invalid_playlist: "无效的播放清单！"
+playing_song: "正在播放**{title}**！"
+queued_song: "已排队 **{title}**！"
+removed_song: "已删除**{title}**！"
+nothing_is_playing: "没有任何内容在播放！"
+stopped_player: "停止播放器！"
+changed_volume: "将 **{title}** 的音量更改为 {volume}%！"
+currently_playing: "目前正在播放...{title}"
+shuffled_queue: "打乱了队列！"
+invalid_index: "索引无效！"
+
+toggle_silent_mode: "静音模式为 {toggle}"
+toggle_auto_leave: "自动离开语音为 {toggle}"
+
+disabled_loop: "停用循环模式！"
+enabled_loop_single: "为 **{title}** 启用循环模式！"
+enabled_loop_queue: "启用此伫列的循环模式！"
+disabled_loop_single: "停用 **{title}** 的循环模式！"
+disabled_loop_queue: "停用此伫列的循环模式！"
+music_already_paused: "音乐已经暂停！使用 `/resume` 恢复音乐！"
+music_already_playing: "音乐已经在播放！使用 `/pause` 暂停音乐！"
+paused_queue: "暂停伫列！"
+resumed_queue: "恢复伫列！"
+
+skipped_from: "从 **{old}** 跳到 **{new}**！"
+skipped: "跳过**{old}**！"
+replayed_from: "从 **{old}** 重播到 **{new}**！"
+replayed: "重播***{old}**！"
+jumped_from: "从**{old}**跳到**{new}**！"
+jumped: "跳了***{old}**！"
+
+# level
+level_up: "{user} 已达到级别 {level}！ ！ ！"
+
+# system
+unknown_error: "发生未知错误！"
+missing_permission: "您缺少执行此操作的权限！"
+author_only_interactions: "只有命令的作者才能执行此操作。"

@@ -1,7 +1,10 @@
+import datetime
+
 import nextcord
 from nextcord.ext import commands
-import datetime
-from config.config import type_color, logging_channe_id, enable_activity_logging
+
+from config.config import (enable_activity_logging, logging_channe_id,
+                           type_color)
 
 
 class logger(commands.Cog):

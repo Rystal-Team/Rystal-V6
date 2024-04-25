@@ -1,8 +1,11 @@
 # Traditional Chinese
+name: "中文(繁體)"
+
 # embed titles
 music_class_title: "🎵 | 音樂模組"
-level_class_title: "🎖️ | 升級模組" 
+level_class_title: "🎖️ | 升級模組"
 system_class_title: "🤖 | 系統"
+setting_class_title: "⚙️ | 設定"
 
 # status
 cpu: "CPU: {cpu}%"
@@ -13,9 +16,13 @@ release: "發布: {os_release}"
 uptime: "運作時間: {uptime}"
 ping: "乒乓！{ping}ms"
 
+# settings
+language_changed: "已將語言改為{language}！"
+
 # music
-queued_playlist: "排隊播放清單 **{playlist}**！"
+queued_playlist: "隊排播放清單 **{playlist}**！"
 queue_ended: "隊列結束！"
+all_songs: "全部歌"
 player_disconnected: "音樂播放器已斷線！"
 loading_playlist: "正在載入播放清單..."
 not_in_voice: "您不在語音頻道！"
@@ -29,9 +36,12 @@ stopped_player: "停止播放器！"
 changed_volume: "將 **{title}** 的音量更改為 {volume}%！"
 currently_playing: "目前正在播放...{title}"
 shuffled_queue: "打亂了隊列！"
-toggle_silent_mode: "靜音模式為{toggle}"
 invalid_index: "索引無效！"
 
+toggle_silent_mode: "靜音模式為 {toggle}"
+toggle_auto_leave: "自動離開語音為 {toggle}"
+
+disabled_loop: "停用循環模式！"
 enabled_loop_single: "為 **{title}** 啟用循環模式！"
 enabled_loop_queue: "啟用此佇列的循環模式！"
 disabled_loop_single: "停用 **{title}** 的循環模式！"
@@ -47,6 +57,9 @@ replayed_from: "從 **{old}** 重播到 **{new}**！"
 replayed: "重播***{old}**！"
 jumped_from: "從**{old}**跳到**{new}**！"
 jumped: "跳了***{old}**！"
+
+# level
+level_up: "{user} 已達到等級 {level}！ ！ ！"
 
 # system
 unknown_error: "發生未知錯誤！"

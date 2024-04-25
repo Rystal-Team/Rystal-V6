@@ -1,23 +1,30 @@
-import nextcord
-import os
 import asyncio
+import os
 import traceback
-from module.embed import Embeds
-from config.config import bot_owner_id, error_log_channel_id
+
+import nextcord
 from dotenv import load_dotenv
-from termcolor import colored
-from config.config import lang
 
 load_dotenv()
 
+
 from nextcord.ext import commands
+from termcolor import colored
+
+from config.config import bot_owner_id, error_log_channel_id, lang
+from database.guild_handler import get_guild_language
+from database.main_handler import startup
+from module.embed import Embeds
+
+startup()
+
 
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents().all()
-emcolor = 0x8042A9
 
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
+class_namespace = "system_class_title"
 
 
 @bot.event
@@ -28,8 +35,12 @@ async def on_application_command_error(interaction, exception):
         try:
             await interaction.followup.send(
                 embed=Embeds.message(
-                    title=lang["system_class_title"],
-                    message=lang["unknown_error"],
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "unknown_error"
+                    ],
                     message_type="error",
                 )
             )
@@ -40,8 +51,12 @@ async def on_application_command_error(interaction, exception):
             try:
                 await interaction.send(
                     embed=Embeds.message(
-                        title=lang["system_class_title"],
-                        message=lang["unknown_error"],
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "unknown_error"
+                        ],
                         message_type="error",
                     )
                 )
@@ -72,13 +87,13 @@ async def on_application_command_error(interaction, exception):
             exception_str += line
 
         message = f"""
-        **Error Logged!**
-        | Command: **/{identifier}**
-        | User: {interaction.user.name}
-        | Channel: {interaction.channel.name} | {interaction.channel.mention}
-        | Guild: {interaction.guild.name} | Owner: {interaction.guild.owner} | Humans: {len(interaction.guild.humans)}
-        | Follow Up Sent: {follow_up_sent}
-        """
+**Error Logged!**
+Command: **/{identifier}**
+User: {interaction.user.name}
+Channel: {interaction.channel.name} | {interaction.channel.mention}
+Guild: {interaction.guild.name} | Owner: {interaction.guild.owner} | Humans: {len(interaction.guild.humans)}
+Follow Up Sent: {follow_up_sent}
+"""
 
         if "options" in interaction.data:
             message += f"\nOptions : {interaction.data['options']}"
@@ -141,7 +156,7 @@ async def setup():
                 )
 
         else:
-            print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
+            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
 
     return cogs
 
@@ -163,7 +178,7 @@ async def reloadSetup():
                     )
                 )
         else:
-            print(colored(text=f"Passed file/folder {filename[:-3]}", color="yellow"))
+            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
 
     return cogs
 
@@ -175,7 +190,7 @@ async def reloadcogs(ctx):
         reloadedcogs = await reloadSetup()
         await ctx.send(
             embed=Embeds.message(
-                title=lang["system_class_title"],
+                title=lang[await get_guild_language(ctx.guild.id)][class_namespace],
                 message=f"Reloaded {reloadedcogs} cogs, loaded {newcogs} new cogs.",
                 message_type="info",
             )
@@ -183,7 +198,11 @@ async def reloadcogs(ctx):
     else:
         await ctx.send(
             embed=Embeds.message(
-                title=lang["system_class_title"], message=lang["missing_permission"], message_type="error"
+                title=lang[await get_guild_language(ctx.guild.id)][class_namespace],
+                message=lang[await get_guild_language(ctx.guild.id)][
+                    "missing_permission"
+                ],
+                message_type="error",
             )
         )
 
@@ -203,7 +222,8 @@ async def list(
         await interaction.response.send_message(Para, ephemeral=True)
     else:
         await interaction.response.send_message(
-            "You have no permission haha!", ephemeral=True
+            lang[await get_guild_language(interaction.guild.id)]["missing_permission"],
+            ephemeral=True,
         )
 
 

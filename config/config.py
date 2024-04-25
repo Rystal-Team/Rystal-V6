@@ -1,10 +1,19 @@
-from nextcord import Color
+import os
+
 import yaml
+from nextcord import Color
 
 """
-=== LANGUAGE ===
+=== BOT ===
 """
-language = "ja"
+status_text = "🌟 v6.0.3!"
+default_language = "en"
+# Uses default language if multi_lang is set to false
+# Use this if you have little memory
+multi_lang = True
+# Decide whether the bot would use ytdlp to extract video data (Slower when set to True)
+# Set to True if the bot fails to extract video data.
+use_ytdlp = False
 
 """
 === EMBEDs COLORS === 
@@ -21,20 +30,20 @@ type_color = {
 === ADMINISTRATION === 
 """
 # the channel id for error logging
-error_log_channel_id = 1203877839917555722
+error_log_channel_id = 000000000000000000
 # the user id of the owner of bot, or the person you want to have admin access to the bot
-bot_owner_id = 699452241312219147
+bot_owner_id = 000000000000000000
 
 """
 === ACTIVITY LOGGING (Logs all commands executed by users)=== 
-I do not recommend turning this on as it does slow down the bot quite a bit
+I do not recommend turning this on as it does slow down the bot a bit
 if you are running it on a low end server/computer, however if you really really 
-want to then go ahead, the error logging should be more than enough though.!!!
+want to then go ahead, the error logging provided should be more than enough though.!!!
 """
 # whether you want activity logging or not, defaults to False
 enable_activity_logging = False
 # the channel id for logging (only required if activity logging is enabled, type None or "" if you don't need it)
-logging_channe_id = 1203866958487879680
+logging_channe_id = 000000000000000000
 
 
 """
@@ -58,10 +67,22 @@ logging_channe_id = 1203866958487879680
 ========================================================================================================
 ========================================================================================================
 """
-with open(f"./lang/{language}.yaml", "r", encoding="utf8") as stream:
-    lang = yaml.safe_load(stream)
-    print(f"Loaded Language: {language}")
+lang = {}
+lang_mapping = {}
+langs = []
 
-music_class_title = lang["music_class_title"]
-level_class_title = lang["level_class_title"]
-system_class_title = lang["system_class_title"]
+if multi_lang:
+    for filename in os.listdir("./lang"):
+        if filename.endswith(".yaml"):
+            filename = filename[:-5]
+            with open(f"./lang/{filename}.yaml", "r", encoding="utf8") as stream:
+                lang[filename] = yaml.safe_load(stream)
+                print(f"Loaded Language: {filename}")
+else:
+    with open(f"./lang/{default_language}.yaml", "r", encoding="utf8") as stream:
+        lang[default_language] = yaml.safe_load(stream)
+        print(f"Loaded Language: {default_language}")
+
+for language in lang:
+    langs.append(lang[language]["name"])
+    lang_mapping[lang[language]["name"]] = language
