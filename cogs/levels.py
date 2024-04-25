@@ -109,7 +109,7 @@ class RankSystem(commands.Cog):
 
         nameFont = Font.poppins(variant="bold", size=50)
         background.text(
-            (200, 100), str(user.display_name), font=nameFont, color=theme_color
+            (200, 100), str(user.global_name), font=nameFont, color=theme_color
         )
 
         background.text(
