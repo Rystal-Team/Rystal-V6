@@ -5,7 +5,7 @@
   </a>
   <h3 align="center">Rystal V6</h3>
   <p align="center">
-    A simple bot coded with some decent utilities
+    A simple bot written in python with some decent utilities
     <br />
     <br />  
     <a href="https://github.com/Rystal-Team/Rystal-V6/issues">Submit Issues</a>
