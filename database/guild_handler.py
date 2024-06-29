@@ -26,13 +26,13 @@ async def append_guild(guild_id: int):
 
         print(
             colored(
-                text=f"[DATABASE] Registered Guild: {guild_id}", color="light_yellow"
+                text=f"[GUILD DATABASE] Registered Guild: {guild_id}", color="light_yellow"
             )
         )
     except Exception as e:
         print(
             colored(
-                text=f"[DATABASE] Failed to Registered Guild: {guild_id}", color="red"
+                text=f"[GUILD DATABASE] Failed to Registered Guild: {guild_id}", color="red"
             )
         )
 
@@ -51,7 +51,7 @@ async def change_guild_language(guild_id: int, language):
 
     print(
         colored(
-            text=f"[DATABASE] Updated Guild {guild_id}'s Language to [{language}]",
+            text=f"[GUILD DATABASE] Updated Guild {guild_id}'s Language to [{language}]",
             color="light_yellow",
         )
     )
@@ -103,7 +103,7 @@ async def change_guild_settings(guild_id: int, key, value):
 
     print(
         colored(
-            text=f"[DATABASE] Updated Guild {guild_id}'s setting: {key} to [{value}]",
+            text=f"[GUILD DATABASE] Updated Guild {guild_id}'s setting: {key} to [{value}]",
             color="light_yellow",
         )
     )

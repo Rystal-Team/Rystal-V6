@@ -6,6 +6,7 @@ music_class_title: "🎵 | 音楽モジュール"
 level_class_title: "🎖️ | レベリングモジュール"
 system_class_title: "🤖 | 系統"
 setting_class_title: "⚙️ | 設定"
+note_class_title: "📒 | ノート"
 
 # status
 cpu: "CPU: {cpu}%"
@@ -26,6 +27,7 @@ queue_ended: "キューが終了しました。"
 player_disconnected: "音楽プレーヤーが切断されました"
 loading_playlist: "プレイリストを取得しています..."
 not_in_voice: "あなたはボイスチャンネルにいません！"
+in_different_voice: "あなたはボットと同じボイスチャンネルにいません！"
 failed_to_add_song: "曲 **{title}** の追加は失敗しました。"
 invalid_playlist: "プレイリストが無効です！"
 playing_song: "**{title}** を再生中！"
@@ -40,11 +42,12 @@ invalid_index: "インデックスが無効です！"
 
 toggle_silent_mode: "サイレントモードは {toggle} に変更されました。"
 toggle_auto_leave: "音声チャンネルの自動離脱は {toggle} に変更されました。"
+volume_out_of_range: "音量必須在 0% から 200% の間！"
 
 disabled_loop: "ループを無効にする！"
 enabled_loop_queue: "キューのループを有効にする！"
 disabled_loop_queue: "キューのループを無効にする！"
-enabled_loop_single: "**{title}** のループを無効にする！"
+enabled_loop_single: "**{title}** のループを有効にする！"
 disabled_loop_single: "**{title}** のループを無効にする！"
 music_already_paused: "音楽はすでに一時停止しています！ 音楽を再開するには `/resume` を使用してください。"
 music_already_playing: "音楽はすでに再生されています! 音楽を一時停止するには `/pause` を使用してください。"
@@ -58,11 +61,27 @@ replayed: "**{old}** を再生しました！"
 jumped_from: "**{old}** から **{new}** ジャンプされました！"
 jumped: "**{old}** にジャンプしました！"
 
+music_registered_secret: "シークレットが登録されました。詳細についてはプライベートメッセージを確認してください。何も受け取っていない場合は、プライバシー設定で「サーバーメンバーからのダイレクトメッセージを許可する」が有効になっていることを確認してください。"
+music_secret: "これがあなたの新しいシークレットです\n ```{secret}```"
+
 # level
 level_up: "{user} がレベル {level} になれた！！！"
+level_text: "Level"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "リーダーボード - トップ {range}"
+leaderboard_out_of_range: "範囲の最小値は 1、最大値は 50 である必要があります！"
+leaderboard_user_row: "**レベル： {level} | 合計 XP： {totalxp}**"
 
 # system
 unknown_error: "予想外のエラーが発生しました！"
 missing_permission: "あなたはこのアクションを実行する権限がありません！"
 author_only_interactions: "あなたはこのアクションを実行できません。"
+not_implemented: "このコマンドはまだ完成されていません。"
+command_slowdown: "ゆっくりして、後でもう一度お試しください。"
 
+# queue search query
+queue_serach_query: "検索 (すべてを表示するには空白のままにします)"
+queue_query: "キュー検索"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | 検索: {query}"

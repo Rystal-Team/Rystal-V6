@@ -6,6 +6,7 @@ music_class_title: "🎵 | Music Module"
 level_class_title: "🎖️ | Leveling Module"
 system_class_title: "🤖 | System"
 setting_class_title: "⚙️ | Settings"
+note_class_title: "📒 | Note"
 
 # status
 cpu: "CPU: {cpu}%"
@@ -26,6 +27,7 @@ queue_ended: "Queue Ended!"
 player_disconnected: "Music Player has been disconnected!"
 loading_playlist: "Loading Playlist..."
 not_in_voice: "You are not in a voice channel!"
+in_different_voice: "You are not in the same voice channel as the bot!"
 failed_to_add_song: "Failed to add song **{title}**!"
 invalid_playlist: "Invalid Playlist!"
 playing_song: "Playing **{title}**!"
@@ -40,6 +42,7 @@ invalid_index: "Invalid index!"
 
 toggle_silent_mode: "Silent mode is {toggle}"
 toggle_auto_leave: "Auto leave voice is {toggle}"
+volume_out_of_range: "Volume must be between 0% and 200%!"
 
 disabled_loop: "Disabled loop mode!"
 enabled_loop_single: "Enabled loop mode for **{title}**!"
@@ -58,12 +61,29 @@ replayed: "Replayed **{old}**!"
 jumped_from: "Jumped from **{old}** to **{new}**!"
 jumped: "Jumped **{old}**!"
 
+music_registered_secret: "You have successfully registered a secret. Please check your private messages for further details. If you haven't received anything, ensure that 'allow direct messages from server members' is enabled in your privacy settings."
+music_secret: "This is your new secret\n ```{secret}```"
+
 # level
 level_up: "{user} has reached level {level}!!!"
+level_text: "Level"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "Leaderboard - Top {range}"
+leaderboard_out_of_range: "Range must have a minimum value of 1 and maximum value of 50!"
+leaderboard_user_row: "**Level: {level} | Total XP: {totalxp}**"
 
 # system
 unknown_error: "An unknown error has occured!"
 missing_permission: "You are missing permission to execute this action!"
 author_only_interactions: "Only the author of the command can perform this action."
+not_implemented: "This command is not implemented yet!"
+command_slowdown: "Please slow down and try again later!"
+
+# queue search query
+queue_serach_query: "Search Query (Leave empty to show all)"
+queue_query: "Query"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | Query: {query}"
 
 # command description

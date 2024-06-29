@@ -1,12 +1,19 @@
+import sys
+
+sys.dont_write_bytecode = True
+
 import asyncio
+import datetime
+import logging
 import os
 import traceback
 
+import nest_asyncio
 import nextcord
 from dotenv import load_dotenv
 
+nest_asyncio.apply()
 load_dotenv()
-
 
 from nextcord.ext import commands
 from termcolor import colored
@@ -17,76 +24,76 @@ from database.main_handler import startup
 from module.embed import Embeds
 
 startup()
-
-
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents().all()
+
+if not os.path.exists("./logs"):
+    os.makedirs("./logs")
 
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
 class_namespace = "system_class_title"
 
+logger = logging.getLogger("nextcord")
+logger.setLevel(logging.DEBUG)
+time_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+handler = logging.FileHandler(
+    filename=f"./logs/{time_str}.log", encoding="utf-8", mode="w"
+)
+handler.setFormatter(
+    logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+)
+logger.addHandler(handler)
+
 
 @bot.event
 async def on_application_command_error(interaction, exception):
-    if error_log_channel_id is not None:
-        follow_up_sent = False
-        not_sent_exception = None
+    if (
+        str(exception)
+        == "Command raised an exception: NotFound: 404 Not Found (error code: 10062): Unknown interaction"
+    ):
+
+        await interaction.channel.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "command_slowdown"
+                ],
+                message_type="warn",
+            ),
+        )
+        return
+    if not error_log_channel_id:
+        return
+    follow_up_sent = False
+    error_msg = Embeds.message(
+        title=lang[await get_guild_language(interaction.guild.id)][class_namespace],
+        message=lang[await get_guild_language(interaction.guild.id)]["unknown_error"],
+        message_type="error",
+    )
+    try:
+        await interaction.followup.send(embed=error_msg)
+        follow_up_sent = True
+    except:
         try:
-            await interaction.followup.send(
-                embed=Embeds.message(
-                    title=lang[await get_guild_language(interaction.guild.id)][
-                        class_namespace
-                    ],
-                    message=lang[await get_guild_language(interaction.guild.id)][
-                        "unknown_error"
-                    ],
-                    message_type="error",
-                )
-            )
-
+            await interaction.send(embed=error_msg)
             follow_up_sent = True
-        except Exception as e:
-            not_sent_exception = e
-            try:
-                await interaction.send(
-                    embed=Embeds.message(
-                        title=lang[await get_guild_language(interaction.guild.id)][
-                            class_namespace
-                        ],
-                        message=lang[await get_guild_language(interaction.guild.id)][
-                            "unknown_error"
-                        ],
-                        message_type="error",
-                    )
-                )
-
-                follow_up_sent = True
-            except Exception as e:
-                pass
-                not_sent_exception = e
-        finally:
+        except:
             pass
 
-        channel = bot.get_channel(error_log_channel_id)
+    channel = bot.get_channel(error_log_channel_id)
+    identifier = getattr(
+        interaction.application_command, "qualified_name", "Not Command"
+    )
+    full_error = traceback.format_exception(
+        type(exception), exception, exception.__traceback__
+    )
+    exception_str = "".join(full_error)
+    print(exception_str)
 
-        try:
-            identifier = interaction.application_command.qualified_name
-        except Exception:
-            identifier = "Not Command"
-
-        full_error = traceback.format_exception(
-            type(exception), exception, exception.__traceback__
-        )
-
-        log_files = []
-
-        exception_str = ""
-
-        for line in full_error:
-            exception_str += line
-
-        message = f"""
+    message = f"""
 **Error Logged!**
 Command: **/{identifier}**
 User: {interaction.user.name}
@@ -95,50 +102,34 @@ Guild: {interaction.guild.name} | Owner: {interaction.guild.owner} | Humans: {le
 Follow Up Sent: {follow_up_sent}
 """
 
-        if "options" in interaction.data:
-            message += f"\nOptions : {interaction.data['options']}"
+    if "options" in interaction.data:
+        message += f"\nOptions : {interaction.data['options']}"
 
-        with open("exception.txt", "w") as f:
-            f.write(exception_str)
-            f.close()
+    with open("exception.txt", "w") as f:
+        f.write(exception_str)
+    log_files = [nextcord.File("exception.txt")]
 
-        log_files.append(nextcord.File("exception.txt"))
-
-        if not follow_up_sent:
-            not_sent_full_error = traceback.format_exception(
-                type(not_sent_exception),
-                not_sent_exception,
-                not_sent_exception.__traceback__,
-            )
-
-            not_sent_exception_str = ""
-
-            for line in not_sent_full_error:
-                not_sent_exception_str += line
-
-            with open("send_exception.txt", "w") as f:
-                f.write(not_sent_exception_str)
-                f.close()
-
-            log_files.append(nextcord.File("send_exception.txt"))
-
-        await channel.send(content=message, files=log_files)
-        owner = await bot.fetch_user(bot_owner_id)
-        mention = await channel.send(content=f"{owner.mention}")
-        await mention.delete()
-
-        try:
-            os.remove("send_exception.txt")
-        except Exception:
-            pass
-        finally:
-            os.remove("exception.txt")
+    if not follow_up_sent:
+        not_sent_full_error = traceback.format_exception(
+            type(exception), exception, exception.__traceback__
+        )
+        with open("send_exception.txt", "w") as f:
+            f.write("".join(not_sent_full_error))
+        log_files.append(nextcord.File("send_exception.txt"))
+    
+    await channel.send(content=message, files=log_files)
+    owner = await bot.fetch_user(bot_owner_id)
+    mention = await channel.send(content=f"{owner.mention}")
+    await mention.delete()
+    os.remove("exception.txt")
+    if not follow_up_sent:
+        os.remove("send_exception.txt")
 
 
 async def setup():
     cogs = 0
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
+        if filename.endswith(".py") and not "old" in filename:
             try:
                 bot.load_extension(f"cogs.{filename[:-3]}")
                 print(colored(text=f"Cogs: {filename[:-3]} is ready!", color="green"))
@@ -164,7 +155,7 @@ async def setup():
 async def reloadSetup():
     cogs = 0
     for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
+        if filename.endswith(".py") and not "old" in filename:
             try:
                 bot.reload_extension(f"cogs.{filename[:-3]}")
                 print(
@@ -222,7 +213,15 @@ async def list(
         await interaction.response.send_message(Para, ephemeral=True)
     else:
         await interaction.response.send_message(
-            lang[await get_guild_language(interaction.guild.id)]["missing_permission"],
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "missing_permission"
+                ],
+                message_type="warn",
+            ),
             ephemeral=True,
         )
 

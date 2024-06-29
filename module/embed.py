@@ -5,16 +5,29 @@ import nextcord
 
 from config.config import lang, type_color
 from database.guild_handler import get_guild_language
-from module.musicPlayer import EmptyQueue, MusicPlayer, NotPlaying, Song
+from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying
+from module.nextcord_jukebox.song import Song
+from module.nextcord_jukebox.music_player import MusicPlayer
 from module.progressBar import progressBar
 
-"""from module.lyrics import Searcher
-"""
 class_namespace = "music_class_title"
 
-
 class Embeds:
+    """Class for creating Nextcord embed messages."""
+
     def message(title, message, message_type, thumbnail=None):
+        """
+        Create an embed message.
+
+        Args:
+            title (str): The title of the embed.
+            message (str): The message content of the embed.
+            message_type (str): The type of the message to determine the embed color.
+            thumbnail (str, optional): URL of the thumbnail image.
+
+        Returns:
+            nextcord.Embed: The generated embed message.
+        """
         embed = nextcord.Embed(
             title=title, description=message, color=(type_color[message_type])
         )
@@ -26,6 +39,8 @@ class Embeds:
 
 
 class NowPlayingMenu(nextcord.ui.View):
+    """A Nextcord UI view for the Now Playing menu."""
+
     def __init__(
         self,
         interaction: nextcord.Interaction,
@@ -40,16 +55,19 @@ class NowPlayingMenu(nextcord.ui.View):
         on_previous: Callable = None,
     ):
         """
+        Initialize the Now Playing menu.
+
         Args:
-            interaction (nextcord.Interaction): interaction
-            title (str): embed title
-            description (str): embed description
-            message_type (str): color type
-            playing (bool): song paused or not
-            on_toggle (Callable): on pause/resume button pressed
-            on_next (Callable): on next song button
-            on_previous (Callable): on previous song button
-            thumbnail (str, optional): thumbnail url. Defaults to None.
+            interaction (nextcord.Interaction): The interaction that triggered this view.
+            title (str): The title of the currently playing song.
+            message_type (str): The type of message to determine the embed color.
+            player (MusicPlayer): The music player instance.
+            playing (bool): Whether a song is currently playing.
+            song (Song): The current song being played.
+            thumbnail (str, optional): URL of the thumbnail image.
+            on_toggle (Callable, optional): Function to call when toggling play/pause.
+            on_next (Callable, optional): Function to call when skipping to the next song.
+            on_previous (Callable, optional): Function to call when going to the previous song.
         """
         self.interaction = interaction
         self.title = title
@@ -63,11 +81,15 @@ class NowPlayingMenu(nextcord.ui.View):
         self.song = song
         self.follow_up = None
         self.is_timeout = False
+        self.source_url = self.song.source_url
 
         super().__init__(timeout=180)
 
     async def update(self):
-        self.song = self.player.now_playing()
+        """
+        Update the Now Playing embed and buttons.
+        """
+        self.song = await self.player.now_playing()
         self.title = self.song.title
         self.thumbnail = self.song.thumbnail
 
@@ -80,8 +102,10 @@ class NowPlayingMenu(nextcord.ui.View):
         if self.thumbnail is not None:
             embed.set_thumbnail(url=self.thumbnail)
 
+        time_elapsed = self.song.timer.elapsed
+
         embed.add_field(
-            name=f"{progressBar.splitBar(self.song.duration, round(self.song.timer.elapsed))[0]} | {str(timedelta(seconds=(round(self.song.timer.elapsed))))}/{str(timedelta(seconds=(self.song.duration)))}",
+            name=f"{progressBar.splitBar(self.song.duration, round(time_elapsed))[0]} | {str(timedelta(seconds=(round(time_elapsed))))}/{str(timedelta(seconds=(self.song.duration)))}",
             value=f"👁️ {'{:,}'.format(self.song.views)} | 🧑 {self.song.channel}",
             inline=False,
         )
@@ -101,6 +125,9 @@ class NowPlayingMenu(nextcord.ui.View):
             )
 
     async def update_button(self):
+        """
+        Update the play/pause button based on the playing state.
+        """
         if self.playing:
             self.children[0].emoji = "⏸️"
         else:
@@ -110,6 +137,13 @@ class NowPlayingMenu(nextcord.ui.View):
     async def toggle_playing(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        """
+        Toggle the playing state between play and pause.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered this action.
+        """
         await interaction.response.defer()
         try:
             if self.playing:
@@ -119,23 +153,23 @@ class NowPlayingMenu(nextcord.ui.View):
 
             self.playing = not self.playing
             await self.update()
-        except NotPlaying or EmptyQueue:
-            await self.interaction.followup.edit_message(
-                message_id=self.follow_up.id,
+        except (NotPlaying, EmptyQueue):
+            await interaction.followup.send(
                 embed=Embeds.message(
-                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                    title=lang[await get_guild_language(interaction.guild.id)][
                         class_namespace
                     ],
-                    message=lang[await get_guild_language(self.interaction.guild.id)][
-                        "unknown_error"
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "nothing_is_playing"
                     ],
-                    message_type="error",
-                ),
+                    message_type="warn",
+                )
             )
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
+            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -157,11 +191,18 @@ class NowPlayingMenu(nextcord.ui.View):
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        """
+        Skip to the previous song.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered this action.
+        """
         await interaction.response.defer()
         try:
             await self.player.previous()
             await self.update()
-        except NotPlaying or EmptyQueue:
+        except (NotPlaying, EmptyQueue):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -178,6 +219,7 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
+            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -196,11 +238,18 @@ class NowPlayingMenu(nextcord.ui.View):
 
     @nextcord.ui.button(emoji="⏩", style=nextcord.ButtonStyle.blurple)
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        """
+        Skip to the next song.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered this action.
+        """
         await interaction.response.defer()
         try:
             await self.player.skip()
             await self.update()
-        except NotPlaying or EmptyQueue:
+        except (NotPlaying, EmptyQueue):
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -217,6 +266,7 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
+            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -238,11 +288,20 @@ class NowPlayingMenu(nextcord.ui.View):
     async def update_embed(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
+        """
+        Refresh the Now Playing embed.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered this action.
+        """
         await interaction.response.defer()
         await self.update()
 
     async def on_timeout(self):
-        # remove buttons on timeout
+        """
+        Handle timeout event by removing buttons from the view.
+        """
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )

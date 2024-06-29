@@ -1,13 +1,15 @@
 from typing import Optional
 
-import nextcord
+import nextcord, json
 from easy_pil import Editor, Font, load_image_async
 from nextcord import File
 from nextcord.ext import commands
-
-from config.config import lang
+from module.embed import Embeds
+from config.config import lang, theme_color
 from database import rank_handler
 from database.guild_handler import get_guild_language
+
+class_namespace = "level_class_title"
 
 
 class RankSystem(commands.Cog):
@@ -17,7 +19,7 @@ class RankSystem(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
-            data = rank_handler.get_user_data(message.author.id)
+            data = await rank_handler.get_user_data(message.author.id)
 
             xp = data["xp"]
             lvl = data["level"]
@@ -38,7 +40,7 @@ class RankSystem(commands.Cog):
             )
 
             data["totalxp"] = usertotalxp
-            rank_handler.update_user_data(message.author.id, data)
+            await rank_handler.update_user_data(message.author.id, data)
 
             if new_level > lvl:
                 await message.channel.send(
@@ -61,12 +63,13 @@ class RankSystem(commands.Cog):
         ),
     ):
         await interaction.response.defer()
+
         if member is None:
             user = interaction.user
         else:
             user = member
 
-        data = rank_handler.get_user_data(user.id)
+        data = await rank_handler.get_user_data(user.id)
 
         xp = data["xp"]
         lvl = data["level"]
@@ -79,9 +82,6 @@ class RankSystem(commands.Cog):
 
         if percentage < 1:
             percentage = 0
-
-        # colors
-        theme_color = "#5895DC"
 
         # Rank card
         background = Editor(f"./rankCardBase.png")
@@ -104,7 +104,12 @@ class RankSystem(commands.Cog):
             radius=5,
         )
 
-        background.text((560, 70), f"Level", font=poppins_small, color="#e6e6e6")
+        background.text(
+            (560, 70),
+            lang[await get_guild_language(interaction.guild.id)]["level_text"],
+            font=poppins_small,
+            color="#e6e6e6",
+        )
         background.text((625, 57), f"{lvl}", font=poppins, color=theme_color)
 
         nameFont = Font.poppins(variant="bold", size=50)
@@ -114,7 +119,9 @@ class RankSystem(commands.Cog):
 
         background.text(
             (550, 167),
-            f"{xp} / {(lvl+1) * 100} XP",
+            lang[await get_guild_language(interaction.guild.id)]["level_xp"].format(
+                xp=xp, totalxp=(lvl+1) * 100
+            ),
             font=poppins_small,
             color="#fff",
         )
@@ -122,8 +129,7 @@ class RankSystem(commands.Cog):
         card = File(filename="rankcard.png", fp=background.image_bytes)
         await interaction.followup.send(files=[card])
 
-
-"""    @nextcord.slash_command(
+    @nextcord.slash_command(
         name="leaderboard",
         description="🎖️ | View the leaderboard of top ranked users!",
     )
@@ -136,30 +142,48 @@ class RankSystem(commands.Cog):
             required=False,
         ),
     ):
-        await interaction.response.defer()
         if range is None:
             range = 5
 
-        with open("./levels.json", "r") as f:
-            data = json.load(f)
+        if range < 1 or range > 50:
+            await interaction.response.send_message(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "leaderboard_out_of_range"
+                    ],
+                    message_type="warn",
+                ),
+                ephemeral=True,
+            )
+            return
+
+        await interaction.response.defer()
+
+        result = await rank_handler.get_leaderboard(range)
 
         mbed = nextcord.Embed(
-            title=f"Leaderboard - Top {range}",
+            title=lang[await get_guild_language(interaction.guild.id)][
+                "leaderboard_header"
+            ].format(range=range),
         )
 
-        for user_id, user_data in sorted(
-            data.items(), key=lambda x: x[1]["totalxp"], reverse=True
-        )[:range]:
-            member = await self.bot.fetch_user(user_id)
+        for user in result:
+            member = await self.bot.fetch_user(user[0])
+            data = json.loads(user[1])
             mbed.add_field(
                 name=member.display_name,
-                value=f"**Level: {user_data['level']} | Total XP: {user_data['totalxp']}**",
+                value=lang[await get_guild_language(interaction.guild.id)][
+                    "leaderboard_user_row"
+                ].format(level=data["level"], totalxp=data["totalxp"]),
                 inline=False,
             )
 
         await interaction.followup.send(embed=mbed)
-"""
 
 
 def setup(bot):
+
     bot.add_cog(RankSystem(bot))

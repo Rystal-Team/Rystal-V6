@@ -22,11 +22,20 @@ from module.embed import Embeds
 class_namespace = "setting_class_title"
 
 
-class settings(commands.Cog):
+class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    @nextcord.slash_command(
+        description="⚙️ | Setting"
+    )
+    async def setting(
+        self,
+        interaction: Interaction,
+    ):
+        return
 
-    @nextcord.slash_command(description="⚙️ | Change the bot language in this server!")
+    @setting.subcommand(description="⚙️ | Change the bot language in this server!")
     async def language(
         self,
         interaction: Interaction,
@@ -61,8 +70,8 @@ class settings(commands.Cog):
                 )
             )
 
-    @nextcord.slash_command(
-        description="🎵 | Toggle silent mode! (Mutes track-start notification)"
+    @setting.subcommand(
+        description="🎵 | Toggle silent mode in this server! (Mutes track-start notification)"
     )
     async def silent_mode(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
@@ -89,8 +98,8 @@ class settings(commands.Cog):
             )
         )
         
-    @nextcord.slash_command(
-        description="🎵 | Toggle leave when voice channel is empty!"
+    @setting.subcommand(
+        description="🎵 | Toggle leave when voice channel is empty in this server!"
     )
     async def auto_leave(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
@@ -119,5 +128,4 @@ class settings(commands.Cog):
 
 
 async def setup(bot):
-
-    bot.add_cog(settings(bot))
+    bot.add_cog(Settings(bot))
