@@ -1,13 +1,15 @@
+import json
 from typing import Optional
 
-import nextcord, json
+import nextcord
 from easy_pil import Editor, Font, load_image_async
 from nextcord import File
 from nextcord.ext import commands
-from module.embed import Embeds
+
 from config.config import lang, theme_color
 from database import rank_handler
 from database.guild_handler import get_guild_language
+from module.embed import Embeds
 
 class_namespace = "level_class_title"
 
@@ -33,10 +35,10 @@ class RankSystem(commands.Cog):
                 data["level"] = new_level
                 data["xp"] = 0
 
-            newXP = int(data["xp"])
+            new_xp = int(data["xp"])
             userlvl = int(data["level"])
             usertotalxp = int(
-                ((((userlvl * userlvl) / 2) + (userlvl / 2)) * 100) + newXP
+                ((((userlvl * userlvl) / 2) + (userlvl / 2)) * 100) + new_xp
             )
 
             data["totalxp"] = usertotalxp
@@ -112,15 +114,15 @@ class RankSystem(commands.Cog):
         )
         background.text((625, 57), f"{lvl}", font=poppins, color=theme_color)
 
-        nameFont = Font.poppins(variant="bold", size=50)
+        name_font = Font.poppins(variant="bold", size=50)
         background.text(
-            (200, 100), str(user.global_name), font=nameFont, color=theme_color
+            (200, 100), str(user.global_name), font=name_font, color=theme_color
         )
 
         background.text(
             (550, 167),
             lang[await get_guild_language(interaction.guild.id)]["level_xp"].format(
-                xp=xp, totalxp=(lvl+1) * 100
+                xp=xp, totalxp=(lvl + 1) * 100
             ),
             font=poppins_small,
             color="#fff",
@@ -136,23 +138,23 @@ class RankSystem(commands.Cog):
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
-        range: Optional[int] = nextcord.SlashOption(
-            name="range",
+        include: Optional[int] = nextcord.SlashOption(
+            name="include",
             description="Select how many users you want to include on the list!",
             required=False,
         ),
     ):
-        if range is None:
-            range = 5
+        if include is None:
+            include = 5
 
-        if range < 1 or range > 50:
+        if include < 1 or include > 50:
             await interaction.response.send_message(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
                         class_namespace
                     ],
                     message=lang[await get_guild_language(interaction.guild.id)][
-                        "leaderboard_out_of_range"
+                        "leaderboard_out_of_include"
                     ],
                     message_type="warn",
                 ),
@@ -162,12 +164,12 @@ class RankSystem(commands.Cog):
 
         await interaction.response.defer()
 
-        result = await rank_handler.get_leaderboard(range)
+        result = await rank_handler.get_leaderboard(include)
 
         mbed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
                 "leaderboard_header"
-            ].format(range=range),
+            ].format(include=include),
         )
 
         for user in result:
@@ -185,5 +187,4 @@ class RankSystem(commands.Cog):
 
 
 def setup(bot):
-
     bot.add_cog(RankSystem(bot))

@@ -1,33 +1,14 @@
-"""
-This module defines a Database class for managing user secrets stored in an SQLite database. It includes methods for 
-connecting to the database, creating tables, registering users, and retrieving user secrets.
-
-Classes:
-    Database: Manages database connections and operations for user secrets.
-
-Methods:
-    __init__(db_path): Initializes the Database instance with the specified database path.
-    connect(): Connects to the SQLite database and creates the required table.
-    close(): Closes the database connection.
-    create_table(): Creates the 'secrets' table if it does not exist.
-    register(user_id): Registers a user by generating and storing a secret.
-    get_user_secret(user_id): Retrieves the secret for a specified user.
-
-Modules:
-    asyncio: Provides support for asynchronous programming.
-    sqlite3: Manages SQLite database connections.
-    .utils: Contains utility functions such as generate_secret.
-    .LogHandler: Manages logging functionalities.
-"""
-
+import json
 import sqlite3
-import asyncio
-from .utils import generate_secret
+from datetime import datetime, timedelta
+
 from . import LogHandler
+from .utils import generate_secret
+
 
 class Database:
     """
-    Manages database connections and operations for user secrets.
+    Manages database connections and operations for user secrets and video metadata caching.
 
     Attributes:
         db_path (str): The path to the SQLite database file.
@@ -48,11 +29,11 @@ class Database:
 
     def connect(self):
         """
-        Connects to the SQLite database and creates the required table.
+        Connects to the SQLite database and creates the required tables.
         """
         self.connection = sqlite3.connect(self.db_path)
         self.cursor = self.connection.cursor()
-        self.create_table()
+        self.create_tables()
 
     def close(self):
         """
@@ -63,17 +44,35 @@ class Database:
         if self.connection:
             self.connection.close()
 
-    def create_table(self):
+    def create_tables(self):
         """
-        Creates the 'secrets' table if it does not exist.
+        Creates the 'secrets', 'ytcache', and 'replay_history' tables if they do not exist.
         """
-        query = """
-        CREATE TABLE IF NOT EXISTS secrets (
-            user_id TEXT PRIMARY KEY,
-            secret TEXT
-        );
-        """
-        self.cursor.execute(query)
+        queries = [
+            """
+            CREATE TABLE IF NOT EXISTS secrets (
+                user_id TEXT PRIMARY KEY,
+                secret TEXT
+            );
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS ytcache (
+                video_id TEXT PRIMARY KEY,
+                metadata TEXT,
+                registered_date TEXT
+            );
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS replay_history (
+                user_id TEXT,
+                played_at TEXT,
+                song TEXT,
+                FOREIGN KEY (user_id) REFERENCES secrets (user_id)
+            );
+            """
+        ]
+        for query in queries:
+            self.cursor.execute(query)
         self.connection.commit()
 
     async def register(self, user_id: str) -> str:
@@ -101,7 +100,7 @@ class Database:
             raise e
         return secret
 
-    async def get_user_secret(self, user_id: str) -> str:
+    async def get_user_secret(self, user_id: str) -> str | None:
         """
         Retrieves the secret for a specified user.
 
@@ -122,3 +121,117 @@ class Database:
         except sqlite3.Error as e:
             LogHandler.error(f"Error fetching user secret: {e}")
             raise e
+
+    def cache_video_metadata(self, video_id: str, metadata: dict):
+        """
+        Caches metadata for a specified video.
+
+        Args:
+            video_id (str): The ID of the video.
+            metadata (dict): The metadata to be cached.
+        """
+        try:
+            metadata_json = json.dumps(metadata)
+            registered_date = datetime.now().isoformat()
+            query = """
+            INSERT INTO ytcache (video_id, metadata, registered_date)
+            VALUES (?, ?, ?)
+            ON CONFLICT(video_id) DO UPDATE SET metadata=excluded.metadata, registered_date=excluded.registered_date;
+            """
+            self.cursor.execute(query, (video_id, metadata_json, registered_date))
+            self.connection.commit()
+            LogHandler.info(f"Cached video metadata for {video_id}")
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error caching video metadata: {e}")
+            raise e
+
+    def get_cached_video_metadata(self, video_id: str) -> None | dict:
+        """
+        Retrieves cached metadata for a specified video.
+
+        Args:
+            video_id (str): The ID of the video.
+
+        Returns:
+            dict: The cached metadata, or None if the video is not found.
+        """
+        try:
+            query = "SELECT metadata FROM ytcache WHERE video_id = ?"
+            self.cursor.execute(query, (video_id,))
+            result = self.cursor.fetchone()
+            if result:
+                LogHandler.info(f"Using cached video metadata for {video_id}")
+                return json.loads(result[0])
+            else:
+                return None
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error fetching cached video metadata: {e}")
+            raise e
+
+    async def add_replay_entry(self, user_id: str, played_at: str, song: str):
+        """
+        Adds an entry to the replay history for a user.
+
+        Args:
+            user_id (str): The ID of the user.
+            played_at (str): The timestamp when the song was played.
+            song (str): The name of the song.
+        """
+        try:
+            query = """
+            INSERT INTO replay_history (user_id, played_at, song)
+            VALUES (?, ?, ?)
+            """
+            self.cursor.execute(query, (user_id, played_at, song))
+            self.connection.commit()
+            LogHandler.info(f"Added replay entry for {user_id}")
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error adding replay entry: {e}")
+            raise e
+
+    async def get_replay_history(self, user_id: str, cutoff: int = 30) -> list:
+        """
+        Retrieves the replay history for a specified user.
+
+        Args:
+            user_id (str): The ID of the user whose replay history is to be retrieved.
+
+        Returns:
+            list: A list of dictionaries representing replay entries [{played_at: str, song: str}, ...].
+        """
+        try:
+            cutoff_date = (datetime.now() - timedelta(days=cutoff)).isoformat()
+            query = "SELECT played_at, song FROM replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC"
+            self.cursor.execute(query, (user_id, cutoff_date,))
+            results = self.cursor.fetchall()
+            history = []
+            for result in results:
+                history.append({
+                    'played_at': result[0],
+                    'song'     : result[1]
+                })
+            return history
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error fetching replay history: {e}")
+            raise e
+
+    def clear_old_cache(self):
+        """
+        Clears cached entries older than 28 days.
+        """
+        try:
+            cutoff_date = (datetime.now() - timedelta(days=28)).isoformat()
+            query = "DELETE FROM ytcache WHERE registered_date < ?"
+            self.cursor.execute(query, (cutoff_date,))
+            self.connection.commit()
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error clearing old ytcache: {e}")
+            raise e
+
+    # TODO: この関数をスケジューラにフックしてください！！
+    def run_cleanup(self):
+        """
+        Runs the cleanup process to clear old ytcache entries.
+        """
+        self.clear_old_cache()
+        LogHandler.info("Old ytcache entries cleared.")

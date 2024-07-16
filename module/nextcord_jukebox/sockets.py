@@ -1,39 +1,38 @@
-"""
-This module implements an RPC (Remote Procedure Call) handler using WebSockets to manage communication between 
-clients and a server. It includes methods for handling events, dispatching messages, and managing client connections.
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
 
-Classes:
-    RPCHandler: Handles WebSocket connections and dispatches events to clients.
-
-Functions:
-    start_websocket_server(handler): Starts the WebSocket server using the provided handler.
-    attach(): Attaches the RPCHandler to the EventListener and starts the WebSocket server in a separate thread.
-
-Modules:
-    asyncio: Provides support for asynchronous programming.
-    json: Handles JSON encoding and decoding.
-    os: Provides a way to use operating system dependent functionality.
-    threading: Constructs higher-level threading interfaces.
-    websockets: Implements WebSocket servers and clients.
-    .event_manager: Manages event listeners.
-    .database_handler: Handles database connections and operations.
-    .LogHandler: Manages logging functionalities.
-"""
-
-import os
 import asyncio
-import websockets
-import threading
-from .event_manager import EventListener
-from . import LogHandler
-from .database_handler import Database
 import json
+import os
+import threading
 
-db = Database(db_path="./sqlite/user_secrets.sqlite")
-db.connect()
+import websockets
+
+from . import LogHandler
+from .event_manager import EventManager
 
 
-class RPCHandler(EventListener):
+class RPCHandler(EventManager):
     """
     Handles WebSocket connections and dispatches events to clients.
 
@@ -43,14 +42,14 @@ class RPCHandler(EventListener):
         address (str): The address on which the WebSocket server listens.
     """
 
-    def __init__(self):
+    def __init__(self, manager):
         """
         Initializes the RPCHandler with the WebSocket server settings from environment variables.
         """
         self.clients = {}
+        self.database = manager.database
         ws_port = os.getenv("RPC_WEBSOCKET_PORT")
         ws_address = os.getenv("RPC_WEBSOCKET_IP")
-        print(ws_port)
         if ws_port is not None:
             try:
                 self.port = int(ws_port)
@@ -64,7 +63,7 @@ class RPCHandler(EventListener):
         else:
             self.address = "localhost"
 
-    @EventListener.listener
+    @EventManager.listener
     async def track_start(self, player, interaction, before, after):
         """
         Event listener for when a track starts playing. Dispatches the track's information to connected clients.
@@ -78,21 +77,23 @@ class RPCHandler(EventListener):
         for member in player._members:
             if member == player.bot or member is None:
                 continue
-            user_secret = await db.get_user_secret(member.id)
+            user_secret = await self.database.get_user_secret(member.id)
             if user_secret is not None:
                 await self.dispatch(
                     user_secret,
                     {
                         "state": "playing",
-                        "data": {
-                            "title": after.title,
-                            "url": after.url,
+                        "data" : {
+                            "title"  : after.title,
+                            "url"    : after.url,
                             "channel": after.channel,
                         },
                     },
                 )
+            else:
+                LogHandler.info(f"Client {member.global_name} not registered")
 
-    @EventListener.listener
+    @EventManager.listener
     async def queue_ended(self, player, interaction):
         """
         Event listener for when the queue ends. Dispatches an idle state to connected clients.
@@ -102,20 +103,62 @@ class RPCHandler(EventListener):
             interaction: The interaction instance.
         """
         for member in player._members:
-            if member == player.bot or member is None:
+            if member == player.bot or member is None or member == "None":
                 continue
-            user_secret = await db.get_user_secret(member.id)
+            user_secret = await self.database.get_user_secret(member.id)
             if user_secret is not None:
                 await self.dispatch(
                     user_secret,
                     {
                         "state": "idle",
-                        "data": {},
+                        "data" : {},
                     },
                 )
                 LogHandler.info(
                     f"Dispatched queue_ended to {user_secret}[{member.global_name}]"
                 )
+            else:
+                LogHandler.info(f"Client {member.global_name} not registered")
+
+    @EventManager.listener
+    async def member_joined_voice(self, player, member):
+        if member == player.bot or member is None:
+            return
+        user_secret = await self.database.get_user_secret(member.id)
+        now_playing = await player.now_playing()
+        if user_secret is not None:
+            await self.dispatch(
+                user_secret,
+                {
+                    "state": "playing",
+                    "data" : {
+                        "title"  : now_playing.title,
+                        "url"    : now_playing.url,
+                        "channel": now_playing.channel,
+                    },
+                },
+            )
+        else:
+            LogHandler.info(f"Client {member.global_name} not registered")
+
+    @EventManager.listener
+    async def member_left_voice(self, player, member):
+        if member == player.bot or member is None or member == "None":
+            return
+        user_secret = await self.database.get_user_secret(member.id)
+        if user_secret is not None:
+            await self.dispatch(
+                user_secret,
+                {
+                    "state": "idle",
+                    "data" : {},
+                },
+            )
+            LogHandler.info(
+                f"Dispatched idle to {user_secret}[{member.global_name}]"
+            )
+        else:
+            LogHandler.info(f"Client {member.global_name} not registered")
 
     async def handler(self, websocket, path):
         """
@@ -176,16 +219,15 @@ def start_websocket_server(handler):
     loop.run_forever()
 
 
-def attach():
+def attach(manager):
     """
-    Attaches the RPCHandler to the EventListener and starts the WebSocket server in a separate thread.
+    Attaches the RPCHandler to the EventManager and starts the WebSocket server in a separate thread.
 
     Returns:
         RPCHandler: The attached handler instance.
     """
-    handler = RPCHandler()
-    EventListener.attach(handler)
-
+    handler = RPCHandler(manager)
+    EventManager.attach(handler)
     websocket_thread = threading.Thread(target=start_websocket_server, args=(handler,))
     websocket_thread.start()
     return handler

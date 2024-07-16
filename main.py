@@ -25,10 +25,14 @@ from module.embed import Embeds
 
 startup()
 TOKEN = os.getenv("TOKEN")
-intents = nextcord.Intents().all()
+intents = nextcord.Intents.default()
+intents.members = True
 
 if not os.path.exists("./logs"):
     os.makedirs("./logs")
+
+if not os.path.exists("./sqlite"):
+    os.makedirs("./sqlite")
 
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
@@ -52,7 +56,6 @@ async def on_application_command_error(interaction, exception):
         str(exception)
         == "Command raised an exception: NotFound: 404 Not Found (error code: 10062): Unknown interaction"
     ):
-
         await interaction.channel.send(
             embed=Embeds.message(
                 title=lang[await get_guild_language(interaction.guild.id)][
@@ -116,7 +119,7 @@ Follow Up Sent: {follow_up_sent}
         with open("send_exception.txt", "w") as f:
             f.write("".join(not_sent_full_error))
         log_files.append(nextcord.File("send_exception.txt"))
-    
+
     await channel.send(content=message, files=log_files)
     owner = await bot.fetch_user(bot_owner_id)
     mention = await channel.send(content=f"{owner.mention}")
@@ -206,11 +209,11 @@ async def list(
     interaction: nextcord.Interaction,
 ):
     if interaction.user.id == bot_owner_id:
-        Para = "========= Guilds ========="
+        para = "========= Guilds ========="
         for guild in bot.guilds:
-            Para = Para + f"\nGuild: {guild.name} | Member: {guild.member_count}"
+            para = para + f"\nGuild: {guild.name} | Member: {guild.member_count}"
 
-        await interaction.response.send_message(Para, ephemeral=True)
+        await interaction.response.send_message(para, ephemeral=True)
     else:
         await interaction.response.send_message(
             embed=Embeds.message(

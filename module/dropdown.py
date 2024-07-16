@@ -3,13 +3,14 @@ EXPERIMENTS
 Might not be implemented as a feature
 """
 
-import nextcord
-from nextcord.ui import View, Select
-from nextcord import SelectOption
 from typing import Callable
-from module.split_str import split_string
+
+import nextcord
+from nextcord import SelectOption
+from nextcord.ui import Select, View
+
 from module.embed import Embeds
-from database.guild_handler import get_guild_language
+from module.split_str import split_string
 
 
 class DropdownSelector(Select):

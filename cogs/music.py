@@ -3,26 +3,23 @@ from datetime import timedelta
 import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
-from nextcord.utils import get
-from pytube import Playlist
-from termcolor import colored
 
 from config.config import lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embed import Embeds, NowPlayingMenu
-from module.nextcord_jukebox.event_manager import EventListener
-from module.nextcord_jukebox.enums import loop_mode
+from module.matcher import SongMatcher
+from module.nextcord_jukebox.enums import LOOPMODE
+from module.nextcord_jukebox.event_manager import EventManager
 from module.nextcord_jukebox.exceptions import *
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
-from module.nextcord_jukebox.sockets import db as database
 from module.pagination import Pagination
 from module.progressBar import progressBar
 
 class_namespace = "music_class_title"
 
 
-class Music(commands.Cog, EventListener):
+class Music(commands.Cog, EventManager):
     def __init__(self, bot):
         self.bot = bot
         self.now_playing_menus = []
@@ -60,11 +57,23 @@ class Music(commands.Cog, EventListener):
                     message_type="warn",
                 )
             )
+        except NotConnected:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "not_in_voice"
+                    ],
+                    message_type="warn",
+                )
+            )
 
-    @EventListener.listener
+    @EventManager.listener
     async def track_start(self, player, interaction: Interaction, before, after):
         for menu in self.now_playing_menus:
-            if menu.is_timeout == True:
+            if menu.is_timeout:
                 self.now_playing_menus.remove(menu)
             else:
                 await menu.update()
@@ -87,7 +96,7 @@ class Music(commands.Cog, EventListener):
             )
         )
 
-    @EventListener.listener
+    @EventManager.listener
     async def queue_ended(self, player, interaction):
         await interaction.channel.send(
             embed=Embeds.message(
@@ -202,7 +211,7 @@ class Music(commands.Cog, EventListener):
             return
         try:
             old, new = await player.skip(index=index)
-            if not new is None:
+            if not (new is None):
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -260,8 +269,11 @@ class Music(commands.Cog, EventListener):
             return
 
         async def get_page(page: int, query=""):
+            # TODO: クエリ内のスコアに基づいて曲を表示する
+            music_player = await self.ensure_voice_state(self.bot, interaction)
+
             try:
-                now_playing = await player.now_playing()
+                now_playing = await music_player.now_playing()
                 duration_song_str = str(timedelta(seconds=now_playing.duration))
                 time_elapsed = now_playing.timer.elapsed
                 duration_passed = round(time_elapsed)
@@ -278,23 +290,26 @@ class Music(commands.Cog, EventListener):
                 subset = (
                     [
                         song
-                        for song in await player.current_queue()
-                        if query.lower() in song.name.lower()
-                        or query.lower() in song.channel.lower()
+                        for song, _ in SongMatcher.match(
+                        await music_player.current_queue(),
+                        query,
+                        case_sens=False,
+                        threshold=0.8,
+                    )
                     ]
                     if query.replace(" ", "") != ""
-                    else await player.current_queue()
+                    else await music_player.current_queue()
                 )
 
                 for i, song in enumerate(
-                    subset[(page - 1) * 10 : page * 10], start=(page - 1) * 10
+                    subset[(page - 1) * 10: page * 10], start=(page - 1) * 10
                 ):
                     if song == now_playing and i == 0:
                         continue
 
                     duration_str = str(timedelta(seconds=song.duration))
                     views_str = "{:,}".format(song.views)
-                    current_queue = await player.current_queue()
+                    current_queue = await music_player.current_queue()
                     field_name = (
                         f"{i}. {song.title}"
                         if query.replace(" ", "") == ""
@@ -380,9 +395,9 @@ class Music(commands.Cog, EventListener):
     ):
         await interaction.response.defer(with_message=True)
         loop_method = (
-            loop_mode.all
+            LOOPMODE.all
             if loop_method == "All"
-            else loop_mode.single if loop_method == "Single" else loop_mode.off
+            else LOOPMODE.single if loop_method == "Single" else LOOPMODE.off
         )
         player = await self.ensure_voice_state(self.bot, interaction)
         if not player:
@@ -391,15 +406,15 @@ class Music(commands.Cog, EventListener):
             changed_mode = await player.change_loop_mode(loop_method)
             message_key = (
                 "enabled_loop_single"
-                if changed_mode == loop_mode.single
+                if changed_mode == LOOPMODE.single
                 else (
                     "enabled_loop_queue"
-                    if changed_mode == loop_mode.all
+                    if changed_mode == LOOPMODE.all
                     else "disabled_loop"
                 )
             )
             message = lang[await get_guild_language(interaction.guild.id)][message_key]
-            if changed_mode == loop_mode.single:
+            if changed_mode == LOOPMODE.single:
                 now_playing = await player.now_playing()
                 message = message.format(title=now_playing.name)
             await interaction.followup.send(
@@ -662,7 +677,7 @@ class Music(commands.Cog, EventListener):
         interaction: Interaction,
     ):
         await interaction.response.defer(with_message=True)
-        secret = await database.register(str(interaction.user.id))
+        secret = await self.manager.database.register(str(interaction.user.id))
 
         await interaction.followup.send(
             embed=Embeds.message(
@@ -692,4 +707,4 @@ class Music(commands.Cog, EventListener):
 async def setup(bot):
     cog = Music(bot)
     bot.add_cog(cog)
-    EventListener.attach(cog)
+    EventManager.attach(cog)

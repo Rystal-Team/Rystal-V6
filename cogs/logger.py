@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import nextcord
 from nextcord.ext import commands
@@ -7,20 +8,24 @@ from config.config import (enable_activity_logging, logging_channe_id,
                            type_color)
 
 
-class logger(commands.Cog):
+class Logger(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.bot.loop.set_debug(True)
+        logging.basicConfig(level=logging.DEBUG)
 
     """@commands.Cog.listener()
     async def on_ready(self):
         print("Music Cog Ready!")"""
 
     @commands.Cog.listener()
-    async def on_interaction(self, interaction: nextcord.Integration):
+    async def on_interaction(self, interaction: nextcord.Interaction):
         channel = self.bot.get_channel(logging_channe_id)
-        try:
+        if (hasattr(interaction, 'application_command') and
+            hasattr(interaction.application_command, 'qualified_name') and
+            isinstance(interaction.application_command.qualified_name, str)):
             identifier = interaction.application_command.qualified_name
-        except Exception:
+        else:
             identifier = "Not Command"
 
         embed = nextcord.Embed(
@@ -52,4 +57,4 @@ class logger(commands.Cog):
 
 def setup(bot):
     if enable_activity_logging:
-        bot.add_cog(logger(bot))
+        bot.add_cog(Logger(bot))

@@ -1,25 +1,30 @@
 """
 Custom exceptions for the Nextcord Jukebox application.
-
-These exceptions are used to handle various error scenarios that can occur in the Nextcord Jukebox, providing meaningful error messages and descriptions.
-
-Classes:
-    NextcordJukeBoxError(Exception): Base class for all Nextcord Jukebox exceptions.
-    QueueError(NextcordJukeBoxError): Exception raised for queue-related errors.
-    PlayError(NextcordJukeBoxError): Exception raised for play-related errors.
-    FailedConnection(NextcordJukeBoxError): Exception raised when the bot fails to connect to a voice channel.
-    UserNotConnected(PlayError): Exception raised when the user is not connected to a voice channel.
-    VoiceChannelMismatch(PlayError): Exception raised when the user is connected to a different voice channel than the bot.
-    NotConnected(PlayError): Exception raised when the bot is not connected to a voice channel.
-    LoadingStream(PlayError): Exception raised when the player is already loading a stream.
-    NotPlaying(PlayError): Exception raised when the bot is not playing music.
-    NothingPlaying(PlayError): Exception raised when there is nothing currently playing.
-    AlreadyPaused(PlayError): Exception raised when the music is already paused.
-    NotPaused(PlayError): Exception raised when the music is not paused.
-    NoQueryResult(PlayError): Exception raised when a query returns no results.
-    EmptyQueue(QueueError): Exception raised when there is nothing in the queue.
 """
 
+
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
 
 class NextcordJukeBoxError(Exception):
     """Base Nextcord Jukebox Exception."""

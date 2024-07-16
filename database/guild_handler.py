@@ -3,12 +3,11 @@ import json
 from termcolor import colored
 
 from config.config import default_language, multi_lang
-
 from .main_handler import check_exists, cursor, database
 
 default_guild_settings = {
     "music_silent_mode": False,
-    "music_auto_leave": True,
+    "music_auto_leave" : True,
 }
 
 

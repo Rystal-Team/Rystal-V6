@@ -15,7 +15,7 @@ class progressBar:
         filledBar(total, current, size=15, line="⬛", slider="⬜"):
             Generates a progress bar with filled style.
     """
-    
+
     def splitBar(total, current, size=15, line="▬", slider="🔘"):
         """
         Generate a split-style progress bar.

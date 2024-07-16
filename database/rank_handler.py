@@ -1,11 +1,13 @@
 import json
+
 from termcolor import colored
+
 from .main_handler import check_exists, cursor, database
 
 default_user_data = {
-    "xp": 0,
+    "xp"     : 0,
     "totalxp": 0,
-    "level": 0,
+    "level"  : 0,
 }
 
 
@@ -66,5 +68,5 @@ async def get_leaderboard(limit):
     values = (limit,)
     cursor.execute(statement, values)
     result = cursor.fetchall()
-    
+
     return result

@@ -6,7 +6,7 @@ from nextcord import Color
 """
 === BOT ===
 """
-status_text = "🌟 v6.4.0"
+status_text = "🌟 v6.4.3b"
 default_language = "en"
 # Uses default language if multi_lang is set to false
 # Use this if you have little memory
@@ -16,7 +16,8 @@ multi_lang = True
 use_ytdlp = False
 # Color of rank card font etc
 theme_color = "#2b67ab"
-# The maximum amount of notes of each individual user. (A higher amount might increase the resource usage when fetching )
+# The maximum amount of notes of each individual user.
+# (A higher amount might increase the resource usage when fetching )
 max_note = 500
 
 """
@@ -24,10 +25,10 @@ max_note = 500
 """
 type_color = {
     "success": Color.from_rgb(157, 255, 158),
-    "error": Color.from_rgb(255, 157, 157),
-    "warn": Color.from_rgb(255, 206, 157),
-    "info": Color.from_rgb(219, 157, 255),
-    "list": Color.from_rgb(157, 200, 255),
+    "error"  : Color.from_rgb(255, 157, 157),
+    "warn"   : Color.from_rgb(255, 206, 157),
+    "info"   : Color.from_rgb(219, 157, 255),
+    "list"   : Color.from_rgb(157, 200, 255),
 }
 
 """
@@ -48,7 +49,6 @@ want to then go ahead, the error logging should be more than enough though.!!!
 enable_activity_logging = False
 # the channel id for logging (only required if activity logging is enabled, type None or "" if you don't need it)
 logging_channe_id = 1203866958487879680
-
 
 """
 ========================================================================================================

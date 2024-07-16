@@ -1,93 +1,61 @@
-"""
-The Song class represents a song with various metadata and provides methods to manage its playback timer.
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
 
-Attributes:
-    url (str): The URL of the song.
-    title (str): The title of the song.
-    views (int): The number of views the song has.
-    duration (int): The duration of the song in seconds.
-    thumbnail (str): The URL of the song's thumbnail image.
-    channel (str): The name of the channel that uploaded the song.
-    channel_url (str): The URL of the channel that uploaded the song.
-    video (Any): The video object associated with the song.
-    timer (CountTimer): An instance of CountTimer to manage the playback time.
-    source_url (str, optional): The source URL of the song. Default is None.
-
-Methods:
-    reset():
-        Resets the playback timer for the song.
-
-    resume():
-        Resumes the playback timer for the song.
-
-    pause():
-        Pauses the playback timer for the song.
-
-    start():
-        Starts the playback timer for the song.
-"""
-
-from module.timer import CountTimer
+from .timer import CountTimer
 
 
-class Song(object):
+class Song:
     def __init__(
         self,
         url,
-        title,
-        views,
-        duration,
-        thumbnail,
-        channel,
-        channel_url,
-        video,
-    ) -> None:
-        """
-        Initializes a Song instance with the provided metadata.
-
-        Args:
-            url (str): The URL of the song.
-            title (str): The title of the song.
-            views (int): The number of views the song has.
-            duration (int): The duration of the song in seconds.
-            thumbnail (str): The URL of the song's thumbnail image.
-            channel (str): The name of the channel that uploaded the song.
-            channel_url (str): The URL of the channel that uploaded the song.
-            video (Any): The video object associated with the song.
-        """
+        title=None,
+        views=None,
+        duration=None,
+        thumbnail=None,
+        channel=None,
+        channel_url=None,
+    ):
         self.url = url
         self.title = title
-        self.views = views
         self.name = title
+        self.views = views
         self.duration = duration
         self.thumbnail = thumbnail
         self.channel = channel
         self.channel_url = channel_url
-        self.video = video
 
         self.timer = CountTimer()
         self.source_url = None
+        self.extracted_metadata = False  # attribute to track metadata extraction
 
     async def reset(self):
-        """
-        Resets the playback timer for the song.
-        """
         self.timer.reset()
 
     async def resume(self):
-        """
-        Resumes the playback timer for the song.
-        """
         self.timer.resume()
 
     async def pause(self):
-        """
-        Pauses the playback timer for the song.
-        """
         self.timer.pause()
 
     async def start(self):
-        """
-        Starts the playback timer for the song.
-        """
         self.timer.start()

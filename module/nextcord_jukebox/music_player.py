@@ -1,96 +1,19 @@
-"""
-MusicPlayer is responsible for managing the playback of songs in a voice channel. It handles operations like connecting to a voice channel, playing, pausing, skipping, and managing the music queue. The class uses YouTube-DL to extract audio sources and supports functionalities like looping and shuffling the playlist.
-
-Attributes:
-    interaction (Interaction): The interaction object containing information about the user and the guild.
-    bot: The bot instance to which the MusicPlayer is attached.
-    loop_mode (loop_mode): The current looping mode of the player (off, single, or all).
-    _now_playing (Song or None): The currently playing song.
-    paused (bool): Indicates if the player is currently paused.
-    removed (bool): Indicates if the player has been removed.
-    leave_when_empty (bool): Indicates if the player should leave the voice channel when the queue is empty.
-    music_queue (list): The queue of songs to be played.
-    _fetching_stream (bool): Indicates if the player is currently fetching a stream.
-    _appending (bool): Indicates if the player is currently appending to the queue.
-    ffmpeg_opts (dict): Options for FFmpeg.
-
-Methods:
-    _on_voice_state_update(member, before, after):
-        Handles voice state updates, resuming playback if necessary.
-
-    _play_func(last, new):
-        Plays the next song in the queue.
-
-    _pop_queue(index=1, append=False):
-        Removes songs from the queue.
-
-    _next_func(index=1):
-        Moves to the next song in the queue.
-
-    _after_func(error):
-        Handles actions after a song finishes playing.
-
-    _pre_check(*d_args, **d_kwargs) -> Optional[bool]:
-        Performs various checks before executing certain methods.
-
-    pre_check(*d_args, **d_kwargs) -> Callable:
-        A decorator for methods requiring pre-checks.
-
-    cleanup():
-        Cleans up the music player by clearing the queue and disconnecting from the voice channel.
-
-    _queue_single(video_url):
-        Queues a single song.
-
-    queue(interaction: Interaction, query: str):
-        Queues a song or playlist based on a query.
-
-    connect(interaction: Interaction) -> Optional[bool]:
-        Connects to the user's voice channel.
-
-    change_loop_mode(mode: loop_mode) -> loop_mode:
-        Changes the loop mode of the player.
-
-    resume(forced=False):
-        Resumes playback of the current song.
-
-    pause(forced=False):
-        Pauses playback of the current song.
-
-    skip(index: int = 1):
-        Skips the current song.
-
-    shuffle():
-        Shuffles the songs in the queue.
-
-    now_playing():
-        Returns the currently playing song.
-
-    current_queue():
-        Returns the current queue of songs.
-
-    stop(disconnect=True):
-        Stops playback and optionally disconnects from the voice channel.
-
-    remove(index=0):
-        Removes a song from the queue.
-"""
-
 import asyncio
 import datetime
 import random
 import time
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 from urllib import parse
 
 import yt_dlp
+from meta_yt import Video, YouTube
 from nextcord import FFmpegPCMAudio, Interaction, PCMVolumeTransformer
 from pytube import Playlist
 from termcolor import colored
-from meta_yt import Video, YouTube
-from .event_manager import EventListener
+
 from . import LogHandler
-from .enums import loop_mode
+from .enums import LOOPMODE
+from .event_manager import EventManager
 from .exceptions import *
 from .song import Song
 from .utils import get_video_id
@@ -98,45 +21,51 @@ from .utils import get_video_id
 yt_dlp.utils.bug_reports_message = lambda: ""
 ytdlp = yt_dlp.YoutubeDL(
     {
-        "format": "bestaudio/best",
-        "noplaylist": True,
-        "ignoreerrors": True,
-        "quiet": True,
-        "no_warnings": True,
+        "format"        : "bestaudio/best",
+        "noplaylist"    : True,
+        "ignoreerrors"  : True,
+        "quiet"         : True,
+        "no_warnings"   : True,
         "source_address": "0.0.0.0",
-        "forceip": "4",
-        "skip_download": True,
-        "extract_flat": True,
+        "forceip"       : "4",
+        "skip_download" : True,
+        "extract_flat"  : True,
         "default_search": "auto",
     }
 )
 
 
 class MusicPlayer(object):
-    def __init__(self, interaction: Interaction, bot, ffmpeg_opts=None) -> None:
+    def __init__(self, manager, interaction: Interaction, bot, ffmpeg_opts=None) -> None:
         """
         Initializes the MusicPlayer with the given interaction and bot instances.
 
         Args:
+            manager (PlayerManager): The player manager instance.
             interaction (Interaction): The interaction object containing information about the user and the guild.
             bot: The bot instance to which the MusicPlayer is attached.
             ffmpeg_opts (dict, optional): Options for FFmpeg. Defaults to None.
         """
+        self.loop = None
+        self.voice = None
         self.interaction = interaction
         self.bot = bot
 
-        self.loop_mode = loop_mode.off
+        self.loop_mode = LOOPMODE.off
         self._now_playing = None
         self.paused = False
         self.removed = False
         self.leave_when_empty = False
+        self.manager = manager
+        self.database = manager.database
 
         self.music_queue = []
         self._fetching_stream = False
         self._appending = False
+        self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options": "-vn",
+            "options"       : "-vn",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
@@ -146,14 +75,13 @@ class MusicPlayer(object):
         """
         for attempt in range(max_retries):
             try:
-                await self.voice.connect()
-                print(colored("Reconnected to the voice channel.", "green"))
-                return
+                await self.connect(self.interaction)
+                LogHandler.debug("Reconnected to the voice channel.", )
+                return True
             except Exception as e:
-                print(
-                    colored(f"Reconnection attempt {attempt + 1} failed: {e}", "yellow")
-                )
+                LogHandler.warning(f"Reconnection attempt {attempt + 1} failed: {e}")
                 await asyncio.sleep(delay)
+        return False
 
     async def _on_voice_state_update(self, member, before, after):
         """
@@ -164,70 +92,82 @@ class MusicPlayer(object):
             before (VoiceState): The previous voice state.
             after (VoiceState): The new voice state.
         """
-
         if member == self.bot.user:
+            if not self.voice or not self.voice.is_connected():
+                LogHandler.warning("Bot is disconnected. Attempting to reconnect...")
+                await self._attempt_reconnect()
+                if not self.voice or not self.voice.is_connected():
+                    LogHandler.error("Failed to reconnect after multiple attempts.")
+            elif not self.paused:
+                try:
+                    await self.resume(forced=True)
+                except Exception as e:
+                    LogHandler.error(f"Failed to resume playback: {e}")
             return
 
-        if not self.voice or not self.voice.is_connected():
-            print(colored("Bot is disconnected. Attempting to reconnect...", "yellow"))
-            await self._attempt_reconnect()
+        new_members = set(self.voice.channel.members)
+        old_members = set(self._members)
 
-        elif not self.paused:
-            try:
-                await self.resume(forced=True)
-            except Exception as e:
-                print(colored(f"Failed to resume playback: {e}", "red"))
+        await asyncio.gather(
+            *(EventManager.fire("member_joined_voice", self, m) for m in new_members - old_members),
+            *(EventManager.fire("member_left_voice", self, m) for m in old_members - new_members)
+        )
 
-        if not self.voice or not self.voice.is_connected():
-            print(colored("Failed to reconnect after multiple attempts.", "red"))
         self._members = self.voice.channel.members
 
-    async def _play_func(self, last, new):
+    async def _play_func(self, last: Union[Song, None], new):
         """
         Plays the next song in the queue.
 
         Args:
-            last (Song): The last song that was played.
+            last (Song, None): The last song that was played.
             new (Song): The new song to be played.
         """
-        try:
-            if self.interaction.guild.voice_client:
-                timer = time.time()
-                print(colored(f"Extracting Song... {new.title}", "dark_grey"))
+        self._members = self.voice.channel.members
 
-                data = await self.loop.run_in_executor(
-                    None,
-                    lambda: ytdlp.extract_info(new.url, download=False),
-                )
-                source_url = data["url"]
-                new.source_url = source_url
+        async with self._asyncio_lock:
+            try:
+                if self.interaction.guild.voice_client:
+                    timer = time.time()
+                    print(colored(f"Extracting Song... {new.title}", "dark_grey"))
 
-                audio_source = FFmpegPCMAudio(source_url, **self.ffmpeg_opts)
-                self.voice.play(
-                    PCMVolumeTransformer(audio_source),
-                    after=lambda error: self._after_func(error),
-                )
-
-                self._now_playing = new
-                await self._now_playing.start()
-
-                print(colored(f"[PLAYING] {new.title}", "light_blue"))
-
-                expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)[
-                    "expire"
-                ][0]
-                expire_time = datetime.datetime.fromtimestamp(int(expire_unix_time))
-                print(
-                    colored(
-                        f"Queue Source (Expire: {expire_time}):\n{source_url}", "dark_grey"
+                    data = await self.loop.run_in_executor(
+                        None,
+                        lambda: ytdlp.extract_info(new.url, download=False),
                     )
-                )
 
-                print(colored(f"Time taken: {time.time() - timer}", "dark_grey"))
+                    print(colored(f"Extract Completed, Time taken: {time.time() - timer}", "dark_grey"))
+                    source_url = data["url"]
+                    new.source_url = source_url
 
-                await EventListener.fire("track_start", self, self.interaction, last, new)
-        except Exception as e:
-            LogHandler.error(f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}")
+                    audio_source = FFmpegPCMAudio(source_url, **self.ffmpeg_opts)
+                    self.voice.play(
+                        PCMVolumeTransformer(audio_source),
+                        after=lambda error: self._after_func(error),
+                    )
+
+                    self._now_playing = new
+                    await self._now_playing.start()
+
+                    print(colored(f"[PLAYING] {new.title}", "light_blue"))
+
+                    expire_unix_time = parse.parse_qs(parse.urlparse(source_url).query)[
+                        "expire"
+                    ][0]
+                    expire_time = datetime.datetime.fromtimestamp(int(expire_unix_time))
+                    print(
+                        colored(
+                            f"Queue Source (Expire: {expire_time}):\n{source_url}", "dark_grey"
+                        )
+                    )
+
+                    print(colored(f"Time taken: {time.time() - timer}", "dark_grey"))
+
+                    await EventManager.fire("track_start", self, self.interaction, last, new)
+            except Exception as e:
+                LogHandler.error(
+                    f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}")
+                raise e
 
     async def _pop_queue(self, index: int = 1, append: bool = False):
         """
@@ -253,10 +193,11 @@ class MusicPlayer(object):
             tuple: The last song played and the new song to be played.
         """
         last = self._now_playing
+        new = None
 
-        if self.loop_mode == loop_mode.off:
+        if self.loop_mode == LOOPMODE.off:
             await self._pop_queue(index)
-        elif self.loop_mode == loop_mode.all:
+        elif self.loop_mode == LOOPMODE.all:
             await self._pop_queue(index, append=True)
 
         if len(self.music_queue) > 0:
@@ -264,11 +205,11 @@ class MusicPlayer(object):
             await self._play_func(last, new)
         else:
             self._now_playing = None
-            await EventListener.fire("queue_ended", self, self.interaction)
+            await EventManager.fire("queue_ended", self, self.interaction)
 
         return last, new
 
-    async def _after_func(self, error):
+    async def _after_func(self, error: Union[None, Exception] = None):
         """
         Handles actions after a song finishes playing.
 
@@ -282,7 +223,7 @@ class MusicPlayer(object):
                 await self._next_func(index=1)
             else:
                 self._now_playing = None
-                await EventListener.fire("queue_ended", self, self.interaction)
+                await EventManager.fire("queue_ended", self, self.interaction)
 
     async def _pre_check(
         self,
@@ -306,14 +247,19 @@ class MusicPlayer(object):
             Optional[bool]: True if all checks pass, otherwise raises an exception.
         """
         if check_nowplaying:
-            if self._now_playing == None:
+            if self._now_playing is None:
                 raise NothingPlaying
         if check_connection:
             if (
                 not self.interaction.guild.voice_client
-                or not self.interaction.guild.voice_client.is_connected()
+                or not self.interaction.guild.voice_client.is_connected() or self.voice is None
             ):
-                raise NotConnected
+                await self._attempt_reconnect()
+                if (
+                    not self.interaction.guild.voice_client
+                    or not self.interaction.guild.voice_client.is_connected() or self.voice is None
+                ):
+                    raise NotConnected
         if check_fetching_stream:
             if self._fetching_stream:
                 raise LoadingStream
@@ -362,7 +308,7 @@ class MusicPlayer(object):
         return
 
     @pre_check()
-    async def _queue_single(self, video_url):
+    async def _queue_single(self, video_url: str) -> Song:
         """
         Queues a single song.
 
@@ -372,24 +318,34 @@ class MusicPlayer(object):
         Returns:
             Song: The queued song.
         """
+        # TODO: self.database.run_cleanup() を呼び出し続けると、ボットの負荷が高くなると思う、だからこれより良い方法を探してください
         timer = time.time()
+        self.database.run_cleanup()
         video_id = await get_video_id(video_url)
-        video = await self.loop.run_in_executor(None, lambda: Video(video_id))
-        song = Song(
-            video.url,
-            video.title,
-            video.views,
-            video.duration,
-            video.thumbnail,
-            video.channel,
-            video.channel_url,
-            video,
-        )
+        cached_meta = self.database.get_cached_video_metadata(video_id)
+
+        if cached_meta is None:
+            video = await self.loop.run_in_executor(None, lambda: Video(video_id))
+            meta = {
+                "url"        : video.url,
+                "title"      : video.title,
+                "views"      : video.views,
+                "duration"   : video.duration,
+                "thumbnail"  : video.thumbnail,
+                "channel"    : video.channel,
+                "channel_url": video.channel_url,
+            }
+            self.database.cache_video_metadata(video_id, meta)
+        else:
+            meta = cached_meta
+
+        song = Song(**meta)
+        print(colored(text=f"[ADDED] {meta['title']} [{meta['url']}]", color="magenta"))
+
         self.music_queue.append(song)
-        if not self.paused and len(self.music_queue) > 0 and not self._now_playing:
+        if not self.paused and self.music_queue and not self._now_playing:
             await self._play_func(None, self.music_queue[0])
 
-        print(colored(text=f"{video.title} [{video.url}]", color="magenta"))
         print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
         return song
 
@@ -405,32 +361,25 @@ class MusicPlayer(object):
         Returns:
             Playlist or Song: The queued playlist or song.
         """
-        is_playlist = False
         self._fetching_stream = True
+        result = None
 
-        try:
-            playlist = Playlist(query)
-            if playlist and (playlist is not None):
-                is_playlist = True
-        except Exception:
-            pass
-
-        if is_playlist:
-            await EventListener.fire("loading_playlist", self, self.interaction, None)
-            for _, url in enumerate(playlist.video_urls):
+        playlist = await asyncio.to_thread(Playlist, query)
+        if playlist:
+            await EventManager.fire("loading_playlist", self, interaction, None)
+            for url in playlist.video_urls:
                 song = await self._queue_single(url)
-                await EventListener.fire(
-                    "loading_playlist", self, self.interaction, song
-                )
+                await EventManager.fire("loading_playlist", self, interaction, song)
+            result = playlist
         else:
-            yt = YouTube(query)
+            yt = await asyncio.to_thread(YouTube, query)
             if yt.video:
-                song = await self._queue_single(yt.video.url)
-            else:
-                raise NoQueryResult
+                result = await self._queue_single(yt.video.url)
 
         self._fetching_stream = False
-        return playlist if is_playlist else song
+        if result:
+            return result
+        raise NoQueryResult()
 
     @pre_check(check_connection=False)
     async def connect(self, interaction: Interaction) -> Optional[bool]:
@@ -458,6 +407,8 @@ class MusicPlayer(object):
                 self.loop = interaction.guild.voice_client.loop
                 self._members = self.voice.channel.members
                 LogHandler.debug(message=f"Defined self.voice and self.loop")
+
+                return True
             except Exception as e:
                 LogHandler.error(
                     message=f"Failed to connect to voice! {type(e).__name__}: {str(e)}"
@@ -465,18 +416,18 @@ class MusicPlayer(object):
                 raise FailedConnection
 
     @pre_check()
-    async def change_loop_mode(self, mode: loop_mode) -> loop_mode:
+    async def change_loop_mode(self, mode: LOOPMODE) -> LOOPMODE:
         """
         Changes the loop mode of the player.
 
         Args:
-            mode (loop_mode): The loop mode to set.
+            mode (LOOPMODE): The loop mode to set.
 
         Returns:
-            loop_mode: The new loop mode.
+            LOOPMODE: The new loop mode.
         """
         self.loop_mode = (
-            loop_mode.off if self.loop_mode == mode and mode != loop_mode.off else mode
+            LOOPMODE.off if self.loop_mode == mode and mode != LOOPMODE.off else mode
         )
         return self.loop_mode
 
@@ -534,11 +485,11 @@ class MusicPlayer(object):
         last = self._now_playing
         new = None
 
-        if self.loop_mode in [loop_mode.off, loop_mode.all]:
-            await self._pop_queue(index - 1, append=self.loop_mode == loop_mode.all)
+        if self.loop_mode in [LOOPMODE.off, LOOPMODE.all]:
+            await self._pop_queue(index - 1, append=self.loop_mode == LOOPMODE.all)
             if len(self.music_queue) > 1:
                 new = self.music_queue[1]
-        elif self.loop_mode == loop_mode.single:
+        elif self.loop_mode == LOOPMODE.single:
             new = self.music_queue[0]
 
         if not self.music_queue:
@@ -559,7 +510,7 @@ class MusicPlayer(object):
             tuple: The last song played and the new song to be played.
         """
         first = self.music_queue[: len(self.music_queue) - 2]
-        last = self.music_queue[len(self.music_queue) - 2 :]
+        last = self.music_queue[len(self.music_queue) - 2:]
         last.extend(first)
 
         self.music_queue = last
@@ -622,7 +573,7 @@ class MusicPlayer(object):
 
         try:
             self.voice.stop()
-        except:
+        except Exception:
             pass
 
         if disconnect:

@@ -1,6 +1,8 @@
-import time, json, uuid
+import json
+
 from termcolor import colored
-from .main_handler import check_exists, cursor, database
+
+from .main_handler import cursor, database
 
 default_user_data = {}
 
@@ -28,5 +30,5 @@ async def register_user(user_id: int):
 
 async def add_note():
     uuid = str(uuid.uuid4())
-    
+
     return

@@ -1,23 +1,11 @@
-import datetime
-import platform
-import sys
-import time
-
 import nextcord
-import psutil
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
-from termcolor import colored
 
-from config.config import default_language, lang, lang_mapping, langs, status_text
-from database.guild_handler import (
-    change_guild_language,
-    get_guild_language,
-    get_guild_settings,
-    change_guild_settings,
-)
+from config.config import lang, lang_mapping, langs
+from database.guild_handler import (change_guild_language, change_guild_settings, get_guild_language,
+                                    get_guild_settings)
 from module.embed import Embeds
-
 
 class_namespace = "setting_class_title"
 
@@ -25,7 +13,7 @@ class_namespace = "setting_class_title"
 class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @nextcord.slash_command(
         description="⚙️ | Setting"
     )
@@ -82,7 +70,7 @@ class Settings(commands.Cog):
         await change_guild_settings(interaction.guild.id, "music_silent_mode", toggle)
 
         toggle_represent = {
-            True: "on",
+            True : "on",
             False: "off",
         }
 
@@ -97,7 +85,7 @@ class Settings(commands.Cog):
                 message_type="info",
             )
         )
-        
+
     @setting.subcommand(
         description="🎵 | Toggle leave when voice channel is empty in this server!"
     )
@@ -110,7 +98,7 @@ class Settings(commands.Cog):
         await change_guild_settings(interaction.guild.id, "music_auto_leave", toggle)
 
         toggle_represent = {
-            True: "on",
+            True : "on",
             False: "off",
         }
 

@@ -19,14 +19,19 @@ Methods:
         Handles voice state updates for the bot and other members, performing necessary actions such as removing the player if the bot leaves a voice channel.
 """
 
-from nextcord import Interaction, BotIntegration, Member
+from nextcord import BotIntegration, Interaction, Member
 from nextcord.utils import get
+
+from .database_handler import Database
+from .exceptions import UserNotConnected, VoiceChannelMismatch
 from .music_player import MusicPlayer
-from .exceptions import UserNotConnected, VoiceChannelMismatch, NotConnected
+from .replay_handler import attach as attach_replay
+from .sockets import attach as attach_sockets
 
 
 class PlayerManager(object):
-    def __init__(self, bot):
+    def __init__(self, bot, db_path: str = "./sqlite/jukebox.sqlite", enable_rpc: bool = True,
+                 enable_replay: bool = True):
         """
         Initializes the PlayerManager with the given bot instance.
 
@@ -35,8 +40,13 @@ class PlayerManager(object):
         """
         self.players = {}
         self.bot = bot
+        self.database: Database = Database(db_path=db_path)
+        self.database.connect()
 
-        
+        if enable_rpc:
+            attach_sockets(self)
+        if enable_replay:
+            attach_replay(self)
 
     async def get_player(
         self, interaction: Interaction, bot: BotIntegration
@@ -59,13 +69,11 @@ class PlayerManager(object):
             raise UserNotConnected
 
         if interaction.guild.id not in self.players:
-            self.players[interaction.guild.id] = MusicPlayer(interaction, bot)
+            self.players[interaction.guild.id] = MusicPlayer(self, interaction, bot)
             await self.players[interaction.guild.id].connect(interaction)
         else:
-            if not (interaction.guild.voice_client):
-                await self.players[interaction.guild.id].connect(
-                    self.players[interaction.guild.id].interaction
-                )
+            if not interaction.guild.voice_client:
+                await self.players[interaction.guild.id].connect(interaction)
             elif (
                 interaction.user.voice.channel
                 != get(bot.voice_clients, guild=interaction.guild).channel

@@ -1,6 +1,5 @@
 import datetime
 import platform
-import sys
 import time
 
 import nextcord
@@ -17,7 +16,7 @@ start_time = time.time()
 class_namespace = "system_class_title"
 
 
-class system(commands.Cog):
+class System(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -72,7 +71,7 @@ class system(commands.Cog):
             )
         )
 
-    @nextcord.slash_command(description="🤖 | Get the system info of the bot!")
+    @nextcord.slash_command(description="🤖 | Get the System info of the bot!")
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -85,28 +84,15 @@ class system(commands.Cog):
         os_time = datetime.datetime.now()
         os_time = os_time.strftime("%H:%M:%S %d/%m/%y")
 
-        uptime_time_str = str(
-            datetime.timedelta(seconds=(round(time.time() - start_time)))
-        )
+        uptime_time_str = str(datetime.timedelta(seconds=(round(time.time() - start_time))))
 
-        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(
-            cpu=cpu
-        )
-        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(
-            ram_used=ram_used, ram_total=ram_total
-        )
-        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(
-            platform=os_platform
-        )
-        version_str = lang[await get_guild_language(interaction.guild.id)][
-            "version"
-        ].format(os_version=os_version)
-        release_str = lang[await get_guild_language(interaction.guild.id)][
-            "release"
-        ].format(os_release=os_release)
-        uptime_str = lang[await get_guild_language(interaction.guild.id)][
-            "uptime"
-        ].format(uptime=uptime_time_str)
+        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(cpu=cpu)
+        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(ram_used=ram_used,
+                                                                                     ram_total=ram_total)
+        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(platform=os_platform)
+        version_str = lang[await get_guild_language(interaction.guild.id)]["version"].format(os_version=os_version)
+        release_str = lang[await get_guild_language(interaction.guild.id)]["release"].format(os_release=os_release)
+        uptime_str = lang[await get_guild_language(interaction.guild.id)]["uptime"].format(uptime=uptime_time_str)
 
         message_str = f"{cpu_str}\n{ram_str}\n{os_str}\n{version_str}\n{release_str}\n{uptime_str}"
 
@@ -122,5 +108,4 @@ class system(commands.Cog):
 
 
 async def setup(bot):
-
-    bot.add_cog(system(bot))
+    bot.add_cog(System(bot))
