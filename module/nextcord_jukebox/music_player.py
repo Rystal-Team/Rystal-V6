@@ -70,9 +70,7 @@ class MusicPlayer(object):
         }
 
     async def _attempt_reconnect(self, max_retries=5, delay=1):
-        """
-        Reconnect to the voice channel.
-        """
+        """Reconnect to the voice channel."""
         for attempt in range(max_retries):
             try:
                 self.voice = self.interaction.guild.voice_client
