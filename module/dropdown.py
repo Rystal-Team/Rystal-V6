@@ -79,7 +79,7 @@ class LyricsSelectorView(View):
         self,
         options: list,
         placeholder: str,
-        captions: dict = {},
+        captions: dict = None,
     ):
         """
         Initialize the lyrics selector view.
@@ -89,6 +89,8 @@ class LyricsSelectorView(View):
             placeholder (str): Placeholder text displayed in the dropdown selector.
             captions (dict, optional): Dictionary mapping languages to their captions/transcripts.
         """
+        if captions is None:
+            captions = {}
         super().__init__()
         self.options = options
         self.placeholder = placeholder
