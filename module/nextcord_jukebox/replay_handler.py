@@ -25,6 +25,7 @@ from datetime import datetime
 
 from . import LogHandler
 from .event_manager import EventManager
+from .exceptions import *
 from .utils import get_video_id
 
 
@@ -47,7 +48,10 @@ class ReplayHandler(EventManager):
     async def member_joined_voice(self, player, member):
         if member == player.bot or member is None:
             return
-        now_playing = await player.now_playing()
+        try:
+            now_playing = await player.now_playing()
+        except NothingPlaying:
+            return
         video_id = await get_video_id(now_playing.url)
         LogHandler.info(f"Adding replay entry for {member.global_name}")
         await self.database.add_replay_entry(str(member.id), (datetime.now().isoformat()), video_id)

@@ -30,6 +30,7 @@ import websockets
 
 from . import LogHandler
 from .event_manager import EventManager
+from .exceptions import *
 
 
 class RPCHandler(EventManager):
@@ -125,7 +126,10 @@ class RPCHandler(EventManager):
         if member == player.bot or member is None:
             return
         user_secret = await self.database.get_user_secret(member.id)
-        now_playing = await player.now_playing()
+        try:
+            now_playing = await player.now_playing()
+        except NothingPlaying:
+            return
         if user_secret is not None:
             await self.dispatch(
                 user_secret,

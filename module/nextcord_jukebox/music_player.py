@@ -75,6 +75,7 @@ class MusicPlayer(object):
         """
         for attempt in range(max_retries):
             try:
+                self.voice = self.interaction.guild.voice_client
                 await self.connect(self.interaction)
                 LogHandler.debug("Reconnected to the voice channel.", )
                 return True
@@ -254,10 +255,9 @@ class MusicPlayer(object):
                 not self.interaction.guild.voice_client
                 or not self.interaction.guild.voice_client.is_connected() or self.voice is None
             ):
-                await self._attempt_reconnect()
+                reconnected = await self._attempt_reconnect()
                 if (
-                    not self.interaction.guild.voice_client
-                    or not self.interaction.guild.voice_client.is_connected() or self.voice is None
+                    not reconnected
                 ):
                     raise NotConnected
         if check_fetching_stream:
