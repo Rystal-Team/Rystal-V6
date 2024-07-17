@@ -200,9 +200,7 @@ class RPCHandler(EventManager):
             LogHandler.info(f"Client {secret} not connected")
 
     async def start_server(self):
-        """
-        Starts the WebSocket server.
-        """
+        """Starts the WebSocket server."""
         async with websockets.serve(self.handler, self.address, self.port):
             LogHandler.info(
                 f"WebSocket server started on ws://{self.address}:{self.port}"

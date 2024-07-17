@@ -108,9 +108,7 @@ class Pagination(nextcord.ui.View):
         super().__init__(timeout=180)
 
     async def navegate(self):
-        """
-        Navigates to the initial page and sends the first message.
-        """
+        """Navigates to the initial page and sends the first message."""
         emb, self.total_pages = await self.get_page(self.index)
         if self.total_pages == 1:
             follow_up_msg: nextcord.Message = await self.interaction.followup.send(
@@ -125,9 +123,7 @@ class Pagination(nextcord.ui.View):
             self.follow_up = follow_up_msg
 
     async def edit_page(self):
-        """
-        Edits the current page based on the search query and page index.
-        """
+        """Edits the current page based on the search query and page index."""
         emb, self.total_pages = await self.get_page(self.index, query=self.search_query)
 
         if self.index == 0 and self.total_pages != 0:
@@ -146,9 +142,7 @@ class Pagination(nextcord.ui.View):
         )
 
     def update_buttons(self):
-        """
-        Updates the state of pagination buttons.
-        """
+        """Updates the state of pagination buttons."""
         if self.index > self.total_pages // 2:
             self.children[2].emoji = "⏮️"
         else:
@@ -216,9 +210,7 @@ class Pagination(nextcord.ui.View):
         await interaction.response.send_modal(modal)
 
     async def on_timeout(self):
-        """
-        Handles the timeout event by removing pagination buttons.
-        """
+        """Handles the timeout event by removing pagination buttons."""
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )

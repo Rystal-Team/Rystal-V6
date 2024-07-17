@@ -1,6 +1,4 @@
-"""
-Custom exceptions for the Nextcord Jukebox application.
-"""
+"""Custom exceptions for the Nextcord Jukebox application."""
 
 
 #  ------------------------------------------------------------

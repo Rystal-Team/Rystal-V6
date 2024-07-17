@@ -1,6 +1,4 @@
-"""
-Nextcord-JukeBox: A lightweight Python library for Nextcord music bot.
-"""
+"""Nextcord-JukeBox: A lightweight Python library for Nextcord music bot."""
 
 __title__ = "Nextcord-JukeBox"
 __author__ = "Rystal-Team"
