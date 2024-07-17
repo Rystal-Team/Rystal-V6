@@ -87,9 +87,7 @@ class NowPlayingMenu(nextcord.ui.View):
         super().__init__(timeout=180)
 
     async def update(self):
-        """
-        Update the Now Playing embed and buttons.
-        """
+        """Update the Now Playing embed and buttons."""
         self.song = await self.player.now_playing()
         self.title = self.song.title
         self.thumbnail = self.song.thumbnail
@@ -126,9 +124,7 @@ class NowPlayingMenu(nextcord.ui.View):
             )
 
     async def update_button(self):
-        """
-        Update the play/pause button based on the playing state.
-        """
+        """Update the play/pause button based on the playing state."""
         if self.playing:
             self.children[0].emoji = "⏸️"
         else:
@@ -300,9 +296,7 @@ class NowPlayingMenu(nextcord.ui.View):
         await self.update()
 
     async def on_timeout(self):
-        """
-        Handle timeout event by removing buttons from the view.
-        """
+        """Handle timeout event by removing buttons from the view."""
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )
