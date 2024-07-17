@@ -85,14 +85,14 @@ class SongMatcher:
         Args:
             song_queue (list of Song): The list of songs to search.
             query (str): The query string.
-            case_sens (bool): Whether the match should be case sensitive.
+            case_sens (bool): Whether the match should be case-sensitive.
             threshold (float): The minimum similarity score to consider a match.
             debug (bool): Whether to print debug information.
 
         Returns:
             list of tuple: A list of tuples containing matched songs and their scores.
         """
-        global highest_score
+        highest_score = 0
         if not case_sens:
             query = query.lower()
 
