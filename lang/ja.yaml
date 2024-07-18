@@ -68,7 +68,7 @@ music_secret: "これがあなたの新しいシークレットです\n ```{secr
 level_up: "{user} がレベル {level} になれた！！！"
 level_text: "Level"
 level_xp: "{xp} / {totalxp} XP"
-leaderboard_header: "リーダーボード - トップ {range}"
+leaderboard_header: "リーダーボード - トップ {include}"
 leaderboard_out_of_range: "範囲の最小値は 1、最大値は 50 である必要があります！"
 leaderboard_user_row: "**レベル： {level} | 合計 XP： {totalxp}**"
 

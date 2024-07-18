@@ -227,9 +227,6 @@ fabric.properties
 *.sqlite
 *.json
 
-# Testing stuff
-/test
-
 #Config stuff
 config/config.py
 
@@ -256,3 +253,4 @@ docs/
 .idea/Rystal-Bot.iml
 .idea/sqldialects.xml
 .idea/vcs.xml
+.stfolder/

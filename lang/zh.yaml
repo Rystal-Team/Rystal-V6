@@ -68,7 +68,7 @@ music_secret: "这是你的新秘密\n ``{secret}```"
 level_up: "{user} 已达到级别 {level}！ ！ ！"
 level_text: "Level"
 level_xp: "{xp} / {totalxp} XP"
-leaderboard_header: "排行榜 - 前 {range}"
+leaderboard_header: "排行榜 - 前 {include}"
 leaderboard_out_of_range: "该范围的最小值必须为 1，最大值必须为 50。"
 leaderboard_user_row: "**等级：{level} | 总经验值：{totalxp}**"
 

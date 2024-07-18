@@ -22,36 +22,55 @@
 #  #
 
 import json
+import os
 
-from termcolor import colored
+from lyricsgenius import Genius
 
-from .main_handler import cursor, database
-
-default_user_data = {}
-
-
-async def register_user(user_id: int):
-    database.ping(reconnect=True, attempts=3)
-    try:
-        statement = "INSERT INTO note (user_id, notes) VALUES (%s, %s, %s)"
-        values = (str(user_id), json.dumps(default_user_data))
-        cursor.execute(statement, values)
-        database.commit()
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Registered User: {user_id}", color="light_yellow"
-            )
-        )
-    except Exception:
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Failed to Registered User: {user_id}",
-                color="red",
-            )
-        )
+genius = Genius(os.getenv("GENIUS_APIKEY"))
 
 
-async def add_note():
-    uuid = str(uuid.uuid4())
+class Song(object):
+    def __init__(self, title, lyrics, thumbnail, url):
+        self._title = title
+        self._lyrics = lyrics
+        self._thumbnail = thumbnail
+        self._url = url
 
-    return
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def lyrics(self) -> str:
+        return self._lyrics
+
+    @property
+    def thumbnail(self) -> str:
+        return self._thumbnail
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+
+class Searcher:
+    async def search_song(term):
+        return_dump = []
+        result = genius.search_songs(term)
+
+        with open(".json", "w") as f:
+            json.dump(result, f)
+
+        for song in result["hits"]:
+            print(song)
+            if song["type"] == "song":
+                song_object = Song(
+                    song["result"]["title"],
+                    genius.lyrics(song["result"]["id"]),
+                    song["result"]["song_art_image_url"],
+                    song["result"]["url"],
+                )
+
+                return_dump.append(song_object)
+
+        return return_dump

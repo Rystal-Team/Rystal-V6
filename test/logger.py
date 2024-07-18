@@ -23,89 +23,30 @@
 
 import logging
 
-from termcolor import colored
-
 
 class Logger:
-    LOG_LEVELS = {
-        'DEBUG'   : logging.DEBUG,
-        'INFO'    : logging.INFO,
-        'WARNING' : logging.WARNING,
-        'ERROR'   : logging.ERROR,
-        'CRITICAL': logging.CRITICAL
-    }
-
-    def __init__(self, level='DEBUG'):
+    def __init__(self):
         """
         Initializes the Logger instance by setting up a logger with a specific name and configuring the console handler.
-
-        Args:
-            level (str): Logging level as a string. Default is 'DEBUG'.
         """
-        name = "NEXTCORD_JUKEBOX"
+        name = "nextcord_jukebox"
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(self._get_logging_level(level))  # Set the logger level
+        self.logger.setLevel(logging.DEBUG)  # Set the logger level to DEBUG
 
         self._configure_console_handler()
 
-    @property
-    def __class__(self):
-        return super().__class__
-
-    def _get_logging_level(self, level_str):
-        """
-        Converts the logging level string to corresponding logging level constant.
-
-        Args:
-            level_str (str): Logging level as a string.
-
-        Returns:
-            int: Corresponding logging level constant.
-        """
-        return self.LOG_LEVELS.get(level_str, logging.DEBUG)  # Default to DEBUG if level_str is not found
-
     def _configure_console_handler(self):
         """
-        Configures the console handler to output messages to the console with a specific formatter.
+        Configures the console handler to output critical messages to the console with a specific formatter.
         """
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(self.logger.level)
+        console_handler.setLevel(logging.DEBUG)
 
-        formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
+        formatter = logging.Formatter(
+            "%(asctime)s - %(levelname)s - %(message)s")
         console_handler.setFormatter(formatter)
 
         self.logger.addHandler(console_handler)
-
-    def _color_message(self, level, message):
-        """
-        Colors the log message based on the log level.
-
-        Args:
-            level (str): The level of the log message.
-            message (str): The message to log.
-
-        Returns:
-            str: The colored message.
-        """
-        colors = {
-            'DEBUG'   : 'blue',
-            'INFO'    : 'green',
-            'WARNING' : 'yellow',
-            'ERROR'   : 'red',
-            'CRITICAL': 'magenta'
-        }
-        return colored(message, colors.get(level, 'white'))
-
-    def set_level(self, level):
-        """
-        Sets the logging level dynamically.
-
-        Args:
-            level (str): The new logging level as a string (e.g., 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL').
-        """
-        self.logger.setLevel(self._get_logging_level(level))
-        for handler in self.logger.handlers:
-            handler.setLevel(self.logger.level)
 
     def debug(self, message):
         """
@@ -114,7 +55,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.debug(self._color_message('DEBUG', message))
+        self.logger.debug(message)
 
     def info(self, message):
         """
@@ -123,7 +64,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.info(self._color_message('INFO', message))
+        self.logger.info(message)
 
     def warning(self, message):
         """
@@ -132,7 +73,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.warning(self._color_message('WARNING', message))
+        self.logger.warning(message)
 
     def error(self, message):
         """
@@ -141,7 +82,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.error(self._color_message('ERROR', message))
+        self.logger.error(message)
 
     def critical(self, message):
         """
@@ -150,4 +91,13 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.critical(self._color_message('CRITICAL', message))
+        self.logger.critical(message)
+
+
+# Example usage
+logger = Logger()
+logger.debug("This is a debug message.")
+logger.info("This is an info message.")
+logger.warning("This is a warning message.")
+logger.error("This is an error message.")
+logger.critical("This is a critical message.")
