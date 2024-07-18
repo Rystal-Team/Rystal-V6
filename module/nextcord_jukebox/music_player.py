@@ -469,8 +469,7 @@ class MusicPlayer(object):
             song = self._now_playing
             await song.resume()
             return song
-        else:
-            raise NotPaused
+        raise NotPaused
 
     @pre_check(check_queue=True, check_nowplaying=True)
     async def pause(self, forced=False):
@@ -489,8 +488,7 @@ class MusicPlayer(object):
             song = self._now_playing
             await song.pause()
             return song
-        else:
-            raise AlreadyPaused
+        raise AlreadyPaused
 
     @pre_check(check_queue=True)
     async def skip(self, index: int = 1):

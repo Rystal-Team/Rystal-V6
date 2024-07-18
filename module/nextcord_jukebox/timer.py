@@ -107,8 +107,7 @@ class CountTimer:
             return 0
         if self.paused:
             return self._timepaused - self._time_started
-        else:
-            return time.time() - self._time_started
+        return time.time() - self._time_started
 
     @property
     def running(self) -> bool:

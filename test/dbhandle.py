@@ -155,8 +155,7 @@ class Database:
             result = self.cursor.fetchone()
             if result:
                 return result[0]
-            else:
-                return None
+            return None
         except sqlite3.Error as e:
             raise e
 
@@ -197,8 +196,7 @@ class Database:
             result = self.cursor.fetchone()
             if result:
                 return json.loads(result[0])
-            else:
-                return None
+            return None
         except sqlite3.Error as e:
             raise e
 

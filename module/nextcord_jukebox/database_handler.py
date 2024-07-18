@@ -135,8 +135,7 @@ class Database:
             result = self.cursor.fetchone()
             if result:
                 return result[0]
-            else:
-                return None
+            return None
         except sqlite3.Error as e:
             LogHandler.error(f"Error fetching user secret: {e}")
             raise e
@@ -181,8 +180,7 @@ class Database:
             if result:
                 LogHandler.info(f"Using cached video metadata for {video_id}")
                 return json.loads(result[0])
-            else:
-                return None
+            return None
         except sqlite3.Error as e:
             LogHandler.error(f"Error fetching cached video metadata: {e}")
             raise e

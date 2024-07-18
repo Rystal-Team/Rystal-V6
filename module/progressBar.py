@@ -61,22 +61,21 @@ class progressBar:
             percentage = (current / total) * 100
 
             return [bar, percentage]
-        else:
-            # Calculate percentage of progress
-            percentage = current / total
-            # Calculate filled and empty progress
-            progress = round(size * percentage)
-            emptyProgress = size - progress
+        # Calculate percentage of progress
+        percentage = current / total
+        # Calculate filled and empty progress
+        progress = round(size * percentage)
+        emptyProgress = size - progress
 
-            # Construct progress bar string
-            progressText = (line * progress)[:-1] + slider
-            emptyProgressText = line * emptyProgress
-            bar = progressText + emptyProgressText
+        # Construct progress bar string
+        progressText = (line * progress)[:-1] + slider
+        emptyProgressText = line * emptyProgress
+        bar = progressText + emptyProgressText
 
-            # Calculate percentage
-            calculated = percentage * 100
+        # Calculate percentage
+        calculated = percentage * 100
 
-            return [bar, calculated]
+        return [bar, calculated]
 
     def filledBar(total, current, size=15, line="⬛", slider="⬜"):
         """
@@ -99,18 +98,17 @@ class progressBar:
             # Calculate percentage
             percentage = (current / total) * 100
             return [bar, percentage]
-        else:
-            # Calculate percentage of progress
-            percentage = current / total
-            # Calculate filled and empty progress
-            progress = round(size * percentage)
-            emptyProgress = size - progress
+        # Calculate percentage of progress
+        percentage = current / total
+        # Calculate filled and empty progress
+        progress = round(size * percentage)
+        emptyProgress = size - progress
 
-            # Construct progress bar string
-            progressText = slider * progress
-            emptyProgressText = line * emptyProgress
+        # Construct progress bar string
+        progressText = slider * progress
+        emptyProgressText = line * emptyProgress
 
-            bar = progressText + emptyProgressText
-            # Calculate percentage
-            calculated = percentage * 100
-            return [bar, calculated]
+        bar = progressText + emptyProgressText
+        # Calculate percentage
+        calculated = percentage * 100
+        return [bar, calculated]

@@ -98,8 +98,7 @@ async def get_guild_language(guild_id: int):
         guild_language = result[0][0]
 
         return guild_language
-    else:
-        return default_language
+    return default_language
 
 
 async def change_guild_settings(guild_id: int, key, value):
