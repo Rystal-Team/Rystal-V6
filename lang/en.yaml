@@ -85,4 +85,10 @@ queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"
 queue_footer_with_query: "{page}/{total_pages} | Query: {query}"
 
-# command description
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Most played songs this week"
+most_played_month: "Most played songs this month"
+most_played_year: "Most played songs this year"
+played_duration: "{hour}h+"
+total_played: "Played {count} songs"

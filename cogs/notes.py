@@ -1,5 +1,3 @@
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -62,7 +60,7 @@ class NoteSystem(commands.Cog):
         ),
     ):
         note_content = {
-            "title"      : title,
+            "title"      : title9,
             "description": description,
             "state"      : 30,
         }

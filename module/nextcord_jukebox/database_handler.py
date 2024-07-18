@@ -1,5 +1,3 @@
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -186,6 +184,31 @@ class Database:
         except sqlite3.Error as e:
             LogHandler.error(f"Error fetching cached video metadata: {e}")
             raise e
+
+    def get_bulk_video_metadata(self, video_ids: list) -> dict:
+        """
+        Retrieves cached metadata for a specified list of videos.
+
+        Args:
+            video_ids (list): A list of video IDs.
+
+        Returns:
+            dict: A dictionary with video IDs as keys and their cached metadata as values.
+        """
+        # Convert list of video IDs into a format suitable for a SQL query
+        video_ids_tuple = tuple(video_ids)
+        metadata_dict = {}
+        try:
+            query = "SELECT video_id, metadata FROM ytcache WHERE video_id IN ({})".format(
+                ','.join('?' for _ in video_ids))
+            self.cursor.execute(query, video_ids_tuple)
+            results = self.cursor.fetchall()
+            for video_id, metadata_json in results:
+                metadata_dict[video_id] = json.loads(metadata_json)
+        except sqlite3.Error as e:
+            LogHandler.error(f"Error fetching bulk video metadata: {e}")
+            raise e
+        return metadata_dict
 
     async def add_replay_entry(self, user_id: str, played_at: str, song: str):
         """

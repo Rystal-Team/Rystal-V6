@@ -22,8 +22,6 @@ Methods:
     Pagination.compute_total_pages(total_results: int, results_per_page: int) -> int: Computes the total number of pages.
 """
 
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #

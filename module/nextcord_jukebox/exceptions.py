@@ -1,8 +1,6 @@
 """Custom exceptions for the Nextcord Jukebox application."""
 
 
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #

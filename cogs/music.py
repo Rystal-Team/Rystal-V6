@@ -1,5 +1,3 @@
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -22,12 +20,14 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-
+import time
 from datetime import timedelta
+from io import BytesIO
 
 import nextcord
-from nextcord import Interaction, SlashOption
+from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
+from termcolor import colored
 
 from config.config import lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
@@ -40,6 +40,7 @@ from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
 from module.pagination import Pagination
 from module.progressBar import progressBar
+from module.replay_card import create_top_songs_poster
 
 class_namespace = "music_class_title"
 
@@ -659,9 +660,9 @@ class Music(commands.Cog, EventManager):
                         title=(
                             song.name
                             if song
-                            else lang[
-                                await get_guild_language(interaction.guild.id)
-                            ]["all_songs"]
+                            else lang[await get_guild_language(interaction.guild.id)][
+                                "all_songs"
+                            ]
                         )
                     ),
                     message_type="success",
@@ -726,6 +727,122 @@ class Music(commands.Cog, EventManager):
                 message_type="success",
             )
         )
+
+    def generate_canvas(self, interaction: Interaction, period: str, guild_language: str, result_list):
+        period_description = {
+            "Week" : "most_played_week",
+            "Month": "most_played_month",
+            "Year" : "most_played_year",
+        }
+
+        canvas = create_top_songs_poster(
+            result_list["replays"],
+            lang[guild_language]["music_poster_title"],
+            lang[guild_language][
+                period_description.get(period, "????")
+            ],
+            detail_texts=[
+                lang[guild_language][
+                    "played_duration"
+                ].format(hour=str(int(result_list["total_time"] / 3600))),
+                lang[guild_language][
+                    "total_played"
+                ].format(count=str(result_list["total_replayed"])),
+                f"{result_list['top_artist']['percentage']}% {result_list['top_artist']['name']}",
+            ],
+        )
+
+        return canvas
+
+    @music.subcommand(description="🎵 | Get the most played songs!")
+    async def most_played(
+        self,
+        interaction: Interaction,
+        period: str = SlashOption(
+            name="period",
+            choices=["Week", "Month", "Year"],
+            required=False,
+            default="Month",
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        timer = time.time()
+        print(colored(f"Obtaining Entries...", "dark_grey"))
+        guild_language = await get_guild_language(interaction.guild.id)
+        period_dict = {"Week": 7, "Month": 30, "Year": 365}
+        cutoff_days = period_dict.get(period, 30)
+
+        replay_history = await self.manager.database.get_replay_history(
+            str(interaction.user.id), cutoff_days
+        )
+
+        replay_aggregate = {}
+        artist_counts = {}
+        total_replays = 0
+
+        for replay in replay_history:
+            video_id = replay["song"]
+            replay_aggregate[video_id] = replay_aggregate.get(video_id, 0) + 1
+            total_replays += 1
+
+        video_metadata = self.manager.database.get_bulk_video_metadata(
+            list(replay_aggregate.keys())
+        )
+
+        for video_id, replay_count in replay_aggregate.items():
+            metadata = video_metadata.get(video_id, {})
+            if metadata:
+                artist = metadata.get("channel", "Unknown")
+                artist_counts[artist] = artist_counts.get(artist, 0) + replay_count
+
+        top_artist = max(artist_counts, key=artist_counts.get, default="Unknown")
+        top_artist_percentage = (
+            round(artist_counts.get(top_artist, 0) / total_replays * 100)
+            if total_replays
+            else 0
+        )
+
+        result_list = {
+            "total_replayed": len(replay_history),
+            "total_time"    : 0,
+            "replays"       : [],
+            "top_artist"    : {"name": top_artist, "percentage": top_artist_percentage},
+        }
+
+        top_replays = sorted(
+            ((video_id, replay_count) for video_id, replay_count in replay_aggregate.items()),
+            key=lambda item: item[1], reverse=True
+        )[:10]
+
+        for video_id, replay_count in top_replays:
+            metadata = video_metadata.get(video_id, {})
+            result_list["replays"].append({
+                "title"    : metadata.get("title", ""),
+                "artist"   : metadata.get("channel", ""),
+                "thumbnail": metadata.get("thumbnail", ""),
+                "replays"  : replay_count,
+            })
+            result_list["total_time"] += metadata.get("duration", 0) * replay_count
+
+        result_list["replays"].extend(
+            {"title": "", "artist": "", "thumbnail": "", "replays": ""}
+            for _ in range(10 - len(result_list["replays"]))
+        )
+
+        print(colored(f"Entries obtained and sorted, Time Taken: {time.time() - timer}", "dark_grey"))
+
+        timer = time.time()
+        print(colored(f"Generating Canvas...", "dark_grey"))
+        canvas = await self.bot.loop.run_in_executor(
+            None,
+            lambda: self.generate_canvas(interaction, period, guild_language, result_list))
+
+        with BytesIO() as image_binary:
+            canvas.save(image_binary, "PNG")
+            image_binary.seek(0)
+            poster = File(filename="most_played.png", fp=image_binary)
+            await interaction.followup.send(files=[poster])
+            print(colored(f"Canvas Generated, Time Taken: {time.time() - timer}", "dark_grey"))
 
 
 async def setup(bot):

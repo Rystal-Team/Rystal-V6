@@ -2,8 +2,6 @@
 This module defines an EventManager class that manages event listeners, attaches cog instances, and fires events.
 """
 
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #

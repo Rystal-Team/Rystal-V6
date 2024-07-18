@@ -85,3 +85,11 @@ queue_query: "搜尋"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"
 queue_footer_with_query: "{page}/{total_pages} | 搜尋: {query}"
+
+# music poster
+music_poster_title: "里斯陶努音乐"
+most_played_week: "本周播放次數最多的歌曲"
+most_played_month: "本月播放次數最多的歌曲"
+most_played_year: "年度播放次數最多的歌曲"
+Play_duration: "{hour}小時+"
+Total_played: "已播放 {count} 首歌曲"

@@ -19,8 +19,6 @@ Methods:
         Handles voice state updates for the bot and other members, performing necessary actions such as removing the player if the bot leaves a voice channel.
 """
 
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #

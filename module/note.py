@@ -1,5 +1,3 @@
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -40,6 +38,3 @@ class Note(object):
         self.content = content
         self.uuid = uuid
         self.state = state
-
-    async def update(self):
-        return

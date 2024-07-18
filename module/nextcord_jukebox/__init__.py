@@ -4,8 +4,6 @@ __title__ = "Nextcord-JukeBox"
 __author__ = "Rystal-Team"
 __license__ = "MIT"
 
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #

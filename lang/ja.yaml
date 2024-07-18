@@ -85,3 +85,11 @@ queue_query: "キュー検索"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"
 queue_footer_with_query: "{page}/{total_pages} | 検索: {query}"
+
+# music poster
+music_poster_title: "リスタルミュージック"
+most_played_week: "本周最も再生された曲"
+most_played_month: "本月最も再生された曲"
+most_played_year: "本年最も再生された曲"
+played_duration: "{hour}時間+"
+total_played: "{count}曲再生しました"
