@@ -22,11 +22,28 @@
 #  #
 
 import json
+import random
 import sqlite3
+import string
 from datetime import datetime, timedelta
 
-from . import LogHandler
-from .utils import generate_secret
+
+async def generate_secret(length=16):
+    """
+    Generate a random secret string of a specified length.
+
+    Args:
+        length (int, optional): Length of the generated secret string (default is 16).
+
+    Returns:
+        str: Randomly generated secret string consisting of alphanumeric characters.
+
+    """
+    return "".join(random.choice(string.ascii_letters + string.digits) for i in range(length))
+
+
+def to_timestamp(dt):
+    return int(dt.timestamp())
 
 
 class Database:
@@ -39,7 +56,7 @@ class Database:
         cursor (sqlite3.Cursor): The SQLite database cursor.
     """
 
-    def __init__(self, db_path: str = "./database/user.db"):
+    def __init__(self, db_path: str = "./database/jukebox.db"):
         """
         Initializes the Database instance with the specified database path.
 
@@ -51,13 +68,17 @@ class Database:
         self.cursor = None
 
     def connect(self):
-        """Connects to the SQLite database and creates the required tables."""
+        """
+        Connects to the SQLite database and creates the required tables.
+        """
         self.connection = sqlite3.connect(self.db_path)
         self.cursor = self.connection.cursor()
         self.create_tables()
 
     def close(self):
-        """Closes the database connection."""
+        """
+        Closes the database connection.
+        """
         if self.cursor:
             self.cursor.close()
         if self.connection:
@@ -78,13 +99,13 @@ class Database:
             CREATE TABLE IF NOT EXISTS ytcache (
                 video_id TEXT PRIMARY KEY,
                 metadata TEXT,
-                registered_date TEXT
+                registered_date INT
             );
             """,
             """
             CREATE TABLE IF NOT EXISTS replay_history (
                 user_id TEXT,
-                played_at TEXT,
+                played_at INT,
                 song TEXT,
                 FOREIGN KEY (user_id) REFERENCES secrets (user_id)
             );
@@ -115,7 +136,6 @@ class Database:
             self.cursor.execute(query, (user_id, secret))
             self.connection.commit()
         except sqlite3.Error as e:
-            LogHandler.error(f"Error registering user: {e}")
             raise e
         return secret
 
@@ -138,7 +158,6 @@ class Database:
             else:
                 return None
         except sqlite3.Error as e:
-            LogHandler.error(f"Error fetching user secret: {e}")
             raise e
 
     def cache_video_metadata(self, video_id: str, metadata: dict):
@@ -151,7 +170,7 @@ class Database:
         """
         try:
             metadata_json = json.dumps(metadata)
-            registered_date = datetime.now().isoformat()
+            registered_date = datetime.now().timestamp()
             query = """
             INSERT INTO ytcache (video_id, metadata, registered_date)
             VALUES (?, ?, ?)
@@ -159,9 +178,7 @@ class Database:
             """
             self.cursor.execute(query, (video_id, metadata_json, registered_date))
             self.connection.commit()
-            LogHandler.info(f"Cached video metadata for {video_id}")
         except sqlite3.Error as e:
-            LogHandler.error(f"Error caching video metadata: {e}")
             raise e
 
     def get_cached_video_metadata(self, video_id: str) -> None | dict:
@@ -179,12 +196,10 @@ class Database:
             self.cursor.execute(query, (video_id,))
             result = self.cursor.fetchone()
             if result:
-                LogHandler.info(f"Using cached video metadata for {video_id}")
                 return json.loads(result[0])
             else:
                 return None
         except sqlite3.Error as e:
-            LogHandler.error(f"Error fetching cached video metadata: {e}")
             raise e
 
     async def add_replay_entry(self, user_id: str, played_at: str, song: str):
@@ -203,12 +218,10 @@ class Database:
             """
             self.cursor.execute(query, (user_id, played_at, song))
             self.connection.commit()
-            LogHandler.info(f"Added replay entry for {user_id}")
         except sqlite3.Error as e:
-            LogHandler.error(f"Error adding replay entry: {e}")
             raise e
 
-    async def get_replay_history(self, user_id: str, cutoff: int = 30) -> list:
+    async def get_replay_history(self, user_id: str, cutoff_day: int = 30) -> list:
         """
         Retrieves the replay history for a specified user.
 
@@ -219,8 +232,8 @@ class Database:
             list: A list of dictionaries representing replay entries [{played_at: str, song: str}, ...].
         """
         try:
-            cutoff_date = (datetime.now() - timedelta(days=cutoff)).isoformat()
-            query = "SELECT played_at, song FROM replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC"
+            cutoff_date = (datetime.now() - timedelta(days=cutoff_day)).isoformat()
+            query = "SELECT played_at, song FROM replay_history WHERE user_id = ? AND played_at < ? ORDER BY played_at DESC"
             self.cursor.execute(query, (user_id, cutoff_date,))
             results = self.cursor.fetchall()
             history = []
@@ -231,22 +244,23 @@ class Database:
                 })
             return history
         except sqlite3.Error as e:
-            LogHandler.error(f"Error fetching replay history: {e}")
             raise e
 
     def clear_old_cache(self):
-        """Clears cached entries older than 28 days."""
+        """
+        Clears cached entries older than 28 days.
+        """
         try:
-            cutoff_date = (datetime.now() - timedelta(days=28)).isoformat()
+            cutoff_date = (datetime.now() - timedelta(days=28)).timestamp()
             query = "DELETE FROM ytcache WHERE registered_date < ?"
             self.cursor.execute(query, (cutoff_date,))
             self.connection.commit()
         except sqlite3.Error as e:
-            LogHandler.error(f"Error clearing old ytcache: {e}")
             raise e
 
     # TODO: この関数をスケジューラにフックしてください！！
     def run_cleanup(self):
-        """Runs the cleanup process to clear old ytcache entries."""
+        """
+        Runs the cleanup process to clear old ytcache entries.
+        """
         self.clear_old_cache()
-        LogHandler.info("Old ytcache entries cleared.")

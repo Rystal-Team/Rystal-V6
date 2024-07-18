@@ -21,37 +21,35 @@
 #    ------------------------------------------------------------
 #  #
 
-import json
+import asyncio
+import datetime
+from datetime import datetime, timedelta
 
-from termcolor import colored
+from dbhandle import Database
 
-from .main_handler import cursor, database
-
-default_user_data = {}
-
-
-async def register_user(user_id: int):
-    database.ping(reconnect=True, attempts=3)
-    try:
-        statement = "INSERT INTO note (user_id, notes) VALUES (%s, %s, %s)"
-        values = (str(user_id), json.dumps(default_user_data))
-        cursor.execute(statement, values)
-        database.commit()
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Registered User: {user_id}", color="light_yellow"
-            )
-        )
-    except Exception:
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Failed to Registered User: {user_id}",
-                color="red",
-            )
-        )
+# Get the current date and time
+cutoff_date = (datetime.now() - timedelta(days=28)).timestamp()
+print(cutoff_date)
 
 
-async def add_note():
-    uuid = str(uuid.uuid4())
+def to_timestamp(dt):
+    return int(dt.timestamp())
 
-    return
+
+print(to_timestamp(datetime.now() - timedelta(days=500)))
+
+
+async def test():
+    db = Database(db_path="./jukebox.db")
+    db.connect()
+    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 1")
+    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 2")
+    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 3")
+    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=29)).isoformat(), "song 4")
+    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=30)).isoformat(), "song 5")
+
+    print(await db.get_replay_history("user1", cutoff_day=30))
+
+
+if __name__ == "__main__":
+    asyncio.run(test())

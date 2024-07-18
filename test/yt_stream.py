@@ -21,37 +21,50 @@
 #    ------------------------------------------------------------
 #  #
 
-import json
+import time
 
+import pytube
+import yt_dlp
 from termcolor import colored
 
-from .main_handler import cursor, database
+print(colored(text="(FROM URL)", color="dark_grey"))
+timer = time.time()
 
-default_user_data = {}
+ydl = yt_dlp.YoutubeDL(
+    {
+        "format"        : "bestaudio/best",
+        "noplaylist"    : True,
+        "ignoreerrors"  : True,
+        "quiet"         : True,
+        "no_warnings"   : True,
+        "source_address": "0.0.0.0",
+        "forceip"       : "4",
+        "skip_download" : True,
+        "extract_flat"  : True,
+        "default_search": "auto",
+    }
+)
 
+yt = pytube.YouTube("https://www.youtube.com/watch?v=hTqFFYX93yY")
+print(yt.title)
+print(yt.views)
+print(yt.length)
+print(yt.thumbnail_url)
+print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
 
-async def register_user(user_id: int):
-    database.ping(reconnect=True, attempts=3)
-    try:
-        statement = "INSERT INTO note (user_id, notes) VALUES (%s, %s, %s)"
-        values = (str(user_id), json.dumps(default_user_data))
-        cursor.execute(statement, values)
-        database.commit()
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Registered User: {user_id}", color="light_yellow"
-            )
-        )
-    except Exception:
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Failed to Registered User: {user_id}",
-                color="red",
-            )
-        )
+print(colored(text="(FROM URL)", color="dark_grey"))
+timer = time.time()
 
+data = ydl.extract_info(
+    "https://www.youtube.com/watch?v=hTqFFYX93yY",
+    download=False,
+)
 
-async def add_note():
-    uuid = str(uuid.uuid4())
-
-    return
+print(data["title"])
+print(data["view_count"])
+print(data["duration"])
+print(data["thumbnail"])
+print(data["uploader"])
+print(data["uploader_url"])
+print(data["url"])
+print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))

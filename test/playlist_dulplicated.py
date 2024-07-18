@@ -21,37 +21,23 @@
 #    ------------------------------------------------------------
 #  #
 
-import json
+from meta_yt import YouTube
+from pytube import Playlist
 
-from termcolor import colored
+playlist = Playlist("https://www.youtube.com/playlist?list=PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y")
+print(len(playlist))
 
-from .main_handler import cursor, database
+unique = []
+duplicate = []
 
-default_user_data = {}
+for i, song in enumerate(playlist):
+    yt = YouTube(song)
+    if yt.video.title not in unique:
+        unique.append(yt.video.title)
+    else:
+        print(f"Duplicate song found at index {i}")
+        duplicate.append(yt.video.title)
+    print(str(i + 1), yt.video.title)
 
-
-async def register_user(user_id: int):
-    database.ping(reconnect=True, attempts=3)
-    try:
-        statement = "INSERT INTO note (user_id, notes) VALUES (%s, %s, %s)"
-        values = (str(user_id), json.dumps(default_user_data))
-        cursor.execute(statement, values)
-        database.commit()
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Registered User: {user_id}", color="light_yellow"
-            )
-        )
-    except Exception:
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Failed to Registered User: {user_id}",
-                color="red",
-            )
-        )
-
-
-async def add_note():
-    uuid = str(uuid.uuid4())
-
-    return
+print("Total duplicates found:", len(duplicate))
+print(duplicate)
