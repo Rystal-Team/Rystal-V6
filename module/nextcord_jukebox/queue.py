@@ -45,9 +45,8 @@ class Queue:
             self.queue.remove(song)
             print(colored(text=f"Removed {song.title} from the queue", color="green"))
             return True
-        else:
-            print(colored(text=f"{song.title} not found in the queue", color="red"))
-            return False
+        print(colored(text=f"{song.title} not found in the queue", color="red"))
+        return False
 
     async def batch_add_to_queue(self, songs):
         self.queue.extend(songs)

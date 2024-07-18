@@ -65,11 +65,10 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         width, _ = draw.textbbox((0, 0), text_str, font=font)[2:4]
         if width <= max_w:
             return text_str
-        else:
-            while width > max_w:
-                text_str = text_str[:-1]
-                width, _ = draw.textbbox((0, 0), text_str + "...", font=font)[2:4]
-            return text_str + "..."
+        while width > max_w:
+            text_str = text_str[:-1]
+            width, _ = draw.textbbox((0, 0), text_str + "...", font=font)[2:4]
+        return text_str + "..."
 
     def load_image_from_url(url: str) -> Image:
         return Image.open(BytesIO(requests.get(url).content)).convert("RGBA")

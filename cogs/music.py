@@ -644,28 +644,27 @@ class Music(commands.Cog, EventManager):
                     )
                 )
                 return
-            else:
-                song = await player.remove(index)
+            song = await player.remove(index)
 
-                await interaction.followup.send(
-                    embed=Embeds.message(
-                        title=lang[await get_guild_language(interaction.guild.id)][
-                            class_namespace
-                        ],
-                        message=lang[await get_guild_language(interaction.guild.id)][
-                            "removed_song"
-                        ].format(
-                            title=(
-                                song.name
-                                if song
-                                else lang[
-                                    await get_guild_language(interaction.guild.id)
-                                ]["all_songs"]
-                            )
-                        ),
-                        message_type="success",
-                    )
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "removed_song"
+                    ].format(
+                        title=(
+                            song.name
+                            if song
+                            else lang[
+                                await get_guild_language(interaction.guild.id)
+                            ]["all_songs"]
+                        )
+                    ),
+                    message_type="success",
                 )
+            )
 
         except (NotPlaying, EmptyQueue):
             await interaction.followup.send(
