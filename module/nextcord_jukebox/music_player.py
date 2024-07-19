@@ -355,6 +355,7 @@ class MusicPlayer(object):
                 "thumbnail"  : video.thumbnail,
                 "channel"    : video.channel,
                 "channel_url": video.channel_url,
+                "thumbnails": video.thumbnails,
             }
             self.database.cache_video_metadata(video_id, meta)
         else:

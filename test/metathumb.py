@@ -19,45 +19,25 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
-#
 
-from .timer import CountTimer
+from meta_yt import Video
 
+def get_smallest_thumbnail_url(thumbnails):
+    min_dimensions = float('inf')
+    min_width = float('inf')
+    min_height = float('inf')
+    smallest_thumbnail_url = ""
+    for thumbnail in thumbnails:
+        dimensions = thumbnail['width'] * thumbnail['height']
+        if dimensions < min_dimensions:
+            min_dimensions = dimensions
+            min_width = thumbnail['width']
+            min_height = thumbnail['height']
+            smallest_thumbnail_url = thumbnail['url']
+    return smallest_thumbnail_url, min_width, min_height
 
-class Song:
-    def __init__(
-        self,
-        url,
-        title=None,
-        views=None,
-        duration=None,
-        thumbnail=None,
-        channel=None,
-        channel_url=None,
-        thumbnails=None,
-    ):
-        self.url = url
-        self.title = title
-        self.name = title
-        self.views = views
-        self.duration = duration
-        self.thumbnail = thumbnail
-        self.channel = channel
-        self.channel_url = channel_url
-        self.thumbnails = thumbnails
+video = Video("hG0OMmvC9NE")
 
-        self.timer = CountTimer()
-        self.source_url = None
-        self.extracted_metadata = False  # attribute to track metadata extraction
+url, min_w, min_h = get_smallest_thumbnail_url(video.thumbnails)
+print(url, min_w, min_h)
 
-    async def reset(self):
-        self.timer.reset()
-
-    async def resume(self):
-        self.timer.resume()
-
-    async def pause(self):
-        self.timer.pause()
-
-    async def start(self):
-        self.timer.start()

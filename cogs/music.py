@@ -819,7 +819,7 @@ class Music(commands.Cog, EventManager):
             result_list["replays"].append({
                 "title"    : metadata.get("title", ""),
                 "artist"   : metadata.get("channel", ""),
-                "thumbnail": metadata.get("thumbnail", ""),
+                "thumbnails": metadata.get("thumbnails", ""),
                 "replays"  : replay_count,
             })
             result_list["total_time"] += metadata.get("duration", 0) * replay_count
