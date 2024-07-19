@@ -26,6 +26,7 @@ from typing import List, Optional
 
 import requests
 from PIL import Image, ImageDraw, ImageFont
+import time
 
 
 def create_top_songs_poster(songs: List[dict], title: str, description: str,
@@ -71,6 +72,8 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         return text_str + "..."
 
     def load_image_from_url(url: str) -> Image:
+
+
         if url != "":
             return Image.open(BytesIO(requests.get(url).content)).convert("RGBA")
         return Image.new("RGBA", (200, 200), (0, 0, 0, 0))
@@ -98,13 +101,16 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         details_x += draw_rounded_text(text, fonts["details"], 15, 4, 15, (details_x, 205)) + 10
 
     for i, song in enumerate(songs):
+        timer = time.time()
         y_pos = 260 + i * 90
         song_text = truncate_text(song['title'], fonts["song"], 540)
         artist_text = truncate_text(f"{song['artist']}", fonts["artist"], 540)
         replay_text = format_number(song['replays']) if isinstance(song['replays'], int) else song['replays']
 
         draw.text((50, y_pos + 22), str(i + 1), font=fonts["index"], fill="#576175")
+        load_timer = time.time()
         thumbnail = load_image_from_url(song['thumbnail']).resize((106, 60)).crop((23, 0, 83, 60))
+        print(f"Loaded IMG, time taken {time.time() - load_timer}ms")
         canvas.paste(thumbnail, (80, y_pos + 8), thumbnail)
         draw.text((150, y_pos + 5), song_text, font=fonts["song"], fill="#ffffff")
         draw.text((150, y_pos + 40), artist_text, font=fonts["artist"], fill="#97A8CB")
@@ -113,9 +119,11 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         if i < len(songs) - 1:
             draw.line((50, y_pos + 80, 750, y_pos + 80), fill="#1c1f26", width=2)
 
+        print(f"Generated {i}, time taken {time.time() - timer}ms")
+
     draw.rectangle((750, 0, 800, 250), fill="#16181d")
 
-    canvas.show()
+    # canvas.show()
     return canvas
 
 
@@ -150,6 +158,7 @@ songs = [
 
 title = "リスタルミュージック"
 description = "本月最も再生された曲"
+create_timer = time.time()
 create_top_songs_poster(songs, title, description,
                         detail_texts=["41時間+", "1871曲再生しました", "18% アステル・レダ"])
-print("Created poster")
+print(f"Created poster, {time.time()-create_timer}ms")

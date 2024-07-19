@@ -20,7 +20,7 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-
+import time
 from io import BytesIO
 from typing import List, Optional
 
@@ -34,7 +34,7 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
     Create a poster for top songs with given title, description, and optional details.
 
     Args:
-        songs (List[dict]): A list of dictionaries, each containing 'title', 'artist', 'replays', and 'thumbnail' keys.
+        songs (List[dict]): A list of dictionaries, each containing "title", "artist", "replays", and "thumbnail" keys.
         title (str): The title of the poster.
         description (str): The description text on the poster.
         detail_texts (Optional[List[str]]): A list of additional detail texts to be displayed on the poster.
@@ -56,7 +56,7 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
     def format_number(num: float) -> str:
         if num < 1000:
             return str(num)
-        for unit in ['', 'k', 'M', 'B', 'T']:
+        for unit in ["", "k", "M", "B", "T"]:
             if abs(num) < 1000.0:
                 return f"{num:3.1f}{unit}"
             num /= 1000.0
@@ -75,7 +75,20 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
             return Image.open(BytesIO(requests.get(url).content)).convert("RGBA")
         return Image.new("RGBA", (200, 200), (0, 0, 0, 0))
 
-    canvas = Image.new('RGB', (800, 1300), color="#16181d")
+    def get_smallest_thumbnail(thumbnails):
+        if thumbnails == "":
+            return ""
+        min_dimensions = float("inf")
+        min_url = ""
+        for thumb in thumbnails:
+            dimensions = thumb["width"] * thumb["height"]
+            if dimensions < min_dimensions:
+                print(f"Using size: {thumb['width']}x{thumb['height']}")
+                min_dimensions = dimensions
+                min_url = thumb["url"]
+        return min_url
+
+    canvas = Image.new("RGB", (800, 1300), color="#16181d")
     draw = ImageDraw.Draw(canvas)
 
     fonts = {name: ImageFont.truetype(f"font/GoNotoKurrent-{style}.ttf", size) for name, style, size in [
@@ -98,13 +111,17 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         details_x += draw_rounded_text(text, fonts["details"], 15, 4, 15, (details_x, 205)) + 10
 
     for i, song in enumerate(songs):
+        timer = time.time()
         y_pos = 260 + i * 90
-        song_text = truncate_text(song['title'], fonts["song"], 540)
+        song_text = truncate_text(song["title"], fonts["song"], 540)
         artist_text = truncate_text(f"{song['artist']}", fonts["artist"], 540)
-        replay_text = format_number(song['replays']) if isinstance(song['replays'], int) else song['replays']
+        replay_text = format_number(song["replays"]) if isinstance(song["replays"], int) else song["replays"]
 
         draw.text((50, y_pos + 22), str(i + 1), font=fonts["index"], fill="#576175")
-        thumbnail = load_image_from_url(song['thumbnail']).resize((106, 60)).crop((23, 0, 83, 60))
+        load_timer = time.time()
+        thumbnail = load_image_from_url(get_smallest_thumbnail(song["thumbnails"])).resize((106, 60)).crop((23, 0, 83, 60))
+        print(f"Loaded IMG, time taken {time.time() - load_timer}ms")
+
         canvas.paste(thumbnail, (80, y_pos + 8), thumbnail)
         draw.text((150, y_pos + 5), song_text, font=fonts["song"], fill="#ffffff")
         draw.text((150, y_pos + 40), artist_text, font=fonts["artist"], fill="#97A8CB")
@@ -112,6 +129,7 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
 
         if i < len(songs) - 1:
             draw.line((50, y_pos + 80, 750, y_pos + 80), fill="#1c1f26", width=2)
+        print(f"Generated {i}, time taken {time.time() - timer}ms")
 
     draw.rectangle((750, 0, 800, 250), fill="#16181d")
 
