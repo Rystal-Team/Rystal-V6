@@ -324,7 +324,6 @@ class MusicPlayer(object):
             LogHandler.warning(
                 message=f"Failed to perform cleanup disconnect. {type(e).__name__}: {str(e)}"
             )
-            pass
         return
 
     @pre_check()
