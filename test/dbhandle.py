@@ -68,17 +68,13 @@ class Database:
         self.cursor = None
 
     def connect(self):
-        """
-        Connects to the SQLite database and creates the required tables.
-        """
+        """Connects to the SQLite database and creates the required tables."""
         self.connection = sqlite3.connect(self.db_path)
         self.cursor = self.connection.cursor()
         self.create_tables()
 
     def close(self):
-        """
-        Closes the database connection.
-        """
+        """Closes the database connection."""
         if self.cursor:
             self.cursor.close()
         if self.connection:
@@ -245,9 +241,7 @@ class Database:
             raise e
 
     def clear_old_cache(self):
-        """
-        Clears cached entries older than 28 days.
-        """
+        """Clears cached entries older than 28 days."""
         try:
             cutoff_date = (datetime.now() - timedelta(days=28)).timestamp()
             query = "DELETE FROM ytcache WHERE registered_date < ?"
@@ -258,7 +252,5 @@ class Database:
 
     # TODO: この関数をスケジューラにフックしてください！！
     def run_cleanup(self):
-        """
-        Runs the cleanup process to clear old ytcache entries.
-        """
+        """Runs the cleanup process to clear old ytcache entries."""
         self.clear_old_cache()
