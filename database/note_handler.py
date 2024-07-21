@@ -90,9 +90,8 @@ async def get_notes(user_id: int):
         if result:
             notes = json.loads(result[0])
             return notes
-        else:
-            print(colored(text=f"[NOTE DATABASE] No notes found for User: {user_id}", color="yellow"))
-            return {}
+        print(colored(text=f"[NOTE DATABASE] No notes found for User: {user_id}", color="yellow"))
+        return {}
     except Exception as e:
         print(colored(text=f"[NOTE DATABASE] Failed to retrieve notes for User: {user_id} - {e}", color="red"))
         return {}
