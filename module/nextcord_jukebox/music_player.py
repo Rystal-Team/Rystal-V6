@@ -240,12 +240,11 @@ class MusicPlayer(object):
         """
         if error:
             raise error
+        if len(self.music_queue) > 0:
+            await self._next_func(index=1)
         else:
-            if len(self.music_queue) > 0:
-                await self._next_func(index=1)
-            else:
-                self._now_playing = None
-                await EventManager.fire("queue_ended", self, self.interaction)
+            self._now_playing = None
+            await EventManager.fire("queue_ended", self, self.interaction)
 
     async def _pre_check(
         self,
