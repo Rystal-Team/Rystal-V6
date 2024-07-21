@@ -29,7 +29,7 @@ from lyricsgenius import Genius
 genius = Genius(os.getenv("GENIUS_APIKEY"))
 
 
-class Song(object):
+class Song:
     def __init__(self, title, lyrics, thumbnail, url):
         self._title = title
         self._lyrics = lyrics
