@@ -154,6 +154,6 @@ print(data["author"])
 print(data["title"])
 print(data["lengthSeconds"])
 print(data["viewCount"])
-print(data["thumbnail"]["thumbnails"][len(data["thumbnail"]["thumbnails"]) - 1])
+print(data[-1][-1][-1])
 
 print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
