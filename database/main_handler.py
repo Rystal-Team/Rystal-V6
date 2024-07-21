@@ -56,8 +56,6 @@ def startup():
         if not table_name in existing_tables:
             cursor.execute(create_statements[table_name])
 
-    return
-
 
 def check_exists(table, key, value):
     statement = f"SELECT {key} FROM {table} WHERE {key} = %s"
