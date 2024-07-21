@@ -84,7 +84,6 @@ def get_channel(
             ``"shorts"``: Shorts
             ``"streams"``: Streams
     """
-
     base_url = ""
     if channel_url:
         base_url = channel_url
@@ -147,7 +146,6 @@ def get_playlist(
         long (``bool``, *optional*):
             Flag that indicates if more that 100 results should be taken - only a workaround, wating for a solution.
     """
-
     url = f"https://www.youtube.com/playlist?list={playlist_id}"
     api_endpoint = "https://www.youtube.com/youtubei/v1/browse"
     videos = get_videos(url, api_endpoint, "playlistVideoRenderer", limit, sleep)
@@ -191,7 +189,6 @@ def get_search(
             What type you want to search for. Pass one of the following values:
             ``"video"|"channel"|"playlist"|"movie"``. Defaults to "video".
     """
-
     sort_by_map = {
         "relevance"  : "A",
         "upload_date": "I",
@@ -224,7 +221,6 @@ def get_video(
         id (``str``):
             The video id from the video you want to get.
     """
-
     session = get_session()
     url = f"https://www.youtube.com/watch?v={id}"
     html = get_initial_data(session, url)
