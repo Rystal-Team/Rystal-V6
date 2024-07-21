@@ -129,9 +129,12 @@ class PlayerManager(object):
             before (VoiceState): The previous voice state of the member.
             after (VoiceState): The new voice state of the member.
         """
-        if member.id == self.bot.user.id:
-            if before.channel is not None and after.channel is None:
-                await self.remove_player(member)
+        if (
+            member.id == self.bot.user.id
+            and before.channel is not None
+            and after.channel is None
+        ):
+            await self.remove_player(member)
         if member.guild.id in self.players:
             await self.players[member.guild.id]._on_voice_state_update(
                 member, before, after
