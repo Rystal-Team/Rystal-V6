@@ -767,7 +767,7 @@ class Music(commands.Cog, EventManager):
     ):
         await interaction.response.defer(with_message=True)
         timer = time.time()
-        print(colored(f"Obtaining Entries...", "dark_grey"))
+        print(colored("Obtaining Entries...", "dark_grey"))
         guild_language = await get_guild_language(interaction.guild.id)
         period_dict = {"Week": 7, "Month": 30, "Year": 365}
         cutoff_days = period_dict.get(period, 30)
@@ -832,7 +832,7 @@ class Music(commands.Cog, EventManager):
         print(colored(f"Entries obtained and sorted, Time Taken: {time.time() - timer}", "dark_grey"))
 
         timer = time.time()
-        print(colored(f"Generating Canvas...", "dark_grey"))
+        print(colored("Generating Canvas...", "dark_grey"))
         canvas = await self.bot.loop.run_in_executor(
             None,
             lambda: self.generate_canvas(interaction, period, guild_language, result_list))

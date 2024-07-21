@@ -109,7 +109,7 @@ class RankSystem(commands.Cog):
             percentage = 0
 
         # Rank card
-        background = Editor(f"./rankCardBase.png")
+        background = Editor("./rankCardBase.png")
         profile = await load_image_async(str(user.display_avatar.url))
 
         profile = Editor(profile).resize((135, 135)).circle_image()

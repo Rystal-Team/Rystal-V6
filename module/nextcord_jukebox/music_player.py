@@ -428,7 +428,7 @@ class MusicPlayer(object):
                 self.voice = interaction.guild.voice_client
                 self.loop = interaction.guild.voice_client.loop
                 self._members = self.voice.channel.members
-                LogHandler.debug(message=f"Defined self.voice and self.loop")
+                LogHandler.debug(message="Defined self.voice and self.loop")
 
                 return True
             except Exception as e:
