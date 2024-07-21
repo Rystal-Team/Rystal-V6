@@ -50,10 +50,12 @@ class StringMatcher:
 
         return prev[-1]
 
-    def calc_score(self, dist, max_len):
+    @staticmethod
+    def calc_score(dist, max_len):
         return 1 - (dist / max_len)
 
-    def split(self, text):
+    @staticmethod
+    def split(text):
         return re.split(r"\s+|[^\w\s・]", text)
 
     def term_sim(self, q_term, t_term):
