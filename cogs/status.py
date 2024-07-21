@@ -73,9 +73,9 @@ class System(commands.Cog):
             )
 
         if use_ytdlp:
-            print(colored(text=f"Using YTDLP to extract video data", color="dark_grey"))
+            print(colored(text="Using YTDLP to extract video data", color="dark_grey"))
         else:
-            print(colored(text=f"Using Meta-YT to extract video data", color="dark_grey"))
+            print(colored(text="Using Meta-YT to extract video data", color="dark_grey"))
 
     @nextcord.slash_command(description="🤖 | Pong!")
     async def ping(self, interaction: Interaction):
