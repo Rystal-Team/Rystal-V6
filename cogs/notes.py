@@ -60,7 +60,7 @@ class NoteSystem(commands.Cog):
         ),
     ):
         note_content = {
-            "title"      : title9,
+            "title"      : title,
             "description": description,
             "state"      : 30,
         }

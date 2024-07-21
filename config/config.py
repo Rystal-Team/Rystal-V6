@@ -29,7 +29,7 @@ from nextcord import Color
 """
 === BOT ===
 """
-status_text = "🌟 v6.4.3b"
+status_text = "🌟 v6.5.0a"
 default_language = "en"
 # Uses default language if multi_lang is set to false
 # Use this if you have little memory
