@@ -32,7 +32,7 @@ class NoteState(Enum):
     FINISHED = 33
 
 
-class Note(object):
+class Note:
     def __init__(self, title, content, uuid, state) -> None:
         self.title = title
         self.content = content

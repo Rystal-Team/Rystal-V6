@@ -52,7 +52,7 @@ from .replay_handler import attach as attach_replay
 from .sockets import attach as attach_sockets
 
 
-class PlayerManager(object):
+class PlayerManager:
     def __init__(self, bot, db_path: str = "./sqlite/jukebox.sqlite", enable_rpc: bool = True,
                  enable_replay: bool = True):
         """
