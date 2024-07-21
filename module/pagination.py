@@ -170,10 +170,8 @@ class Pagination(nextcord.ui.View):
             self.children[2].emoji = "⏮️"
         else:
             self.children[2].emoji = "⏭️"
-        self.children[0].disabled = self.index == 1 or self.index == 0
-        self.children[1].disabled = (
-            self.index == self.total_pages or self.total_pages == 0
-        )
+        self.children[0].disabled = self.index in (1, 0)
+        self.children[1].disabled = self.total_pages in (self.index, 0)
         self.children[2].disabled = self.total_pages == 0
 
     @nextcord.ui.button(emoji="◀️", style=nextcord.ButtonStyle.blurple)
