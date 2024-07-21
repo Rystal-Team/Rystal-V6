@@ -63,4 +63,4 @@ def check_exists(table, key, value):
     cursor.execute(statement, values)
     result = cursor.fetchall()
 
-    return not (len(result) == 0)
+    return not len(result) == 0

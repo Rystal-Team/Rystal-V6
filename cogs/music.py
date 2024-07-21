@@ -237,7 +237,7 @@ class Music(commands.Cog, EventManager):
             return
         try:
             old, new = await player.skip(index=index)
-            if not (new is None):
+            if not new is None:
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
