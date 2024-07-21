@@ -58,7 +58,7 @@ ytdlp = yt_dlp.YoutubeDL(
 )
 
 
-class MusicPlayer(object):
+class MusicPlayer:
     def __init__(self, manager, interaction: Interaction, bot, ffmpeg_opts=None) -> None:
         """
         Initializes the MusicPlayer with the given interaction and bot instances.
