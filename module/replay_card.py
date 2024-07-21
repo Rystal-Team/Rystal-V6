@@ -119,7 +119,8 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
 
         draw.text((50, y_pos + 22), str(i + 1), font=fonts["index"], fill="#576175")
         load_timer = time.time()
-        thumbnail = load_image_from_url(get_smallest_thumbnail(song["thumbnails"])).resize((106, 60)).crop((23, 0, 83, 60))
+        thumbnail = load_image_from_url(get_smallest_thumbnail(song["thumbnails"])).resize((106, 60)).crop(
+            (23, 0, 83, 60))
         print(f"Loaded IMG, time taken {time.time() - load_timer}ms")
 
         canvas.paste(thumbnail, (80, y_pos + 8), thumbnail)

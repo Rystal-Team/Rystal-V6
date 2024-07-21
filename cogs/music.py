@@ -35,7 +35,8 @@ from module.embed import Embeds, NowPlayingMenu
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
-from module.nextcord_jukebox.exceptions import *
+from module.nextcord_jukebox.exceptions import AlreadyPaused, EmptyQueue, LoadingStream, NoQueryResult, NotConnected, \
+    NotPaused, NotPlaying, NothingPlaying, UserNotConnected, VoiceChannelMismatch
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
 from module.pagination import Pagination
@@ -818,10 +819,10 @@ class Music(commands.Cog, EventManager):
         for video_id, replay_count in top_replays:
             metadata = video_metadata.get(video_id, {})
             result_list["replays"].append({
-                "title"    : metadata.get("title", ""),
-                "artist"   : metadata.get("channel", ""),
+                "title"     : metadata.get("title", ""),
+                "artist"    : metadata.get("channel", ""),
                 "thumbnails": metadata.get("thumbnails", ""),
-                "replays"  : replay_count,
+                "replays"   : replay_count,
             })
             result_list["total_time"] += metadata.get("duration", 0) * replay_count
 

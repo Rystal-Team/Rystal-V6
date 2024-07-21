@@ -1,10 +1,9 @@
-
+import time
 from io import BytesIO
 from typing import List, Optional
 
 import requests
 from PIL import Image, ImageDraw, ImageFont
-import time
 
 
 def create_top_songs_poster(songs: List[dict], title: str, description: str,
@@ -50,7 +49,6 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         return text_str + "..."
 
     def load_image_from_url(url: str) -> Image:
-
 
         if url != "":
             return Image.open(BytesIO(requests.get(url).content)).convert("RGBA")
@@ -138,4 +136,4 @@ description = "本月最も再生された曲"
 create_timer = time.time()
 create_top_songs_poster(songs, title, description,
                         detail_texts=["41時間+", "1871曲再生しました", "18% アステル・レダ"])
-print(f"Created poster, {time.time()-create_timer}ms")
+print(f"Created poster, {time.time() - create_timer}ms")
