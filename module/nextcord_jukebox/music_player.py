@@ -267,28 +267,30 @@ class MusicPlayer:
         Returns:
             Optional[bool]: True if all checks pass, otherwise raises an exception.
         """
-        if check_nowplaying:
-            if self._now_playing is None:
-                raise NothingPlaying
-        if check_connection:
+        if check_nowplaying and self._now_playing is None:
+            raise NothingPlaying
+        if (
+            check_connection
+            and (
+            not self.interaction.guild.voice_client
+            or not self.interaction.guild.voice_client.is_connected()
+            or self.voice is None
+        )
+        ):
+            reconnected = await self._attempt_reconnect()
             if (
-                not self.interaction.guild.voice_client
-                or not self.interaction.guild.voice_client.is_connected() or self.voice is None
+                not reconnected
             ):
-                reconnected = await self._attempt_reconnect()
-                if (
-                    not reconnected
-                ):
-                    raise NotConnected
-        if check_fetching_stream:
-            if self._fetching_stream:
-                raise LoadingStream
-        if check_queue:
-            if len(self.music_queue) <= 0:
-                raise EmptyQueue
-        if check_playing:
-            if not self.interaction.guild.voice_client.is_playing():
-                raise NotPlaying
+                raise NotConnected
+        if check_fetching_stream and self._fetching_stream:
+            raise LoadingStream
+        if check_queue and len(self.music_queue) <= 0:
+            raise EmptyQueue
+        if (
+            check_playing
+            and not self.interaction.guild.voice_client.is_playing()
+        ):
+            raise NotPlaying
 
         return True
 
