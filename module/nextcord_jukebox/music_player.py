@@ -165,7 +165,7 @@ class MusicPlayer(object):
                     audio_source = FFmpegPCMAudio(source_url, **self.ffmpeg_opts)
                     self.voice.play(
                         PCMVolumeTransformer(audio_source),
-                        after=lambda error: self._after_func(error),
+                        after=self._after_func,
                     )
 
                     self._now_playing = new
