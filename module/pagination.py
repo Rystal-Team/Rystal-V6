@@ -8,12 +8,12 @@ Classes:
 Methods:
     Search.__init__(self, page_view): Initializes the Search modal with a reference to the page view.
     Search.callback(self, interaction: nextcord.Interaction): Handles the search query input and updates the page view.
-    
+
     Pagination.__init__(self, interaction: nextcord.Interaction, get_page: Callable): Initializes the Pagination view.
     Pagination.navegate(self): Navigates to the initial page and sends the first message.
     Pagination.edit_page(self): Edits the current page based on the search query and page index.
     Pagination.update_buttons(self): Updates the state of pagination buttons.
-    
+
     Pagination.previous(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the previous button click.
     Pagination.next(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the next button click.
     Pagination.end(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the end button click.
