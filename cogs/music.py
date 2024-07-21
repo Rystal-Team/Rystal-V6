@@ -728,7 +728,8 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    def generate_canvas(self, interaction: Interaction, period: str, guild_language: str, result_list):
+    @staticmethod
+    def generate_canvas(interaction: Interaction, period: str, guild_language: str, result_list):
         period_description = {
             "Week" : "most_played_week",
             "Month": "most_played_month",

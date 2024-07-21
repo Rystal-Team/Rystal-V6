@@ -76,7 +76,8 @@ class Logger:
 
         self.logger.addHandler(console_handler)
 
-    def _color_message(self, level, message):
+    @staticmethod
+    def _color_message(level, message):
         """
         Colors the log message based on the log level.
 
