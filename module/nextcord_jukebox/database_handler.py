@@ -288,13 +288,18 @@ class Database:
         metadata_dict = {}
         try:
             if self.db_type == "sqlite":
-                query = "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ({})".format(
-                    ",".join("?" for _ in video_ids)
+
+                query = (
+                    "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ("
+                    + ",".join("?" for _ in video_ids)
+                    + ")"
                 )
                 self.cursor.execute(query, video_ids_tuple)
             else:
-                query = "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ({})".format(
-                    ",".join("%s" for _ in video_ids)
+                query = (
+                    "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ("
+                    + ",".join("%s" for _ in video_ids)
+                    + ")"
                 )
                 self.cursor.execute(query, video_ids_tuple)
             results = self.cursor.fetchall()
