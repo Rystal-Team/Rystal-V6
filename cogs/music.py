@@ -20,6 +20,7 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
+import os
 import time
 from datetime import timedelta
 from io import BytesIO
@@ -29,7 +30,7 @@ from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.config import lang, type_color
+from config.config import SQLITE_PATH, USE_SQLITE, lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embed import Embeds, NowPlayingMenu
 from module.matcher import SongMatcher
@@ -60,7 +61,18 @@ class Music(commands.Cog, EventManager):
     def __init__(self, bot):
         self.bot = bot
         self.now_playing_menus = []
-        self.manager = PlayerManager(bot)
+        if USE_SQLITE:
+            self.manager = PlayerManager(bot, db_type="sqlite", db_path=SQLITE_PATH)
+        else:
+            self.manager = PlayerManager(
+                bot,
+                db_type="mysql",
+                mysql_host=os.getenv("MYSQL_HOST"),
+                mysql_port=int(os.getenv("MYSQL_PORT")),
+                mysql_user=os.getenv("MYSQL_USER"),
+                mysql_password=os.getenv("MYSQL_PASSWORD"),
+                mysql_database=os.getenv("MYSQL_DATABASE"),
+            )
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):

@@ -39,18 +39,14 @@ class NoteSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(
-        description="📒 | Note"
-    )
+    @nextcord.slash_command(description="📒 | Note")
     async def note(
         self,
         interaction: Interaction,
     ):
         return
 
-    @note.subcommand(
-        description="📒 | Create a new note!"
-    )
+    @note.subcommand(description="📒 | Create a new note!")
     async def create(
         self,
         interaction: Interaction,
@@ -60,9 +56,9 @@ class NoteSystem(commands.Cog):
         ),
     ):
         note_content = {
-            "title"      : title,
+            "title": title,
             "description": description,
-            "state"      : 30,
+            "state": 30,
         }
         await interaction.response.defer()
         await add_note(interaction.user.id, json.dumps(note_content))
@@ -77,9 +73,7 @@ class NoteSystem(commands.Cog):
             ephemeral=True,
         )
 
-    @note.subcommand(
-        description="📒 | Create a new note!"
-    )
+    @note.subcommand(description="📒 | Create a new note!")
     async def list(
         self,
         interaction: Interaction,
@@ -98,9 +92,7 @@ class NoteSystem(commands.Cog):
         )
         return
 
-    @note.subcommand(
-        description="📒 | Create a new note!"
-    )
+    @note.subcommand(description="📒 | Create a new note!")
     async def view(
         self,
         interaction: Interaction,

@@ -29,7 +29,10 @@ from nextcord import Color
 """
 === BOT ===
 """
-status_text = "🌟 v6.5.0a"
+USE_SQLITE = False
+SQLITE_PATH = "sqlite/database.db"
+DEBUG = True
+status_text = "🌟 v6.5.1a"
 default_language = "en"
 # Uses default language if multi_lang is set to false
 # Use this if you have little memory
