@@ -31,7 +31,7 @@ def get_expire(url):
     end = start + len("expire=")
     while end < len(url) and url[end].isdigit():
         end += 1
-    return int(url[start + len("expire="): end])
+    return int(url[start + len("expire=") : end])
 
 
 def is_leap(year):

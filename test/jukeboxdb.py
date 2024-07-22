@@ -42,11 +42,21 @@ print(to_timestamp(datetime.now() - timedelta(days=500)))
 async def test():
     db = Database(db_path="./jukebox.db")
     db.connect()
-    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 1")
-    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 2")
-    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 3")
-    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=29)).isoformat(), "song 4")
-    await db.add_replay_entry("user1", (datetime.now() - timedelta(days=30)).isoformat(), "song 5")
+    await db.add_replay_entry(
+        "user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 1"
+    )
+    await db.add_replay_entry(
+        "user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 2"
+    )
+    await db.add_replay_entry(
+        "user1", (datetime.now() - timedelta(days=500)).isoformat(), "song 3"
+    )
+    await db.add_replay_entry(
+        "user1", (datetime.now() - timedelta(days=29)).isoformat(), "song 4"
+    )
+    await db.add_replay_entry(
+        "user1", (datetime.now() - timedelta(days=30)).isoformat(), "song 5"
+    )
 
     print(await db.get_replay_history("user1", cutoff_day=30))
 

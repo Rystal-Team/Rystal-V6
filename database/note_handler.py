@@ -73,9 +73,19 @@ async def add_note(user_id: int, note_content: str):
         cursor.execute(update_statement, (json.dumps(notes), str(user_id)))
         database.commit()
 
-        print(colored(text=f"[NOTE DATABASE] Note added for User: {user_id}", color="light_yellow"))
+        print(
+            colored(
+                text=f"[NOTE DATABASE] Note added for User: {user_id}",
+                color="light_yellow",
+            )
+        )
     except Exception as e:
-        print(colored(text=f"[NOTE DATABASE] Failed to add note for User: {user_id} - {e}", color="red"))
+        print(
+            colored(
+                text=f"[NOTE DATABASE] Failed to add note for User: {user_id} - {e}",
+                color="red",
+            )
+        )
 
 
 async def get_notes(user_id: int):
@@ -90,8 +100,18 @@ async def get_notes(user_id: int):
         if result:
             notes = json.loads(result[0])
             return notes
-        print(colored(text=f"[NOTE DATABASE] No notes found for User: {user_id}", color="yellow"))
+        print(
+            colored(
+                text=f"[NOTE DATABASE] No notes found for User: {user_id}",
+                color="yellow",
+            )
+        )
         return {}
     except Exception as e:
-        print(colored(text=f"[NOTE DATABASE] Failed to retrieve notes for User: {user_id} - {e}", color="red"))
+        print(
+            colored(
+                text=f"[NOTE DATABASE] Failed to retrieve notes for User: {user_id} - {e}",
+                color="red",
+            )
+        )
         return {}

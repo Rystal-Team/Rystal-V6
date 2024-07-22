@@ -1,6 +1,5 @@
 """Custom exceptions for the Nextcord Jukebox application."""
 
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -23,6 +22,7 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
+
 
 class NextcordJukeBoxError(Exception):
     """Base Nextcord Jukebox Exception."""

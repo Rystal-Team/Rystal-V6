@@ -28,22 +28,24 @@ import requests
 
 def treatContents(videoIds, contents):
     for content in contents:
-        if 'playlistVideoRenderer' not in content:
+        if "playlistVideoRenderer" not in content:
             continue
-        videoId = content['playlistVideoRenderer']['videoId']
+        videoId = content["playlistVideoRenderer"]["videoId"]
         videoIds.add(videoId)
     return getContinuationToken(videoIds, contents)
 
 
 def getContinuationToken(videoIds, contents):
     lastContent = contents[-1]
-    if 'continuationItemRenderer' not in lastContent:
+    if "continuationItemRenderer" not in lastContent:
         return videoIds
-    return lastContent['continuationItemRenderer']['continuationEndpoint']['continuationCommand']['token']
+    return lastContent["continuationItemRenderer"]["continuationEndpoint"][
+        "continuationCommand"
+    ]["token"]
 
 
 def getPlaylistVideoIds(playlistId):
-    url = f'https://www.youtube.com/playlist?list={playlistId}'
+    url = f"https://www.youtube.com/playlist?list={playlistId}"
     response = requests.post(url)
     if response.status_code != 200:
         print(f"Failed to fetch playlist: {playlistId}")
@@ -56,10 +58,17 @@ def getPlaylistVideoIds(playlistId):
         print(f"Response content: {response.content}")
         return set()
 
-    contents = \
-        json_data['contents']['twoColumnBrowseResultsRenderer']['tabs'][0]['tabRenderer']['content'][
-            'sectionListRenderer'][
-            'contents'][0]['itemSectionRenderer']['contents'][0]['playlistVideoListRenderer']['contents']
+    contents = json_data["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][0][
+        "tabRenderer"
+    ]["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"][
+        "contents"
+    ][
+        0
+    ][
+        "playlistVideoListRenderer"
+    ][
+        "contents"
+    ]
 
     videoIds = set()
     continuationToken = treatContents(videoIds, contents)
@@ -68,9 +77,9 @@ def getPlaylistVideoIds(playlistId):
 
     while True:
         params = {
-            'action_get_playlist_details': 1,
-            'ajax'                       : 1,
-            'continuation'               : continuationToken,
+            "action_get_playlist_details": 1,
+            "ajax": 1,
+            "continuation": continuationToken,
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:
@@ -84,11 +93,13 @@ def getPlaylistVideoIds(playlistId):
             print(f"Response content: {response.content}")
             return videoIds
 
-        if 'contents' not in data:
+        if "contents" not in data:
             print(f"Missing contents in playlist continuation: {playlistId}")
             return videoIds
 
-        continuationItems = data['contents']['singleColumnWatchNextResults']['playlist']['playlist']['contents']
+        continuationItems = data["contents"]["singleColumnWatchNextResults"][
+            "playlist"
+        ]["playlist"]["contents"]
         continuationToken = treatContents(videoIds, continuationItems)
         if isinstance(continuationToken, set):
             return continuationToken
@@ -96,7 +107,7 @@ def getPlaylistVideoIds(playlistId):
 
 def fetchPlaylistVideos(playlistId):
     foundVideoIds = getPlaylistVideoIds(playlistId)
-    print(f'Found {len(foundVideoIds)} videos in playlist: {playlistId}')
+    print(f"Found {len(foundVideoIds)} videos in playlist: {playlistId}")
 
 
 fetchPlaylistVideos("PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y")

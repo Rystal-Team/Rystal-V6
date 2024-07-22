@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 #
 
+
 class progressBar:
     """
     A class for generating progress bars with customizable styles.

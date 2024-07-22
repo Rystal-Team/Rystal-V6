@@ -24,7 +24,9 @@
 from meta_yt import YouTube
 from pytube import Playlist
 
-playlist = Playlist("https://www.youtube.com/playlist?list=PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y")
+playlist = Playlist(
+    "https://www.youtube.com/playlist?list=PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y"
+)
 print(len(playlist))
 
 unique = []

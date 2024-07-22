@@ -88,7 +88,7 @@ class Database:
                 song TEXT,
                 FOREIGN KEY (user_id) REFERENCES secrets (user_id)
             );
-            """
+            """,
         ]
         for query in queries:
             self.cursor.execute(query)
@@ -199,8 +199,11 @@ class Database:
         video_ids_tuple = tuple(video_ids)
         metadata_dict = {}
         try:
-            query = "SELECT video_id, metadata FROM ytcache WHERE video_id IN ({})".format(
-                ','.join('?' for _ in video_ids))
+            query = (
+                "SELECT video_id, metadata FROM ytcache WHERE video_id IN ({})".format(
+                    ",".join("?" for _ in video_ids)
+                )
+            )
             self.cursor.execute(query, video_ids_tuple)
             results = self.cursor.fetchall()
             for video_id, metadata_json in results:
@@ -244,14 +247,17 @@ class Database:
         try:
             cutoff_date = (datetime.now() - timedelta(days=cutoff)).isoformat()
             query = "SELECT played_at, song FROM replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC"
-            self.cursor.execute(query, (user_id, cutoff_date,))
+            self.cursor.execute(
+                query,
+                (
+                    user_id,
+                    cutoff_date,
+                ),
+            )
             results = self.cursor.fetchall()
             history = []
             for result in results:
-                history.append({
-                    'played_at': result[0],
-                    'song'     : result[1]
-                })
+                history.append({"played_at": result[0], "song": result[1]})
             return history
         except sqlite3.Error as e:
             LogHandler.error(f"Error fetching replay history: {e}")

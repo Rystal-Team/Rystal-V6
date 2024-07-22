@@ -28,9 +28,9 @@ from termcolor import colored
 from .main_handler import check_exists, cursor, database
 
 default_user_data = {
-    "xp"     : 0,
+    "xp": 0,
     "totalxp": 0,
-    "level"  : 0,
+    "level": 0,
 }
 
 
@@ -42,12 +42,15 @@ async def register_user(user_id: int):
         cursor.execute(statement, values)
         database.commit()
         print(
-            colored(text=f"[RANK DATABASE] Registered User: {user_id}", color="light_yellow")
+            colored(
+                text=f"[RANK DATABASE] Registered User: {user_id}", color="light_yellow"
+            )
         )
     except Exception as e:
         print(
             colored(
-                text=f"[RANK DATABASE] Failed to Registered User: {user_id}", color="red"
+                text=f"[RANK DATABASE] Failed to Registered User: {user_id}",
+                color="red",
             )
         )
 

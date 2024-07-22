@@ -30,7 +30,7 @@ from .main_handler import check_exists, cursor, database
 
 default_guild_settings = {
     "music_silent_mode": False,
-    "music_auto_leave" : True,
+    "music_auto_leave": True,
 }
 
 
@@ -48,13 +48,15 @@ async def append_guild(guild_id: int):
 
         print(
             colored(
-                text=f"[GUILD DATABASE] Registered Guild: {guild_id}", color="light_yellow"
+                text=f"[GUILD DATABASE] Registered Guild: {guild_id}",
+                color="light_yellow",
             )
         )
     except Exception as e:
         print(
             colored(
-                text=f"[GUILD DATABASE] Failed to Registered Guild: {guild_id}", color="red"
+                text=f"[GUILD DATABASE] Failed to Registered Guild: {guild_id}",
+                color="red",
             )
         )
 

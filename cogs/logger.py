@@ -27,8 +27,7 @@ import logging
 import nextcord
 from nextcord.ext import commands
 
-from config.config import (enable_activity_logging, logging_channe_id,
-                           type_color)
+from config.config import enable_activity_logging, logging_channe_id, type_color
 
 
 class Logger(commands.Cog):
@@ -44,9 +43,11 @@ class Logger(commands.Cog):
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         channel = self.bot.get_channel(logging_channe_id)
-        if (hasattr(interaction, 'application_command') and
-            hasattr(interaction.application_command, 'qualified_name') and
-            isinstance(interaction.application_command.qualified_name, str)):
+        if (
+            hasattr(interaction, "application_command")
+            and hasattr(interaction.application_command, "qualified_name")
+            and isinstance(interaction.application_command.qualified_name, str)
+        ):
             identifier = interaction.application_command.qualified_name
         else:
             identifier = "Not Command"

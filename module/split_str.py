@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 #
 
+
 def split_string(input_string, max_length=20):
     """
     Splits a string into smaller strings with a maximum length.
@@ -37,4 +38,7 @@ def split_string(input_string, max_length=20):
         return [input_string]
 
     # Use list comprehension to split the input string into smaller strings of length max_length.
-    return [input_string[i:i + max_length] for i in range(0, len(input_string), max_length)]
+    return [
+        input_string[i : i + max_length]
+        for i in range(0, len(input_string), max_length)
+    ]

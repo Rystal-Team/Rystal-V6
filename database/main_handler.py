@@ -36,8 +36,8 @@ database = mysql.connector.connect(
 database_tables = ["guild", "rank", "note"]
 create_statements = {
     "guild": "CREATE TABLE guild (guild_id VARCHAR(24) PRIMARY KEY, language VARCHAR(255), settings JSON)",
-    "rank" : "CREATE TABLE rank (user_id VARCHAR(24) PRIMARY KEY, data JSON, total_xp INT(255))",
-    "note" : "CREATE TABLE note (user_id VARCHAR(24) PRIMARY KEY, notes JSON)",
+    "rank": "CREATE TABLE rank (user_id VARCHAR(24) PRIMARY KEY, data JSON, total_xp INT(255))",
+    "note": "CREATE TABLE note (user_id VARCHAR(24) PRIMARY KEY, notes JSON)",
 }
 existing_tables = []
 

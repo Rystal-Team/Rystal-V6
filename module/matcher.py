@@ -157,7 +157,8 @@ class SongMatcher:
                 if debug:
                     print(
                         colored(
-                            f"Unmatch >  {song_title} by {song_channel} (Score: {highest_score:.2f})", "grey"
+                            f"Unmatch >  {song_title} by {song_channel} (Score: {highest_score:.2f})",
+                            "grey",
                         )
                     )
 
@@ -181,10 +182,18 @@ class Song:
 
 if __name__ == "__main__":
     songs = [
-        Song(name="夕刻、夢ト見紛ウ / アステル・レダ × カグラナナ【 歌ってみた 】", channel="カグラナナ"),
-        Song(name="【歌ってみた】一度だけの恋なら【とこ尊楓リゼるる】", channel="戌亥とこ"),
-        Song(name="仮死化 / 遼遼 (Covered by ゆめおいまちた)【歌ってみた/にじさんじ/夢追翔/町田ちま】",
-             channel="夢追翔のJUKEBOX"),
+        Song(
+            name="夕刻、夢ト見紛ウ / アステル・レダ × カグラナナ【 歌ってみた 】",
+            channel="カグラナナ",
+        ),
+        Song(
+            name="【歌ってみた】一度だけの恋なら【とこ尊楓リゼるる】",
+            channel="戌亥とこ",
+        ),
+        Song(
+            name="仮死化 / 遼遼 (Covered by ゆめおいまちた)【歌ってみた/にじさんじ/夢追翔/町田ちま】",
+            channel="夢追翔のJUKEBOX",
+        ),
         Song(name="[MV] We don't talk anymore", channel="Justin Bieber"),
     ]
 

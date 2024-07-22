@@ -42,7 +42,9 @@ class ReplayHandler(EventManager):
             now_playing = await player.now_playing()
             video_id = await get_video_id(now_playing.url)
             LogHandler.info(f"Adding replay entry for {member.global_name}")
-            await self.database.add_replay_entry(str(member.id), (datetime.now().isoformat()), video_id)
+            await self.database.add_replay_entry(
+                str(member.id), (datetime.now().isoformat()), video_id
+            )
 
     @EventManager.listener
     async def member_joined_voice(self, player, member):
@@ -54,7 +56,9 @@ class ReplayHandler(EventManager):
             return
         video_id = await get_video_id(now_playing.url)
         LogHandler.info(f"Adding replay entry for {member.global_name}")
-        await self.database.add_replay_entry(str(member.id), (datetime.now().isoformat()), video_id)
+        await self.database.add_replay_entry(
+            str(member.id), (datetime.now().isoformat()), video_id
+        )
 
 
 def attach(manager):

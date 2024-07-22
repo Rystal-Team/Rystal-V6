@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 #
 
+
 class CustomCog:
     _event_listeners = {}
     _cog_instances = []

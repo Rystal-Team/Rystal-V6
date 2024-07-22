@@ -29,34 +29,39 @@ from lxml import html
 
 def treatContents(videoIds, contents):
     for content in contents:
-        if not 'richItemRenderer' in content:
+        if not "richItemRenderer" in content:
             break
-        videoId = content['richItemRenderer']['content']['videoRenderer']['videoId']
+        videoId = content["richItemRenderer"]["content"]["videoRenderer"]["videoId"]
         videoIds.add(videoId)
     return getContinuationToken(videoIds, contents)
 
 
 def getContinuationToken(videoIds, contents):
     lastContent = contents[-1]
-    if not 'continuationItemRenderer' in lastContent:
+    if not "continuationItemRenderer" in lastContent:
         return videoIds
-    return lastContent['continuationItemRenderer']['continuationEndpoint']['continuationCommand']['token']
+    return lastContent["continuationItemRenderer"]["continuationEndpoint"][
+        "continuationCommand"
+    ]["token"]
 
 
 def getChannelVideoIds(channelHandle):
-    text = requests.get(f'https://www.youtube.com/{channelHandle}/videos').text
+    text = requests.get(f"https://www.youtube.com/{channelHandle}/videos").text
     tree = html.fromstring(text)
 
-    ytVariableName = 'ytInitialData'
-    ytVariableDeclaration = ytVariableName + ' = '
-    for script in tree.xpath('//script'):
+    ytVariableName = "ytInitialData"
+    ytVariableDeclaration = ytVariableName + " = "
+    for script in tree.xpath("//script"):
         scriptContent = script.text_content()
         if ytVariableDeclaration in scriptContent:
-            ytVariableData = json.loads(scriptContent.split(ytVariableDeclaration)[1][:-1])
+            ytVariableData = json.loads(
+                scriptContent.split(ytVariableDeclaration)[1][:-1]
+            )
             break
 
-    contents = ytVariableData['contents']['twoColumnBrowseResultsRenderer']['tabs'][1]['tabRenderer']['content'][
-        'richGridRenderer']['contents']
+    contents = ytVariableData["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][1][
+        "tabRenderer"
+    ]["content"]["richGridRenderer"]["contents"]
 
     videoIds = set()
 
@@ -64,32 +69,29 @@ def getChannelVideoIds(channelHandle):
     if type(continuationToken) is set:
         return continuationToken
 
-    url = 'https://www.youtube.com/youtubei/v1/browse'
-    headers = {
-        'Content-Type': 'application/json'
-    }
+    url = "https://www.youtube.com/youtubei/v1/browse"
+    headers = {"Content-Type": "application/json"}
     requestData = {
-        'context': {
-            'client': {
-                'clientName'   : 'WEB',
-                'clientVersion': '2.20240313.05.00'
-            }
+        "context": {
+            "client": {"clientName": "WEB", "clientVersion": "2.20240313.05.00"}
         }
     }
     while True:
-        requestData['continuation'] = continuationToken
+        requestData["continuation"] = continuationToken
         try:
             data = requests.post(url, headers=headers, json=requestData).json()
         except requests.exceptions.SSLError:
-            print('SSL error, retrying')
+            print("SSL error, retrying")
             continue
         # Happens not deterministically sometimes.
-        if not 'onResponseReceivedActions' in data:
-            print('Missing onResponseReceivedActions, retrying')
-            with open('error.json', 'w') as f:
+        if not "onResponseReceivedActions" in data:
+            print("Missing onResponseReceivedActions, retrying")
+            with open("error.json", "w") as f:
                 json.dump(data, f, indent=4)
             continue
-        continuationItems = data['onResponseReceivedActions'][0]['appendContinuationItemsAction']['continuationItems']
+        continuationItems = data["onResponseReceivedActions"][0][
+            "appendContinuationItemsAction"
+        ]["continuationItems"]
         continuationToken = treatContents(videoIds, continuationItems)
         print(videoIds)
         if type(continuationToken) is set:
@@ -99,17 +101,17 @@ def getChannelVideoIds(channelHandle):
 
 # Source: https://youtube.fandom.com/wiki/List_of_YouTube_channels_with_the_most_video_uploads?oldid=1795583
 CHANNEL_HANDLES = [
-    '@RoelVandePaar',
-    '@Doubtnut',
-    '@KnowledgeBaseLibrary',
-    '@betterbandai4163',
-    '@Hey_Delphi',
+    "@RoelVandePaar",
+    "@Doubtnut",
+    "@KnowledgeBaseLibrary",
+    "@betterbandai4163",
+    "@Hey_Delphi",
 ]
 
 params = {
-    'part': 'about',
+    "part": "about",
 }
 for channelHandle in CHANNEL_HANDLES[::-1]:
-    params['handle'] = channelHandle
+    params["handle"] = channelHandle
     foundVideoIds = getChannelVideoIds(channelHandle)
-    print(f'Found {len(foundVideoIds)} videos.')
+    print(f"Found {len(foundVideoIds)} videos.")

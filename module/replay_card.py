@@ -28,8 +28,12 @@ import requests
 from PIL import Image, ImageDraw, ImageFont
 
 
-def create_top_songs_poster(songs: List[dict], title: str, description: str,
-                            detail_texts: Optional[List[str]] = None) -> Image:
+def create_top_songs_poster(
+    songs: List[dict],
+    title: str,
+    description: str,
+    detail_texts: Optional[List[str]] = None,
+) -> Image:
     """
     Create a poster for top songs with given title, description, and optional details.
 
@@ -43,8 +47,15 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
         Image: The generated poster as a PIL Image object.
     """
 
-    def draw_rounded_text(text_str: str, font: ImageFont.FreeTypeFont, x_pad: int, y_pad: int, radius: int, pos: tuple,
-                          color: str = "#97A8CB") -> int:
+    def draw_rounded_text(
+        text_str: str,
+        font: ImageFont.FreeTypeFont,
+        x_pad: int,
+        y_pad: int,
+        radius: int,
+        pos: tuple,
+        color: str = "#97A8CB",
+    ) -> int:
         width, height = draw.textbbox((0, 0), text_str, font=font)[2:4]
         rect_w, rect_h = width + 2 * x_pad, 24 + 2 * y_pad
         x, y = pos
@@ -91,14 +102,22 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
     canvas = Image.new("RGB", (800, 1300), color="#16181d")
     draw = ImageDraw.Draw(canvas)
 
-    fonts = {name: ImageFont.truetype(f"font/GoNotoKurrent-{style}.ttf", size) for name, style, size in [
-        ("title", "Bold", 36), ("description", "Regular", 28), ("index", "Regular", 20),
-        ("song", "Regular", 28), ("artist", "Regular", 15), ("replay", "Bold", 25), ("details", "Regular", 24)
-    ]}
+    fonts = {
+        name: ImageFont.truetype(f"font/GoNotoKurrent-{style}.ttf", size)
+        for name, style, size in [
+            ("title", "Bold", 36),
+            ("description", "Regular", 28),
+            ("index", "Regular", 20),
+            ("song", "Regular", 28),
+            ("artist", "Regular", 15),
+            ("replay", "Bold", 25),
+            ("details", "Regular", 24),
+        ]
+    }
 
     for path, pos, size in [
         ("assets/logo.png", (60, 90), (100, 100)),
-        ("assets/get-it-on-github.png", (292, 1160), (215, 83))
+        ("assets/get-it-on-github.png", (292, 1160), (215, 83)),
     ]:
         canvas.paste(Image.open(path).resize(size), pos, Image.open(path).resize(size))
 
@@ -108,25 +127,40 @@ def create_top_songs_poster(songs: List[dict], title: str, description: str,
 
     details_x = 55
     for text in detail_texts or []:
-        details_x += draw_rounded_text(text, fonts["details"], 15, 4, 15, (details_x, 205)) + 10
+        details_x += (
+            draw_rounded_text(text, fonts["details"], 15, 4, 15, (details_x, 205)) + 10
+        )
 
     for i, song in enumerate(songs):
         timer = time.time()
         y_pos = 260 + i * 90
         song_text = truncate_text(song["title"], fonts["song"], 540)
         artist_text = truncate_text(f"{song['artist']}", fonts["artist"], 540)
-        replay_text = format_number(song["replays"]) if isinstance(song["replays"], int) else song["replays"]
+        replay_text = (
+            format_number(song["replays"])
+            if isinstance(song["replays"], int)
+            else song["replays"]
+        )
 
         draw.text((50, y_pos + 22), str(i + 1), font=fonts["index"], fill="#576175")
         load_timer = time.time()
-        thumbnail = load_image_from_url(get_smallest_thumbnail(song["thumbnails"])).resize((106, 60)).crop(
-            (23, 0, 83, 60))
+        thumbnail = (
+            load_image_from_url(get_smallest_thumbnail(song["thumbnails"]))
+            .resize((106, 60))
+            .crop((23, 0, 83, 60))
+        )
         print(f"Loaded IMG, time taken {time.time() - load_timer}ms")
 
         canvas.paste(thumbnail, (80, y_pos + 8), thumbnail)
         draw.text((150, y_pos + 5), song_text, font=fonts["song"], fill="#ffffff")
         draw.text((150, y_pos + 40), artist_text, font=fonts["artist"], fill="#97A8CB")
-        draw.text((750, y_pos + 30), replay_text, font=fonts["replay"], fill="#ffffff", anchor="rm")
+        draw.text(
+            (750, y_pos + 30),
+            replay_text,
+            font=fonts["replay"],
+            fill="#ffffff",
+            anchor="rm",
+        )
 
         if i < len(songs) - 1:
             draw.line((50, y_pos + 80, 750, y_pos + 80), fill="#1c1f26", width=2)

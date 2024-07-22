@@ -44,22 +44,24 @@ from .utils import get_video_id
 yt_dlp.utils.bug_reports_message = lambda: ""
 ytdlp = yt_dlp.YoutubeDL(
     {
-        "format"        : "bestaudio/best",
-        "noplaylist"    : True,
-        "ignoreerrors"  : True,
-        "quiet"         : True,
-        "no_warnings"   : True,
+        "format": "bestaudio/best",
+        "noplaylist": True,
+        "ignoreerrors": True,
+        "quiet": True,
+        "no_warnings": True,
         "source_address": "0.0.0.0",
-        "forceip"       : "4",
-        "skip_download" : True,
-        "extract_flat"  : True,
+        "forceip": "4",
+        "skip_download": True,
+        "extract_flat": True,
         "default_search": "auto",
     }
 )
 
 
 class MusicPlayer:
-    def __init__(self, manager, interaction: Interaction, bot, ffmpeg_opts=None) -> None:
+    def __init__(
+        self, manager, interaction: Interaction, bot, ffmpeg_opts=None
+    ) -> None:
         """
         Initializes the MusicPlayer with the given interaction and bot instances.
 
@@ -88,7 +90,7 @@ class MusicPlayer:
         self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options"       : "-vn",
+            "options": "-vn",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
@@ -98,7 +100,9 @@ class MusicPlayer:
             try:
                 self.voice = self.interaction.guild.voice_client
                 await self.connect(self.interaction)
-                LogHandler.debug("Reconnected to the voice channel.", )
+                LogHandler.debug(
+                    "Reconnected to the voice channel.",
+                )
                 return True
             except Exception as e:
                 LogHandler.warning(f"Reconnection attempt {attempt + 1} failed: {e}")
@@ -131,8 +135,14 @@ class MusicPlayer:
         old_members = set(self._members)
 
         await asyncio.gather(
-            *(EventManager.fire("member_joined_voice", self, m) for m in new_members - old_members),
-            *(EventManager.fire("member_left_voice", self, m) for m in old_members - new_members)
+            *(
+                EventManager.fire("member_joined_voice", self, m)
+                for m in new_members - old_members
+            ),
+            *(
+                EventManager.fire("member_left_voice", self, m)
+                for m in old_members - new_members
+            ),
         )
 
         self._members = self.voice.channel.members
@@ -158,7 +168,12 @@ class MusicPlayer:
                         lambda: ytdlp.extract_info(new.url, download=False),
                     )
 
-                    print(colored(f"Extract Completed, Time taken: {time.time() - timer}", "dark_grey"))
+                    print(
+                        colored(
+                            f"Extract Completed, Time taken: {time.time() - timer}",
+                            "dark_grey",
+                        )
+                    )
                     source_url = data["url"]
                     new.source_url = source_url
 
@@ -179,16 +194,20 @@ class MusicPlayer:
                     expire_time = datetime.datetime.fromtimestamp(int(expire_unix_time))
                     print(
                         colored(
-                            f"Queue Source (Expire: {expire_time}):\n{source_url}", "dark_grey"
+                            f"Queue Source (Expire: {expire_time}):\n{source_url}",
+                            "dark_grey",
                         )
                     )
 
                     print(colored(f"Time taken: {time.time() - timer}", "dark_grey"))
 
-                    await EventManager.fire("track_start", self, self.interaction, last, new)
+                    await EventManager.fire(
+                        "track_start", self, self.interaction, last, new
+                    )
             except Exception as e:
                 LogHandler.error(
-                    f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}")
+                    f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}"
+                )
                 raise e
 
     async def _pop_queue(self, index: int = 1, append: bool = False):
@@ -269,27 +288,19 @@ class MusicPlayer:
         """
         if check_nowplaying and self._now_playing is None:
             raise NothingPlaying
-        if (
-            check_connection
-            and (
+        if check_connection and (
             not self.interaction.guild.voice_client
             or not self.interaction.guild.voice_client.is_connected()
             or self.voice is None
-        )
         ):
             reconnected = await self._attempt_reconnect()
-            if (
-                not reconnected
-            ):
+            if not reconnected:
                 raise NotConnected
         if check_fetching_stream and self._fetching_stream:
             raise LoadingStream
         if check_queue and len(self.music_queue) <= 0:
             raise EmptyQueue
-        if (
-            check_playing
-            and not self.interaction.guild.voice_client.is_playing()
-        ):
+        if check_playing and not self.interaction.guild.voice_client.is_playing():
             raise NotPlaying
 
         return True
@@ -348,14 +359,14 @@ class MusicPlayer:
         if cached_meta is None:
             video = await self.loop.run_in_executor(None, lambda: Video(video_id))
             meta = {
-                "url"        : video.url,
-                "title"      : video.title,
-                "views"      : video.views,
-                "duration"   : video.duration,
-                "thumbnail"  : video.thumbnail,
-                "channel"    : video.channel,
+                "url": video.url,
+                "title": video.title,
+                "views": video.views,
+                "duration": video.duration,
+                "thumbnail": video.thumbnail,
+                "channel": video.channel,
                 "channel_url": video.channel_url,
-                "thumbnails" : video.thumbnails,
+                "thumbnails": video.thumbnails,
             }
             self.database.cache_video_metadata(video_id, meta)
         else:
@@ -530,7 +541,7 @@ class MusicPlayer:
             tuple: The last song played and the new song to be played.
         """
         first = self.music_queue[: len(self.music_queue) - 2]
-        last = self.music_queue[len(self.music_queue) - 2:]
+        last = self.music_queue[len(self.music_queue) - 2 :]
         last.extend(first)
 
         self.music_queue = last

@@ -33,9 +33,9 @@ import requests
 from typing_extensions import Literal
 
 type_property_map = {
-    "videos" : "videoRenderer",
+    "videos": "videoRenderer",
     "streams": "videoRenderer",
-    "shorts" : "reelItemRenderer"
+    "shorts": "reelItemRenderer",
 }
 
 
@@ -97,26 +97,43 @@ def get_channel(
         content_type=content_type,
     )
     api_endpoint = "https://www.youtube.com/youtubei/v1/browse"
-    videos = get_videos(url, api_endpoint, type_property_map[content_type], limit, sleep, sort_by)
+    videos = get_videos(
+        url, api_endpoint, type_property_map[content_type], limit, sleep, sort_by
+    )
     yield from videos
 
 
-def _filter_videos_in_playlist(playlist_id: str, videos: Generator[dict, None, None]) -> Generator[dict, None, None]:
+def _filter_videos_in_playlist(
+    playlist_id: str, videos: Generator[dict, None, None]
+) -> Generator[dict, None, None]:
     def _filter(video: dict) -> Optional[dict]:
         while True:
-            text = requests.get(f"https://www.youtube.com/watch?v={video['videoId']}&list={playlist_id}").text
+            text = requests.get(
+                f"https://www.youtube.com/watch?v={video['videoId']}&list={playlist_id}"
+            ).text
             try:
-                return video if int(re.findall(r'\"currentIndex\":(\d+)', text)[0]) else None
+                return (
+                    video
+                    if int(re.findall(r"\"currentIndex\":(\d+)", text)[0])
+                    else None
+                )
             except IndexError:  # Don't know why
-                time.sleep(.5)
+                time.sleep(0.5)
 
     step = 20
 
     for _ in count():
         outputs = step * [None]
         threads = tuple(
-            Thread(target=lambda i, v: setitem(outputs, i, _filter(v)), args=(index, video,)) for index, video in
-            enumerate(islice(videos, step)))
+            Thread(
+                target=lambda i, v: setitem(outputs, i, _filter(v)),
+                args=(
+                    index,
+                    video,
+                ),
+            )
+            for index, video in enumerate(islice(videos, step))
+        )
         if not threads:
             break
         for thread in threads:
@@ -153,7 +170,9 @@ def get_playlist(
         video = next(videos)
         yield video
         channel_username = video["shortBylineText"]["runs"][0]["text"]
-        videos = _filter_videos_in_playlist(playlist_id, get_channel(channel_username=channel_username))
+        videos = _filter_videos_in_playlist(
+            playlist_id, get_channel(channel_username=channel_username)
+        )
     yield from videos
 
 
@@ -190,17 +209,17 @@ def get_search(
             ``"video"|"channel"|"playlist"|"movie"``. Defaults to "video".
     """
     sort_by_map = {
-        "relevance"  : "A",
+        "relevance": "A",
         "upload_date": "I",
-        "view_count" : "M",
-        "rating"     : "E",
+        "view_count": "M",
+        "rating": "E",
     }
 
     results_type_map = {
-        "video"   : ["B", "videoRenderer"],
-        "channel" : ["C", "channelRenderer"],
+        "video": ["B", "videoRenderer"],
+        "channel": ["C", "channelRenderer"],
         "playlist": ["D", "playlistRenderer"],
-        "movie"   : ["E", "videoRenderer"],
+        "movie": ["E", "videoRenderer"],
     }
 
     param_string = f"CA{sort_by_map[sort_by]}SAhA{results_type_map[results_type][0]}"
@@ -229,14 +248,17 @@ def get_video(
     )["client"]
     session.headers["X-YouTube-Client-Name"] = "1"
     session.headers["X-YouTube-Client-Version"] = client["clientVersion"]
-    data = json.loads(
-        get_json_from_html(html, "var ytInitialData = ", 0, "};") + "}"
-    )
+    data = json.loads(get_json_from_html(html, "var ytInitialData = ", 0, "};") + "}")
     return next(search_dict(data, "videoPrimaryInfoRenderer"))
 
 
 def get_videos(
-    url: str, api_endpoint: str, selector: str, limit: int, sleep: int, sort_by: str = None
+    url: str,
+    api_endpoint: str,
+    selector: str,
+    limit: int,
+    sleep: int,
+    sort_by: str = None,
 ) -> Generator[dict, None, None]:
     session = get_session()
     is_first = True
@@ -282,9 +304,9 @@ def get_videos(
 
 def get_session() -> requests.Session:
     session = requests.Session()
-    session.headers[
-        "User-Agent"
-    ] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    session.headers["User-Agent"] = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    )
     session.headers["Accept-Language"] = "en"
     return session
 
@@ -305,7 +327,7 @@ def get_ajax_data(
     client: dict,
 ) -> dict:
     data = {
-        "context"     : {"clickTracking": next_data["click_params"], "client": client},
+        "context": {"clickTracking": next_data["click_params"], "client": client},
         "continuation": next_data["token"],
     }
     response = session.post(api_endpoint, params={"key": api_key}, json=data)
@@ -321,20 +343,20 @@ def get_json_from_html(html: str, key: str, num_chars: int = 2, stop: str = '"')
 def get_next_data(data: dict, sort_by: str = None) -> dict:
     # Youtube, please don't change the order of these
     sort_by_map = {
-        "newest" : 0,
+        "newest": 0,
         "popular": 1,
-        "oldest" : 2,
+        "oldest": 2,
     }
     if sort_by and sort_by != "newest":
-        endpoint = next(
-            search_dict(data, "feedFilterChipBarRenderer"), None)["contents"][sort_by_map[sort_by]][
-            "chipCloudChipRenderer"]["navigationEndpoint"]
+        endpoint = next(search_dict(data, "feedFilterChipBarRenderer"), None)[
+            "contents"
+        ][sort_by_map[sort_by]]["chipCloudChipRenderer"]["navigationEndpoint"]
     else:
         endpoint = next(search_dict(data, "continuationEndpoint"), None)
     if not endpoint:
         return None
     next_data = {
-        "token"       : endpoint["continuationCommand"]["token"],
+        "token": endpoint["continuationCommand"]["token"],
         "click_params": {"clickTrackingParams": endpoint["clickTrackingParams"]},
     }
 

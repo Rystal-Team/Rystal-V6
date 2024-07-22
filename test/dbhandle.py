@@ -39,7 +39,9 @@ async def generate_secret(length=16):
         str: Randomly generated secret string consisting of alphanumeric characters.
 
     """
-    return "".join(random.choice(string.ascii_letters + string.digits) for i in range(length))
+    return "".join(
+        random.choice(string.ascii_letters + string.digits) for i in range(length)
+    )
 
 
 def to_timestamp(dt):
@@ -105,7 +107,7 @@ class Database:
                 song TEXT,
                 FOREIGN KEY (user_id) REFERENCES secrets (user_id)
             );
-            """
+            """,
         ]
         for query in queries:
             self.cursor.execute(query)
@@ -228,14 +230,17 @@ class Database:
         try:
             cutoff_date = (datetime.now() - timedelta(days=cutoff_day)).isoformat()
             query = "SELECT played_at, song FROM replay_history WHERE user_id = ? AND played_at < ? ORDER BY played_at DESC"
-            self.cursor.execute(query, (user_id, cutoff_date,))
+            self.cursor.execute(
+                query,
+                (
+                    user_id,
+                    cutoff_date,
+                ),
+            )
             results = self.cursor.fetchall()
             history = []
             for result in results:
-                history.append({
-                    'played_at': result[0],
-                    'song'     : result[1]
-                })
+                history.append({"played_at": result[0], "song": result[1]})
             return history
         except sqlite3.Error as e:
             raise e

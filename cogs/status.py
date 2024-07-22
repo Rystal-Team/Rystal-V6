@@ -75,7 +75,9 @@ class System(commands.Cog):
         if use_ytdlp:
             print(colored(text="Using YTDLP to extract video data", color="dark_grey"))
         else:
-            print(colored(text="Using Meta-YT to extract video data", color="dark_grey"))
+            print(
+                colored(text="Using Meta-YT to extract video data", color="dark_grey")
+            )
 
     @nextcord.slash_command(description="🤖 | Pong!")
     async def ping(self, interaction: Interaction):
@@ -107,15 +109,28 @@ class System(commands.Cog):
         os_time = datetime.datetime.now()
         os_time = os_time.strftime("%H:%M:%S %d/%m/%y")
 
-        uptime_time_str = str(datetime.timedelta(seconds=(round(time.time() - start_time))))
+        uptime_time_str = str(
+            datetime.timedelta(seconds=(round(time.time() - start_time)))
+        )
 
-        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(cpu=cpu)
-        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(ram_used=ram_used,
-                                                                                     ram_total=ram_total)
-        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(platform=os_platform)
-        version_str = lang[await get_guild_language(interaction.guild.id)]["version"].format(os_version=os_version)
-        release_str = lang[await get_guild_language(interaction.guild.id)]["release"].format(os_release=os_release)
-        uptime_str = lang[await get_guild_language(interaction.guild.id)]["uptime"].format(uptime=uptime_time_str)
+        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(
+            cpu=cpu
+        )
+        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(
+            ram_used=ram_used, ram_total=ram_total
+        )
+        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(
+            platform=os_platform
+        )
+        version_str = lang[await get_guild_language(interaction.guild.id)][
+            "version"
+        ].format(os_version=os_version)
+        release_str = lang[await get_guild_language(interaction.guild.id)][
+            "release"
+        ].format(os_release=os_release)
+        uptime_str = lang[await get_guild_language(interaction.guild.id)][
+            "uptime"
+        ].format(uptime=uptime_time_str)
 
         message_str = f"{cpu_str}\n{ram_str}\n{os_str}\n{version_str}\n{release_str}\n{uptime_str}"
 

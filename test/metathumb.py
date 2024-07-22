@@ -24,17 +24,17 @@ from meta_yt import Video
 
 
 def get_smallest_thumbnail_url(thumbnails):
-    min_dimensions = float('inf')
-    min_width = float('inf')
-    min_height = float('inf')
+    min_dimensions = float("inf")
+    min_width = float("inf")
+    min_height = float("inf")
     smallest_thumbnail_url = ""
     for thumbnail in thumbnails:
-        dimensions = thumbnail['width'] * thumbnail['height']
+        dimensions = thumbnail["width"] * thumbnail["height"]
         if dimensions < min_dimensions:
             min_dimensions = dimensions
-            min_width = thumbnail['width']
-            min_height = thumbnail['height']
-            smallest_thumbnail_url = thumbnail['url']
+            min_width = thumbnail["width"]
+            min_height = thumbnail["height"]
+            smallest_thumbnail_url = thumbnail["url"]
     return smallest_thumbnail_url, min_width, min_height
 
 

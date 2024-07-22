@@ -84,9 +84,9 @@ class RPCHandler(EventManager):
                     user_secret,
                     {
                         "state": "playing",
-                        "data" : {
-                            "title"  : after.title,
-                            "url"    : after.url,
+                        "data": {
+                            "title": after.title,
+                            "url": after.url,
                             "channel": after.channel,
                         },
                     },
@@ -112,7 +112,7 @@ class RPCHandler(EventManager):
                     user_secret,
                     {
                         "state": "idle",
-                        "data" : {},
+                        "data": {},
                     },
                 )
                 LogHandler.info(
@@ -135,9 +135,9 @@ class RPCHandler(EventManager):
                 user_secret,
                 {
                     "state": "playing",
-                    "data" : {
-                        "title"  : now_playing.title,
-                        "url"    : now_playing.url,
+                    "data": {
+                        "title": now_playing.title,
+                        "url": now_playing.url,
                         "channel": now_playing.channel,
                     },
                 },
@@ -155,12 +155,10 @@ class RPCHandler(EventManager):
                 user_secret,
                 {
                     "state": "idle",
-                    "data" : {},
+                    "data": {},
                 },
             )
-            LogHandler.info(
-                f"Dispatched idle to {user_secret}[{member.global_name}]"
-            )
+            LogHandler.info(f"Dispatched idle to {user_secret}[{member.global_name}]")
         else:
             LogHandler.info(f"Client {member.global_name} not registered")
 

@@ -53,8 +53,13 @@ from .sockets import attach as attach_sockets
 
 
 class PlayerManager:
-    def __init__(self, bot, db_path: str = "./sqlite/jukebox.sqlite", enable_rpc: bool = True,
-                 enable_replay: bool = True):
+    def __init__(
+        self,
+        bot,
+        db_path: str = "./sqlite/jukebox.sqlite",
+        enable_rpc: bool = True,
+        enable_replay: bool = True,
+    ):
         """
         Initializes the PlayerManager with the given bot instance.
 

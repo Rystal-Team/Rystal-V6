@@ -25,7 +25,9 @@ from datetime import timedelta
 
 from pytube import Playlist
 
-playlist = Playlist("https://www.youtube.com/playlist?list=PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y")
+playlist = Playlist(
+    "https://www.youtube.com/playlist?list=PL1zOoe1s6s3wBi-q9U5iMwQ3BNqJKoR_y"
+)
 print(f"Total Length: {len(playlist)}")
 total_seconds = 0
 for index, video in enumerate(playlist.videos):

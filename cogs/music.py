@@ -35,8 +35,18 @@ from module.embed import Embeds, NowPlayingMenu
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
-from module.nextcord_jukebox.exceptions import AlreadyPaused, EmptyQueue, LoadingStream, NoQueryResult, NotConnected, \
-    NotPaused, NotPlaying, NothingPlaying, UserNotConnected, VoiceChannelMismatch
+from module.nextcord_jukebox.exceptions import (
+    AlreadyPaused,
+    EmptyQueue,
+    LoadingStream,
+    NoQueryResult,
+    NotConnected,
+    NotPaused,
+    NotPlaying,
+    NothingPlaying,
+    UserNotConnected,
+    VoiceChannelMismatch,
+)
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
 from module.pagination import Pagination
@@ -318,18 +328,18 @@ class Music(commands.Cog, EventManager):
                     [
                         song
                         for song, _ in SongMatcher.match(
-                        await music_player.current_queue(),
-                        query,
-                        case_sens=False,
-                        threshold=0.8,
-                    )
+                            await music_player.current_queue(),
+                            query,
+                            case_sens=False,
+                            threshold=0.8,
+                        )
                     ]
                     if query.replace(" ", "") != ""
                     else await music_player.current_queue()
                 )
 
                 for i, song in enumerate(
-                    subset[(page - 1) * 10: page * 10], start=(page - 1) * 10
+                    subset[(page - 1) * 10 : page * 10], start=(page - 1) * 10
                 ):
                     if song == now_playing and i == 0:
                         continue
@@ -730,26 +740,26 @@ class Music(commands.Cog, EventManager):
         )
 
     @staticmethod
-    def generate_canvas(interaction: Interaction, period: str, guild_language: str, result_list):
+    def generate_canvas(
+        interaction: Interaction, period: str, guild_language: str, result_list
+    ):
         period_description = {
-            "Week" : "most_played_week",
+            "Week": "most_played_week",
             "Month": "most_played_month",
-            "Year" : "most_played_year",
+            "Year": "most_played_year",
         }
 
         canvas = create_top_songs_poster(
             result_list["replays"],
             lang[guild_language]["music_poster_title"],
-            lang[guild_language][
-                period_description.get(period, "????")
-            ],
+            lang[guild_language][period_description.get(period, "????")],
             detail_texts=[
-                lang[guild_language][
-                    "played_duration"
-                ].format(hour=str(int(result_list["total_time"] / 3600))),
-                lang[guild_language][
-                    "total_played"
-                ].format(count=str(result_list["total_replayed"])),
+                lang[guild_language]["played_duration"].format(
+                    hour=str(int(result_list["total_time"] / 3600))
+                ),
+                lang[guild_language]["total_played"].format(
+                    count=str(result_list["total_replayed"])
+                ),
                 f"{result_list['top_artist']['percentage']}% {result_list['top_artist']['name']}",
             ],
         )
@@ -806,24 +816,30 @@ class Music(commands.Cog, EventManager):
 
         result_list = {
             "total_replayed": len(replay_history),
-            "total_time"    : 0,
-            "replays"       : [],
-            "top_artist"    : {"name": top_artist, "percentage": top_artist_percentage},
+            "total_time": 0,
+            "replays": [],
+            "top_artist": {"name": top_artist, "percentage": top_artist_percentage},
         }
 
         top_replays = sorted(
-            ((video_id, replay_count) for video_id, replay_count in replay_aggregate.items()),
-            key=lambda item: item[1], reverse=True
+            (
+                (video_id, replay_count)
+                for video_id, replay_count in replay_aggregate.items()
+            ),
+            key=lambda item: item[1],
+            reverse=True,
         )[:10]
 
         for video_id, replay_count in top_replays:
             metadata = video_metadata.get(video_id, {})
-            result_list["replays"].append({
-                "title"     : metadata.get("title", ""),
-                "artist"    : metadata.get("channel", ""),
-                "thumbnails": metadata.get("thumbnails", ""),
-                "replays"   : replay_count,
-            })
+            result_list["replays"].append(
+                {
+                    "title": metadata.get("title", ""),
+                    "artist": metadata.get("channel", ""),
+                    "thumbnails": metadata.get("thumbnails", ""),
+                    "replays": replay_count,
+                }
+            )
             result_list["total_time"] += metadata.get("duration", 0) * replay_count
 
         result_list["replays"].extend(
@@ -831,20 +847,32 @@ class Music(commands.Cog, EventManager):
             for _ in range(10 - len(result_list["replays"]))
         )
 
-        print(colored(f"Entries obtained and sorted, Time Taken: {time.time() - timer}", "dark_grey"))
+        print(
+            colored(
+                f"Entries obtained and sorted, Time Taken: {time.time() - timer}",
+                "dark_grey",
+            )
+        )
 
         timer = time.time()
         print(colored("Generating Canvas...", "dark_grey"))
         canvas = await self.bot.loop.run_in_executor(
             None,
-            lambda: self.generate_canvas(interaction, period, guild_language, result_list))
+            lambda: self.generate_canvas(
+                interaction, period, guild_language, result_list
+            ),
+        )
 
         with BytesIO() as image_binary:
             canvas.save(image_binary, "PNG")
             image_binary.seek(0)
             poster = File(filename="most_played.png", fp=image_binary)
             await interaction.followup.send(files=[poster])
-            print(colored(f"Canvas Generated, Time Taken: {time.time() - timer}", "dark_grey"))
+            print(
+                colored(
+                    f"Canvas Generated, Time Taken: {time.time() - timer}", "dark_grey"
+                )
+            )
 
 
 async def setup(bot):

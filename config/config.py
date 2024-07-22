@@ -48,10 +48,10 @@ max_note = 500
 """
 type_color = {
     "success": Color.from_rgb(157, 255, 158),
-    "error"  : Color.from_rgb(255, 157, 157),
-    "warn"   : Color.from_rgb(255, 206, 157),
-    "info"   : Color.from_rgb(219, 157, 255),
-    "list"   : Color.from_rgb(157, 200, 255),
+    "error": Color.from_rgb(255, 157, 157),
+    "warn": Color.from_rgb(255, 206, 157),
+    "info": Color.from_rgb(219, 157, 255),
+    "list": Color.from_rgb(157, 200, 255),
 }
 
 """
