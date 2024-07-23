@@ -255,3 +255,4 @@ docs/
 .idea/sqldialects.xml
 .idea/vcs.xml
 .stfolder/
+.idea/**
