@@ -81,25 +81,17 @@ class Song:
         self.extracted_metadata = False
 
     async def reset(self):
-        """
-        Resets the song's timer.
-        """
+        """Resets the song's timer."""
         self.timer.reset()
 
     async def resume(self):
-        """
-        Resumes the song's timer.
-        """
+        """Resumes the song's timer."""
         self.timer.resume()
 
     async def pause(self):
-        """
-        Pauses the song's timer.
-        """
+        """Pauses the song's timer."""
         self.timer.pause()
 
     async def start(self):
-        """
-        Starts the song's timer.
-        """
+        """Starts the song's timer."""
         self.timer.start()

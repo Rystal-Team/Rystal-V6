@@ -95,9 +95,7 @@ class Database:
             print(f"Error connecting to MySQL: {e}")
 
     def create_tables(self):
-        """
-        Creates necessary tables in the database.
-        """
+        """Creates necessary tables in the database."""
         queries = {
             "sqlite": [
                 "CREATE TABLE IF NOT EXISTS jukebox_secrets (user_id TEXT PRIMARY KEY, secret TEXT);",
@@ -305,9 +303,7 @@ class Database:
             raise e
 
     def clear_old_cache(self):
-        """
-        Clears old cached video metadata from the database.
-        """
+        """Clears old cached video metadata from the database."""
         try:
             cutoff_date = (datetime.now() - timedelta(days=28)).isoformat()
             query = {
@@ -321,16 +317,12 @@ class Database:
             raise e
 
     def run_cleanup(self):
-        """
-        Clears old cached video metadata from the database and logs the action.
-        """
+        """Clears old cached video metadata from the database and logs the action."""
         self.clear_old_cache()
         LogHandler.info("Old cache entries cleared.")
 
     def close(self):
-        """
-        Closes the database cursor and connection if they are open.
-        """
+        """Closes the database cursor and connection if they are open."""
         if self.cursor:
             self.cursor.close()
         if self.connection:
