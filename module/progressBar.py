@@ -54,28 +54,17 @@ class progressBar:
         Returns:
             list: A list containing the progress bar string and the percentage completed.
         """
-        # If current progress exceeds total
         if current > total:
-            # Fill the entire bar
             bar = line * size
-            # Calculate percentage
             percentage = (current / total) * 100
-
             return [bar, percentage]
-        # Calculate percentage of progress
         percentage = current / total
-        # Calculate filled and empty progress
         progress = round(size * percentage)
         emptyProgress = size - progress
-
-        # Construct progress bar string
         progressText = (line * progress)[:-1] + slider
         emptyProgressText = line * emptyProgress
         bar = progressText + emptyProgressText
-
-        # Calculate percentage
         calculated = percentage * 100
-
         return [bar, calculated]
 
     def filledBar(total, current, size=15, line="⬛", slider="⬜"):
@@ -92,24 +81,15 @@ class progressBar:
         Returns:
             list: A list containing the progress bar string and the percentage completed.
         """
-        # If current progress exceeds total
         if current > total:
-            # Fill the entire bar
             bar = slider * size
-            # Calculate percentage
             percentage = (current / total) * 100
             return [bar, percentage]
-        # Calculate percentage of progress
         percentage = current / total
-        # Calculate filled and empty progress
         progress = round(size * percentage)
         emptyProgress = size - progress
-
-        # Construct progress bar string
         progressText = slider * progress
         emptyProgressText = line * emptyProgress
-
         bar = progressText + emptyProgressText
-        # Calculate percentage
         calculated = percentage * 100
         return [bar, calculated]

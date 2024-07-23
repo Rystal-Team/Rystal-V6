@@ -25,6 +25,23 @@ from .timer import CountTimer
 
 
 class Song:
+    """
+    A class to represent a song with various attributes and a timer.
+
+    Attributes:
+        url (str): The URL of the song.
+        title (str, optional): The title of the song.
+        views (int, optional): The number of views of the song.
+        duration (int, optional): The duration of the song in seconds.
+        thumbnail (str, optional): The URL of the song's thumbnail.
+        channel (str, optional): The name of the channel that uploaded the song.
+        channel_url (str, optional): The URL of the channel that uploaded the song.
+        thumbnails (list, optional): A list of thumbnail URLs for the song.
+        timer (CountTimer): An instance of CountTimer to track the song's playback time.
+        source_url (str, optional): The source URL of the song.
+        extracted_metadata (bool): A flag indicating whether metadata has been extracted.
+    """
+
     def __init__(
         self,
         url,
@@ -36,6 +53,19 @@ class Song:
         channel_url=None,
         thumbnails=None,
     ):
+        """
+        Initializes a Song instance with the given attributes.
+
+        Args:
+            url (str): The URL of the song.
+            title (str, optional): The title of the song.
+            views (int, optional): The number of views of the song.
+            duration (int, optional): The duration of the song in seconds.
+            thumbnail (str, optional): The URL of the song's thumbnail.
+            channel (str, optional): The name of the channel that uploaded the song.
+            channel_url (str, optional): The URL of the channel that uploaded the song.
+            thumbnails (list, optional): A list of thumbnail URLs for the song.
+        """
         self.url = url
         self.title = title
         self.name = title
@@ -48,16 +78,28 @@ class Song:
 
         self.timer = CountTimer()
         self.source_url = None
-        self.extracted_metadata = False  # attribute to track metadata extraction
+        self.extracted_metadata = False
 
     async def reset(self):
+        """
+        Resets the song's timer.
+        """
         self.timer.reset()
 
     async def resume(self):
+        """
+        Resumes the song's timer.
+        """
         self.timer.resume()
 
     async def pause(self):
+        """
+        Pauses the song's timer.
+        """
         self.timer.pause()
 
     async def start(self):
+        """
+        Starts the song's timer.
+        """
         self.timer.start()

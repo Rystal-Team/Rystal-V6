@@ -28,6 +28,7 @@ from termcolor import colored
 from config.config import default_language, multi_lang
 from .main_handler import check_exists, cursor, database
 
+# Default settings for a guild
 default_guild_settings = {
     "music_silent_mode": False,
     "music_auto_leave": True,
@@ -35,6 +36,12 @@ default_guild_settings = {
 
 
 async def append_guild(guild_id: int):
+    """
+    Registers a new guild in the database with default settings.
+
+    Args:
+        guild_id (int): The ID of the guild to register.
+    """
     database.ping(reconnect=True, attempts=3)
 
     try:
@@ -62,6 +69,13 @@ async def append_guild(guild_id: int):
 
 
 async def change_guild_language(guild_id: int, language):
+    """
+    Changes the language setting for a guild.
+
+    Args:
+        guild_id (int): The ID of the guild.
+        language (str): The new language to set for the guild.
+    """
     database.ping(reconnect=True, attempts=3)
     guild_exists = check_exists("guild", "guild_id", guild_id)
 
@@ -80,10 +94,17 @@ async def change_guild_language(guild_id: int, language):
         )
     )
 
-    return
-
 
 async def get_guild_language(guild_id: int):
+    """
+    Retrieves the language setting for a guild.
+
+    Args:
+        guild_id (int): The ID of the guild.
+
+    Returns:
+        str: The language setting of the guild.
+    """
     if multi_lang:
         database.ping(reconnect=True, attempts=3)
         guild_exists = check_exists("guild", "guild_id", guild_id)
@@ -104,6 +125,14 @@ async def get_guild_language(guild_id: int):
 
 
 async def change_guild_settings(guild_id: int, key, value):
+    """
+    Changes a specific setting for a guild.
+
+    Args:
+        guild_id (int): The ID of the guild.
+        key (str): The setting key to change.
+        value (any): The new value for the setting.
+    """
     database.ping(reconnect=True, attempts=3)
     guild_exists = check_exists("guild", "guild_id", guild_id)
 
@@ -131,10 +160,18 @@ async def change_guild_settings(guild_id: int, key, value):
         )
     )
 
-    return
-
 
 async def get_guild_settings(guild_id: int, key):
+    """
+    Retrieves a specific setting for a guild.
+
+    Args:
+        guild_id (int): The ID of the guild.
+        key (str): The setting key to retrieve.
+
+    Returns:
+        any: The value of the requested setting.
+    """
     database.ping(reconnect=True, attempts=3)
     guild_exists = check_exists("guild", "guild_id", guild_id)
 

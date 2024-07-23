@@ -1,25 +1,26 @@
-#    ------------------------------------------------------------
-#    Copyright (c) 2024 Rystal-Team
-#  #
-#    Permission is hereby granted, free of charge, to any person obtaining a copy
-#    of this software and associated documentation files (the "Software"), to deal
-#    in the Software without restriction, including without limitation the rights
-#    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#    copies of the Software, and to permit persons to whom the Software is
-#    furnished to do so, subject to the following conditions:
-#  #
-#    The above copyright notice and this permission notice shall be included in
-#    all copies or substantial portions of the Software.
-#  #
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#    THE SOFTWARE.
-#    ------------------------------------------------------------
-#  #
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
 
 import os
 
@@ -29,7 +30,7 @@ from nextcord import Color
 """
 === BOT ===
 """
-USE_SQLITE = False
+USE_SQLITE = True
 SQLITE_PATH = "sqlite/database.db"
 DEBUG = True
 status_text = "🌟 v6.5.1a"
@@ -62,6 +63,7 @@ type_color = {
 """
 # the channel id for error logging
 error_log_channel_id = 1249810745735118889
+bug_report_channel_id = 1265273795544088727
 # the user id of the owner of bot, or the person you want to have admin access to the bot
 bot_owner_id = 699452241312219147
 

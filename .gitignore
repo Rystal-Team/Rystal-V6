@@ -226,6 +226,7 @@ fabric.properties
 # Database stuff
 *.sqlite
 *.json
+*.db
 
 #Config stuff
 config/config.py

@@ -27,6 +27,10 @@ from termcolor import colored
 
 
 class SongMatcher:
+    """
+    A class for matching songs based on a query string.
+    """
+
     @classmethod
     def lev_dist(cls, s1, s2):
         """

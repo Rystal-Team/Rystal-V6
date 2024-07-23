@@ -33,11 +33,9 @@ def split_string(input_string, max_length=20):
     Returns:
         list: A list of smaller strings.
     """
-    # Return a list containing the input string if its length is less than or equal to max_length.
     if len(input_string) <= max_length:
         return [input_string]
 
-    # Use list comprehension to split the input string into smaller strings of length max_length.
     return [
         input_string[i : i + max_length]
         for i in range(0, len(input_string), max_length)
