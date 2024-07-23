@@ -25,71 +25,111 @@ import json
 import sqlite3
 from datetime import datetime, timedelta
 
+import mysql.connector
+from mysql.connector import Error
+
 from . import LogHandler
 from .utils import generate_secret
 
 
 class Database:
-    """
-    Manages database connections and operations for user secrets and video metadata caching.
-
-    Attributes:
-        db_path (str): The path to the SQLite database file.
-        connection (sqlite3.Connection): The SQLite database connection.
-        cursor (sqlite3.Cursor): The SQLite database cursor.
-    """
-
-    def __init__(self, db_path: str = "./database/user.db"):
+    def __init__(self, db_type, **kwargs):
         """
-        Initializes the Database instance with the specified database path.
+        Initialize the database manager.
 
-        Args:
-            db_path (str): The path to the SQLite database file. Defaults to "./database/user.db".
+        :param db_type: Type of database ('sqlite' or 'mysql').
+        :param kwargs: Additional parameters based on db_type.
+
+        :example:
+        >>> database = Database("sqlite", db_file="jukebox.db")
+        >>> database = Database("mysql", host="localhost", user="root", password="password", database="jukebox", port=3306)
         """
-        self.db_path = db_path
+        self.db_type = db_type
         self.connection = None
         self.cursor = None
 
-    def connect(self):
-        """Connects to the SQLite database and creates the required tables."""
-        self.connection = sqlite3.connect(self.db_path)
-        self.cursor = self.connection.cursor()
-        self.create_tables()
+        if db_type == "sqlite":
+            self._connect_sqlite(**kwargs)
+        elif db_type == "mysql":
+            self._connect_mysql(**kwargs)
+        else:
+            raise ValueError("Unsupported database type. Choose 'sqlite' or 'mysql'.")
 
-    def close(self):
-        """Closes the database connection."""
-        if self.cursor:
-            self.cursor.close()
-        if self.connection:
-            self.connection.close()
+    def _connect_sqlite(self, db_file):
+        """Connect to an SQLite database."""
+        try:
+            self.connection = sqlite3.connect(db_file)
+            self.cursor = self.connection.cursor()
+            print(f"Connected to SQLite database {db_file}")
+            self.create_tables()
+        except sqlite3.Error as e:
+            print(f"Error connecting to SQLite database: {e}")
+
+    def _connect_mysql(self, host, user, password, database, port=3306):
+        """Connect to a MySQL database."""
+        try:
+            self.connection = mysql.connector.connect(
+                host=host, user=user, password=password, database=database, port=port
+            )
+            self.cursor = self.connection.cursor()
+            print(f"Connected to MySQL database {database} at {host}")
+            self.create_tables()
+        except Error as e:
+            print(f"Error connecting to MySQL database: {e}")
 
     def create_tables(self):
         """
         Creates the 'secrets', 'ytcache', and 'replay_history' tables if they do not exist.
         """
-        queries = [
-            """
-            CREATE TABLE IF NOT EXISTS secrets (
-                user_id TEXT PRIMARY KEY,
-                secret TEXT
-            );
-            """,
-            """
-            CREATE TABLE IF NOT EXISTS ytcache (
-                video_id TEXT PRIMARY KEY,
-                metadata TEXT,
-                registered_date TEXT
-            );
-            """,
-            """
-            CREATE TABLE IF NOT EXISTS replay_history (
-                user_id TEXT,
-                played_at TEXT,
-                song TEXT,
-                FOREIGN KEY (user_id) REFERENCES secrets (user_id)
-            );
-            """,
-        ]
+        queries = []
+        if self.db_type == "sqlite":
+            queries = [
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_secrets (
+                    user_id TEXT PRIMARY KEY,
+                    secret TEXT
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_ytcache (
+                    video_id TEXT PRIMARY KEY,
+                    metadata TEXT,
+                    registered_date TEXT
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_replay_history (
+                    user_id TEXT,
+                    played_at TEXT,
+                    song TEXT,
+                    FOREIGN KEY (user_id) REFERENCES jukebox_secrets (user_id)
+                );
+                """,
+            ]
+        elif self.db_type == "mysql":
+            queries = [
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_secrets (
+                    user_id VARCHAR(255) PRIMARY KEY,
+                    secret TEXT
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_ytcache (
+                    video_id VARCHAR(255) PRIMARY KEY,
+                    metadata TEXT,
+                    registered_date VARCHAR(255)
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS jukebox_replay_history (
+                    user_id VARCHAR(255),
+                    played_at VARCHAR(255),
+                    song TEXT,
+                    FOREIGN KEY (user_id) REFERENCES jukebox_secrets (user_id)
+                );
+                """,
+            ]
         for query in queries:
             self.cursor.execute(query)
         self.connection.commit()
@@ -107,17 +147,50 @@ class Database:
         secret = await generate_secret()
         try:
             user_id = str(user_id)
-            query = """
-            INSERT INTO secrets (user_id, secret)
-            VALUES (?, ?)
-            ON CONFLICT(user_id) DO UPDATE SET secret=excluded.secret;
-            """
-            self.cursor.execute(query, (user_id, secret))
+            if self.db_type == "sqlite":
+                query = """
+                INSERT INTO jukebox_secrets (user_id, secret)
+                VALUES (?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET secret=excluded.secret;
+                """
+                self.cursor.execute(query, (user_id, secret))
+            else:
+                query = """
+                INSERT INTO jukebox_secrets (user_id, secret)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE secret=VALUES(secret);
+                """
+                self.cursor.execute(query, (user_id, secret))
             self.connection.commit()
-        except sqlite3.Error as e:
+            LogHandler.info(f"Registered user: {user_id}")
+        except Exception as e:
             LogHandler.error(f"Error registering user: {e}")
             raise e
         return secret
+
+    async def user_exists(self, user_id: str) -> bool:
+        """
+        Checks if a user exists in the jukebox_secrets table.
+
+        Args:
+            user_id (str): The ID of the user to check.
+
+        Returns:
+            bool: True if the user exists, False otherwise.
+        """
+        try:
+            if self.db_type == "sqlite":
+                query = "SELECT EXISTS(SELECT 1 FROM jukebox_secrets WHERE user_id = ?)"
+                self.cursor.execute(query, (user_id,))
+            else:  # Assuming the only other option is 'mysql'
+                query = (
+                    "SELECT EXISTS(SELECT 1 FROM jukebox_secrets WHERE user_id = %s)"
+                )
+                self.cursor.execute(query, (user_id,))
+            return self.cursor.fetchone()[0] == 1
+        except Exception as e:
+            LogHandler.error(f"Error checking if user exists: {e}")
+            return False
 
     async def get_user_secret(self, user_id: str) -> str | None:
         """
@@ -130,13 +203,17 @@ class Database:
             str: The secret of the user, or None if the user is not found.
         """
         try:
-            query = "SELECT secret FROM secrets WHERE user_id = ?"
-            self.cursor.execute(query, (user_id,))
+            if self.db_type == "sqlite":
+                query = "SELECT secret FROM jukebox_secrets WHERE user_id = ?"
+                self.cursor.execute(query, (user_id,))
+            else:
+                query = "SELECT secret FROM jukebox_secrets WHERE user_id = %s"
+                self.cursor.execute(query, (user_id,))
             result = self.cursor.fetchone()
             if result:
                 return result[0]
             return None
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error fetching user secret: {e}")
             raise e
 
@@ -151,15 +228,23 @@ class Database:
         try:
             metadata_json = json.dumps(metadata)
             registered_date = datetime.now().isoformat()
-            query = """
-            INSERT INTO ytcache (video_id, metadata, registered_date)
-            VALUES (?, ?, ?)
-            ON CONFLICT(video_id) DO UPDATE SET metadata=excluded.metadata, registered_date=excluded.registered_date;
-            """
-            self.cursor.execute(query, (video_id, metadata_json, registered_date))
+            if self.db_type == "sqlite":
+                query = """
+                INSERT INTO jukebox_ytcache (video_id, metadata, registered_date)
+                VALUES (?, ?, ?)
+                ON CONFLICT(video_id) DO UPDATE SET metadata=excluded.metadata, registered_date=excluded.registered_date;
+                """
+                self.cursor.execute(query, (video_id, metadata_json, registered_date))
+            else:
+                query = """
+                INSERT INTO jukebox_ytcache (video_id, metadata, registered_date)
+                VALUES (%s, %s, %s)
+                ON DUPLICATE KEY UPDATE metadata=VALUES(metadata), registered_date=VALUES(registered_date);
+                """
+                self.cursor.execute(query, (video_id, metadata_json, registered_date))
             self.connection.commit()
             LogHandler.info(f"Cached video metadata for {video_id}")
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error caching video metadata: {e}")
             raise e
 
@@ -174,14 +259,18 @@ class Database:
             dict: The cached metadata, or None if the video is not found.
         """
         try:
-            query = "SELECT metadata FROM ytcache WHERE video_id = ?"
-            self.cursor.execute(query, (video_id,))
+            if self.db_type == "sqlite":
+                query = "SELECT metadata FROM jukebox_ytcache WHERE video_id = ?"
+                self.cursor.execute(query, (video_id,))
+            else:
+                query = "SELECT metadata FROM jukebox_ytcache WHERE video_id = %s"
+                self.cursor.execute(query, (video_id,))
             result = self.cursor.fetchone()
             if result:
                 LogHandler.info(f"Using cached video metadata for {video_id}")
                 return json.loads(result[0])
             return None
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error fetching cached video metadata: {e}")
             raise e
 
@@ -195,20 +284,28 @@ class Database:
         Returns:
             dict: A dictionary with video IDs as keys and their cached metadata as values.
         """
-        # Convert list of video IDs into a format suitable for a SQL query
         video_ids_tuple = tuple(video_ids)
         metadata_dict = {}
         try:
-            query = (
-                "SELECT video_id, metadata FROM ytcache WHERE video_id IN ({})".format(
-                    ",".join("?" for _ in video_ids)
+            if self.db_type == "sqlite":
+
+                query = (
+                    "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ("
+                    + ",".join("?" for _ in video_ids)
+                    + ")"
                 )
-            )
-            self.cursor.execute(query, video_ids_tuple)
+                self.cursor.execute(query, video_ids_tuple)
+            else:
+                query = (
+                    "SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ("
+                    + ",".join("%s" for _ in video_ids)
+                    + ")"
+                )
+                self.cursor.execute(query, video_ids_tuple)
             results = self.cursor.fetchall()
             for video_id, metadata_json in results:
                 metadata_dict[video_id] = json.loads(metadata_json)
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error fetching bulk video metadata: {e}")
             raise e
         return metadata_dict
@@ -222,15 +319,24 @@ class Database:
             played_at (str): The timestamp when the song was played.
             song (str): The name of the song.
         """
+        if not await self.user_exists(user_id):
+            await self.register(user_id)
         try:
-            query = """
-            INSERT INTO replay_history (user_id, played_at, song)
-            VALUES (?, ?, ?)
-            """
-            self.cursor.execute(query, (user_id, played_at, song))
+            if self.db_type == "sqlite":
+                query = """
+                INSERT INTO jukebox_replay_history (user_id, played_at, song)
+                VALUES (?, ?, ?)
+                """
+                self.cursor.execute(query, (user_id, played_at, song))
+            else:
+                query = """
+                INSERT INTO jukebox_replay_history (user_id, played_at, song)
+                VALUES (%s, %s, %s)
+                """
+                self.cursor.execute(query, (user_id, played_at, song))
             self.connection.commit()
             LogHandler.info(f"Added replay entry for {user_id}")
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error adding replay entry: {e}")
             raise e
 
@@ -246,20 +352,18 @@ class Database:
         """
         try:
             cutoff_date = (datetime.now() - timedelta(days=cutoff)).isoformat()
-            query = "SELECT played_at, song FROM replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC"
-            self.cursor.execute(
-                query,
-                (
-                    user_id,
-                    cutoff_date,
-                ),
-            )
+            if self.db_type == "sqlite":
+                query = "SELECT played_at, song FROM jukebox_replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC"
+                self.cursor.execute(query, (user_id, cutoff_date))
+            else:
+                query = "SELECT played_at, song FROM jukebox_replay_history WHERE user_id = %s and played_at >= %s ORDER BY played_at DESC"
+                self.cursor.execute(query, (user_id, cutoff_date))
             results = self.cursor.fetchall()
-            history = []
-            for result in results:
-                history.append({"played_at": result[0], "song": result[1]})
+            history = [
+                {"played_at": result[0], "song": result[1]} for result in results
+            ]
             return history
-        except sqlite3.Error as e:
+        except Exception as e:
             LogHandler.error(f"Error fetching replay history: {e}")
             raise e
 
@@ -267,15 +371,26 @@ class Database:
         """Clears cached entries older than 28 days."""
         try:
             cutoff_date = (datetime.now() - timedelta(days=28)).isoformat()
-            query = "DELETE FROM ytcache WHERE registered_date < ?"
-            self.cursor.execute(query, (cutoff_date,))
+            if self.db_type == "sqlite":
+                query = "DELETE FROM jukebox_ytcache WHERE registered_date < ?"
+                self.cursor.execute(query, (cutoff_date,))
+            else:
+                query = "DELETE FROM jukebox_ytcache WHERE registered_date < %s"
+                self.cursor.execute(query, (cutoff_date,))
             self.connection.commit()
-        except sqlite3.Error as e:
-            LogHandler.error(f"Error clearing old ytcache: {e}")
+        except Exception as e:
+            LogHandler.error(f"Error clearing old jukebox_ytcache: {e}")
             raise e
 
-    # TODO: この関数をスケジューラにフックしてください！！
     def run_cleanup(self):
-        """Runs the cleanup process to clear old ytcache entries."""
+        """Runs the cleanup process to clear old jukebox_ytcache entries."""
         self.clear_old_cache()
-        LogHandler.info("Old ytcache entries cleared.")
+        LogHandler.info("Old jukebox_ytcache entries cleared.")
+
+    def close(self):
+        """Close the database connection."""
+        if self.cursor:
+            self.cursor.close()
+        if self.connection:
+            self.connection.close()
+        print("Database connection closed.")

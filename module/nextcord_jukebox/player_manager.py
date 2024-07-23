@@ -56,7 +56,13 @@ class PlayerManager:
     def __init__(
         self,
         bot,
+        db_type: str = "sqlite",
         db_path: str = "./sqlite/jukebox.sqlite",
+        mysql_host: str = "localhost",
+        mysql_port: int = 3306,
+        mysql_user: str = "root",
+        mysql_password: str = "password",
+        mysql_database: str = "jukebox",
         enable_rpc: bool = True,
         enable_replay: bool = True,
     ):
@@ -68,9 +74,21 @@ class PlayerManager:
         """
         self.players = {}
         self.bot = bot
-        self.database: Database = Database(db_path=db_path)
-        self.database.connect()
 
+        # Initialize database
+        if db_type == "mysql":
+            self.database = Database(
+                "mysql",
+                host=mysql_host,
+                user=mysql_user,
+                password=mysql_password,
+                database=mysql_database,
+                port=mysql_port,
+            )
+        else:
+            self.database = Database("sqlite", db_file=db_path)
+
+        # Optional features
         if enable_rpc:
             attach_sockets(self)
         if enable_replay:
