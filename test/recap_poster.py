@@ -233,4 +233,4 @@ create_top_songs_poster(
     description,
     detail_texts=["41時間+", "1871曲再生しました", "18% アステル・レダ"],
 )
-print(f"Created poster, 1ms")
+print("Created poster, 1ms")
