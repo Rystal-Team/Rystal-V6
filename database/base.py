@@ -129,9 +129,7 @@ class DatabaseHandler:
         return
 
     def create_tables(self):
-        """
-        Creates necessary tables in the database.
-        """
+        """Creates necessary tables in the database."""
         for query in self.create_query[self.db_type]:
             print(query)
             self.cursor.execute(query)
@@ -164,9 +162,7 @@ class DatabaseHandler:
             return None
 
     def close(self):
-        """
-        Closes the database connection and cursor.
-        """
+        """Closes the database connection and cursor."""
         if self.cursor:
             self.cursor.close()
         if self.connection:
