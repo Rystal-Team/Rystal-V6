@@ -130,7 +130,6 @@ class DatabaseHandler:
     def create_tables(self):
         """Creates necessary tables in the database."""
         for query in self.create_query[self.db_type]:
-            print(query)
             self.cursor.execute(query)
         self.connection.commit()
 
