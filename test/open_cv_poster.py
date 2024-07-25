@@ -1,26 +1,4 @@
-#  ------------------------------------------------------------
-#  Copyright (c) 2024 Rystal-Team
-#
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to deal
-#  in the Software without restriction, including without limitation the rights
-#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#  copies of the Software, and to permit persons to whom the Software is
-#  furnished to do so, subject to the following conditions:
-#
-#  The above copyright notice and this permission notice shall be included in
-#  all copies or substantial portions of the Software.
-#
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#  THE SOFTWARE.
-#  ------------------------------------------------------------
-#
-
+import time
 from io import BytesIO
 from typing import List, Optional
 
@@ -36,36 +14,8 @@ def create_top_songs_poster(
     description: str,
     detail_texts: Optional[List[str]] = None,
 ) -> np.ndarray:
-    """
-    Creates a poster image with the top songs, including title, description, and optional details.
-
-    Args:
-        songs (List[dict]): List of dictionaries containing song information.
-        title (str): Title of the poster.
-        description (str): Description of the poster.
-        detail_texts (Optional[List[str]]): Optional list of detail texts to include.
-
-    Returns:
-        np.ndarray: The generated poster image as a numpy array.
-    """
 
     def draw_text(img, text, position, font_path, font_size, color, center=False):
-        """
-        Draws text on an image at a specified position with given font properties.
-
-        Args:
-            img (np.ndarray): The image to draw on.
-            text (str): The text to draw.
-            position (tuple): The (x, y) position to draw the text.
-            font_path (str): Path to the font file.
-            font_size (int): Size of the font.
-            color (tuple): Color of the text in (R, G, B) format.
-            center (bool): Whether to center the text at the position.
-
-        Returns:
-            np.ndarray: The image with the text drawn on it.
-            tuple: The size of the drawn text.
-        """
         font = ImageFont.truetype(font_path, font_size)
         pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         draw = ImageDraw.Draw(pil_img)
@@ -79,19 +29,6 @@ def create_top_songs_poster(
         return cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR), text_size
 
     def draw_rounded_rectangle(image, top_left, bottom_right, color, corner_radius):
-        """
-        Draws a rounded rectangle on an image.
-
-        Args:
-            image (np.ndarray): The image to draw on.
-            top_left (tuple): The (x, y) position of the top-left corner.
-            bottom_right (tuple): The (x, y) position of the bottom-right corner.
-            color (tuple): Color of the rectangle in (R, G, B) format.
-            corner_radius (int): Radius of the corners.
-
-        Returns:
-            np.ndarray: The image with the rounded rectangle drawn on it.
-        """
         overlay = image.copy()
         corner_radius = min(
             corner_radius,
@@ -162,19 +99,6 @@ def create_top_songs_poster(
         return overlay
 
     def format_number(num: float) -> str:
-        """
-        Draws a rounded rectangle on an image.
-
-        Args:
-            image (np.ndarray): The image to draw on.
-            top_left (tuple): The (x, y) position of the top-left corner.
-            bottom_right (tuple): The (x, y) position of the bottom-right corner.
-            color (tuple): Color of the rectangle in (R, G, B) format.
-            corner_radius (int): Radius of the corners.
-
-        Returns:
-            np.ndarray: The image with the rounded rectangle drawn on it.
-        """
         if num < 1000:
             return str(num)
         for unit in ["", "k", "M", "B", "T"]:
@@ -183,18 +107,6 @@ def create_top_songs_poster(
             num /= 1000.0
 
     def truncate_text(text_str: str, font_path, font_size, max_w) -> str:
-        """
-        Truncates text to fit within a specified width, adding ellipsis if necessary.
-
-        Args:
-            text_str (str): The text to truncate.
-            font_path (str): Path to the font file.
-            font_size (int): Size of the font.
-            max_w (int): Maximum width for the text.
-
-        Returns:
-            str: The truncated text.
-        """
         font = ImageFont.truetype(font_path, font_size)
         width, _ = ImageDraw.Draw(Image.new("RGB", (0, 0))).textbbox(
             (0, 0), text_str, font=font
@@ -209,15 +121,6 @@ def create_top_songs_poster(
         return text_str + "..."
 
     def load_image_from_url(url: str) -> np.ndarray:
-        """
-        Loads an image from a URL and returns it as a numpy array.
-
-        Args:
-            url (str): The URL of the image.
-
-        Returns:
-            np.ndarray: The loaded image as a numpy array.
-        """
         try:
             resp = requests.get(url)
             resp.raise_for_status()
@@ -227,18 +130,6 @@ def create_top_songs_poster(
             return np.zeros((200, 200, 4), dtype=np.uint8)
 
     def paste_image(background, overlay, x, y):
-        """
-        Pastes an overlay image onto a background image at a specified position.
-
-        Args:
-            background (np.ndarray): The background image.
-            overlay (np.ndarray): The overlay image.
-            x (int): The x-coordinate to paste the overlay.
-            y (int): The y-coordinate to paste the overlay.
-
-        Returns:
-            np.ndarray: The background image with the overlay pasted on it.
-        """
         y1, y2 = y, y + overlay.shape[0]
         x1, x2 = x, x + overlay.shape[1]
         alpha_s = overlay[:, :, 3] / 255.0
@@ -250,15 +141,6 @@ def create_top_songs_poster(
         return background
 
     def get_thumbnail(thumbnails):
-        """
-        Retrieves the best thumbnail URL from a list of thumbnails.
-
-        Args:
-            thumbnails (list): List of thumbnail dictionaries.
-
-        Returns:
-            str: The URL of the best thumbnail.
-        """
         return min(
             (
                 thumb
@@ -273,17 +155,17 @@ def create_top_songs_poster(
     canvas[:] = (29, 24, 22)
 
     font_paths = {
-        "title": "./font/GoNotoKurrent-Bold.ttf",
-        "description": "./font/GoNotoKurrent-Regular.ttf",
-        "index": "./font/GoNotoKurrent-Regular.ttf",
-        "song": "./font/GoNotoKurrent-Regular.ttf",
-        "artist": "./font/GoNotoKurrent-Regular.ttf",
-        "replay": "./font/GoNotoKurrent-Bold.ttf",
-        "details": "./font/GoNotoKurrent-Regular.ttf",
+        "title": "../font/GoNotoKurrent-Bold.ttf",
+        "description": "../font/GoNotoKurrent-Regular.ttf",
+        "index": "../font/GoNotoKurrent-Regular.ttf",
+        "song": "../font/GoNotoKurrent-Regular.ttf",
+        "artist": "../font/GoNotoKurrent-Regular.ttf",
+        "replay": "../font/GoNotoKurrent-Bold.ttf",
+        "details": "../font/GoNotoKurrent-Regular.ttf",
     }
 
-    logo = cv2.imread("./assets/logo.png", cv2.IMREAD_UNCHANGED)
-    github_logo = cv2.imread("./assets/get-it-on-github.png", cv2.IMREAD_UNCHANGED)
+    logo = cv2.imread("../assets/logo.png", cv2.IMREAD_UNCHANGED)
+    github_logo = cv2.imread("../assets/get-it-on-github.png", cv2.IMREAD_UNCHANGED)
 
     canvas = paste_image(canvas, cv2.resize(logo, (100, 100)), 60, 90)
     canvas = paste_image(canvas, cv2.resize(github_logo, (215, 83)), 292, 1160)
@@ -337,7 +219,7 @@ def create_top_songs_poster(
             canvas, str(i + 1), (50, y_pos + 22), font_paths["index"], 20, (87, 97, 117)
         )
         thumbnail = cv2.resize(
-            load_image_from_url(get_thumbnail(song["thumbnails"])),
+            load_image_from_url(song["thumbnail"]),
             (106, 60),
             interpolation=cv2.INTER_AREA,
         )
@@ -370,3 +252,82 @@ def create_top_songs_poster(
     cv2.rectangle(canvas, (750, 0), (800, 250), (29, 24, 22), -1)
 
     return canvas
+
+
+songs = [
+    {
+        "title": "雨に消えて",
+        "artist": "Astel Leda - Topic",
+        "replays": 102,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/yWjDH2XP1qCsNXVPBBuRP1QgqnsGlgtFg8yDtO9iy54/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLA2djoh4vlCPhkfaKxoAWmVnCpqmg/https/i.ytimg.com/vi/1u8om8Vj_QI/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": " 夕刻、夢ト見紛ウ / アステル・レダ × カグラナナ【 歌ってみた 】",
+        "artist": "カグラナナchannel／ななかぐら",
+        "replays": 95,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/MGBcbzbpJ7iw2wU0SnMRHE6D1R6O5Murgdtar3kfAXQ/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLApETuGaqP45CSwnEelrT0dvMFYtA/https/i.ytimg.com/vi/AEGJSVH-y28/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "星街すいせい - Stellar Stellar / THE FIRST TAKE",
+        "artist": "THE FIRST TAKE",
+        "replays": 92,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/kkgoJVji0x_eeqKzbArDa1hxip8JHdrbZqSFO7gxyko/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLBUg4Sijlk0IgDoVtDCWtTa2I1bQw/https/i.ytimg.com/vi/AAsRtnbDs-0/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "Official髭男dism - Cry Baby［Official Live Video］",
+        "artist": "Official髭男dism",
+        "replays": 86,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/Da7gdfzhCwqmn_3iDUCbza16ZMX6VEaA7OQB-YtMoPg/https/i.ytimg.com/vi/V8kXFEWNTYc/sddefault.jpg?format=webp&width=536&height=402",
+    },
+    {
+        "title": "【歌わせていただきました】星が瞬くこんな夜に/Supercell【英リサ】",
+        "artist": "英リサ.Hanabusa Lisa",
+        "replays": 78,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/n8rD6wjTv7VsMiJdKUTpeK29QC6V16-UK0T_q7I99Mk/%3Fsqp%3D-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGEUgUChlMA8%3D%26rs%3DAOn4CLAlMZEwGOalblYyacfxxq7Ozzpj8Q/https/i.ytimg.com/vi/nl12QpTMNLg/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "【MV】女の子になりたい／まふまふ",
+        "artist": "まふまふちゃんねる",
+        "replays": 70,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/p98TFofizNbKwZF9mOecEste-i2wku1jjznWliIYNas/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLBO5QBGCjs41Xwzj8bRX84jCucTgg/https/i.ytimg.com/vi/ucbx9we6EHk/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "シネマ / 星街すいせい×奏手イヅル×アステル･レダ(Cover)",
+        "artist": "Suisei Channel",
+        "replays": 63,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/9FN1F9SEVpEUwsC0hiEIIeiLntoGXiTci34LwAa-YzI/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLBKBwMaD0K3BGQs6iZh5M3dtjX_EQ/https/i.ytimg.com/vi/UXQDUhSr8nU/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "仮死化 / 遼遼 (Covered by ゆめおいまちた)【歌ってみた/にじさんじ/夢追翔/町田ちま】",
+        "artist": "夢追翔のJUKE BOX",
+        "replays": 59,
+        "thumbnail": "https://i.ytimg.com/vi/Mj38FoEYVGA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBSIu-0dRpkSW21mPZVbQQtwCmugw",
+    },
+    {
+        "title": "【歌ってみた】一度だけの恋なら【とこ尊楓リゼるる】",
+        "artist": "戌亥とこ -Inui Toko-",
+        "replays": 52,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/PQh59mre1DHlkx1AJRgI_mEbf4xD3qfmw3vq5R8D6vo/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLBplO6VYWV7hhA-xhX7YPp43Lh_aw/https/i.ytimg.com/vi/zokUrGt0iuc/hq720.jpg?format=webp&width=574&height=323",
+    },
+    {
+        "title": "七海うらら『Øver Rider』MV(スマホゲーム『BLACK STELLA PTOLOMEA』主題歌)",
+        "artist": "七海うらら*歌channel",
+        "replays": 42,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/Y5O-1pCz1-tsnUi0Ez-dD-mnCRF4WtdoG-WtL0hcXyw/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLAaicehaeyx9U3kFvuas_1cJlDOXA/https/i.ytimg.com/vi/8M3geFKQ-hU/hq720.jpg?format=webp&width=574&height=323",
+    },
+]
+
+title = "リスタルミュージック"
+description = "本月最も再生された曲"
+create_timer = time.time()
+poster = create_top_songs_poster(
+    songs,
+    title,
+    description,
+    detail_texts=["41時間+", "1871曲再生しました", "18% アステル・レダ"],
+)
+print(f"Created poster, {time.time()-create_timer}ms")
+cv2.imshow("Poster", poster)
+cv2.imwrite("poster.png", poster)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

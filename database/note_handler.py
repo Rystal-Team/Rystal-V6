@@ -26,92 +26,100 @@ import uuid
 
 from termcolor import colored
 
-from .main_handler import check_exists, cursor, database
+from .main_handler import check_exists, db_handler
 
 default_user_data = {}
 
 
 async def register_user(user_id: int):
-    database.ping(reconnect=True, attempts=3)
+    """
+    Registers a new user in the database with default data.
+
+    Args:
+        user_id (int): The ID of the user to be registered.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
     try:
-        statement = "INSERT INTO note (user_id, notes) VALUES (%s, %s)"
-        values = (str(user_id), json.dumps(default_user_data))
-        cursor.execute(statement, values)
-        database.commit()
-        print(
-            colored(
-                text=f"[NOTE DATABASE] Registered User: {user_id}", color="light_yellow"
-            )
-        )
+        statement = {
+            "sqlite": "INSERT INTO note (user_id, notes) VALUES (?, ?)",
+            "mysql": "INSERT INTO note (user_id, notes) VALUES (%s, %s)",
+        }
+        db_handler.execute(statement, (str(user_id), json.dumps(default_user_data)))
+        print(colored(f"[NOTE DATABASE] Registered User: {user_id}", "light_yellow"))
     except Exception as e:
         print(
-            colored(
-                text=f"[NOTE DATABASE] Failed to Register User: {user_id} - {e}",
-                color="red",
-            )
+            colored(f"[NOTE DATABASE] Failed to Register User: {user_id} - {e}", "red")
         )
 
 
 async def add_note(user_id: int, note_content: str):
-    database.ping(reconnect=True, attempts=3)
+    """
+    Adds a note for a user in the database.
+
+    Args:
+        user_id (int): The ID of the user.
+        note_content (str): The content of the note to be added.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
     note_id = str(uuid.uuid4())
     try:
         if not check_exists("note", "user_id", user_id):
             await register_user(user_id)
-
-        fetch_statement = "SELECT notes FROM note WHERE user_id = %s"
-        cursor.execute(fetch_statement, (str(user_id),))
-        result = cursor.fetchone()
-        if result:
-            notes = json.loads(result[0])
-        else:
-            notes = {}
-
+        fetch_statement = {
+            "sqlite": "SELECT notes FROM note WHERE user_id = ?",
+            "mysql": "SELECT notes FROM note WHERE user_id = %s",
+        }
+        db_handler.execute(fetch_statement, (str(user_id),))
+        notes = json.loads(db_handler.fetchone()[0] or "{}")
         notes[note_id] = note_content
-
-        update_statement = "UPDATE note SET notes = %s WHERE user_id = %s"
-        cursor.execute(update_statement, (json.dumps(notes), str(user_id)))
-        database.commit()
-
+        update_statement = {
+            "sqlite": "UPDATE note SET notes = ? WHERE user_id = ?",
+            "mysql": "UPDATE note SET notes = %s WHERE user_id = %s",
+        }
+        db_handler.execute(update_statement, (json.dumps(notes), str(user_id)))
         print(
-            colored(
-                text=f"[NOTE DATABASE] Note added for User: {user_id}",
-                color="light_yellow",
-            )
+            colored(f"[NOTE DATABASE] Note added for User: {user_id}", "light_yellow")
         )
     except Exception as e:
         print(
             colored(
-                text=f"[NOTE DATABASE] Failed to add note for User: {user_id} - {e}",
-                color="red",
+                f"[NOTE DATABASE] Failed to add note for User: {user_id} - {e}", "red"
             )
         )
 
 
 async def get_notes(user_id: int):
-    database.ping(reconnect=True, attempts=3)
+    """
+    Retrieves all notes for a user from the database.
+
+    Args:
+        user_id (int): The ID of the user.
+
+    Returns:
+        dict: A dictionary of notes for the user, or an empty dictionary if no notes are found.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
     try:
         if not check_exists("note", "user_id", user_id):
             await register_user(user_id)
-
-        statement = "SELECT notes FROM note WHERE user_id = %s"
-        cursor.execute(statement, (str(user_id),))
-        result = cursor.fetchone()
+        statement = {
+            "sqlite": "SELECT notes FROM note WHERE user_id = ?",
+            "mysql": "SELECT notes FROM note WHERE user_id = %s",
+        }
+        db_handler.execute(statement, (str(user_id),))
+        result = db_handler.fetchone()
         if result:
-            notes = json.loads(result[0])
-            return notes
-        print(
-            colored(
-                text=f"[NOTE DATABASE] No notes found for User: {user_id}",
-                color="yellow",
-            )
-        )
+            return json.loads(result[0])
+        print(colored(f"[NOTE DATABASE] No notes found for User: {user_id}", "yellow"))
         return {}
     except Exception as e:
         print(
             colored(
-                text=f"[NOTE DATABASE] Failed to retrieve notes for User: {user_id} - {e}",
-                color="red",
+                f"[NOTE DATABASE] Failed to retrieve notes for User: {user_id} - {e}",
+                "red",
             )
         )
         return {}

@@ -44,10 +44,8 @@ from mem_top import mem_top
 
 from config.config import bot_owner_id, error_log_channel_id, lang
 from database.guild_handler import get_guild_language
-from database.main_handler import startup
 from module.embed import Embeds
 
-startup()
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents.default()
 intents.members = True

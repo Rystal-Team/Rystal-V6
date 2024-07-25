@@ -58,7 +58,7 @@ class Database:
         elif db_type == "mysql":
             self._connect_mysql(**kwargs)
         else:
-            raise ValueError("Unsupported database type. Choose 'sqlite' or 'mysql'.")
+            raise ValueError("Unsupported database type. Use 'sqlite' or 'mysql'.")
 
     def _connect_sqlite(self, db_file):
         """

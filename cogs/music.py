@@ -26,6 +26,7 @@ import time
 from datetime import timedelta
 from io import BytesIO
 
+import cv2
 import nextcord
 from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
@@ -877,7 +878,9 @@ class Music(commands.Cog, EventManager):
         )
 
         with BytesIO() as image_binary:
-            canvas.save(image_binary, "PNG")
+            _, buffer = cv2.imencode(".png", canvas)
+            image_binary = BytesIO(buffer)
+
             image_binary.seek(0)
             poster = File(filename="most_played.png", fp=image_binary)
             await interaction.followup.send(files=[poster])

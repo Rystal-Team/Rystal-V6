@@ -156,6 +156,7 @@ def create_top_songs_poster(
         print(f"Generated {i}, time taken {time.time() - timer}ms")
 
     draw.rectangle((750, 0, 800, 250), fill="#16181d")
+    canvas.show()
 
     return canvas
 
@@ -209,7 +210,12 @@ songs = [
         "replays": 59,
         "thumbnail": "https://i.ytimg.com/vi/Mj38FoEYVGA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBSIu-0dRpkSW21mPZVbQQtwCmugw",
     },
-    {"title": "", "replays": "", "artist": "", "thumbnail": ""},
+    {
+        "title": "【歌ってみた】一度だけの恋なら【とこ尊楓リゼるる】",
+        "artist": "戌亥とこ -Inui Toko-",
+        "replays": 52,
+        "thumbnail": "https://images-ext-1.discordapp.net/external/PQh59mre1DHlkx1AJRgI_mEbf4xD3qfmw3vq5R8D6vo/%3Fsqp%3D-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD%26rs%3DAOn4CLBplO6VYWV7hhA-xhX7YPp43Lh_aw/https/i.ytimg.com/vi/zokUrGt0iuc/hq720.jpg?format=webp&width=574&height=323",
+    },
     {
         "title": "七海うらら『Øver Rider』MV(スマホゲーム『BLACK STELLA PTOLOMEA』主題歌)",
         "artist": "七海うらら*歌channel",
