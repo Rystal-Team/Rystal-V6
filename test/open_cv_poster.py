@@ -140,17 +140,6 @@ def create_top_songs_poster(
             )
         return background
 
-    def get_thumbnail(thumbnails):
-        return min(
-            (
-                thumb
-                for thumb in thumbnails
-                if (thumb["width"], thumb["height"]) != (120, 90)
-            ),
-            key=lambda t: t["width"] * t["height"],
-            default="",
-        )["url"]
-
     canvas = np.zeros((1300, 800, 3), dtype=np.uint8)
     canvas[:] = (29, 24, 22)
 
