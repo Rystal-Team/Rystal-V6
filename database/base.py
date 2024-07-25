@@ -126,7 +126,6 @@ class DatabaseHandler:
                 self.connection.commit()
         except (sqlite3.Error, Error) as e:
             print(f"Database error: {e}")
-        return
 
     def create_tables(self):
         """
