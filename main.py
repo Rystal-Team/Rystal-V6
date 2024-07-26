@@ -40,7 +40,6 @@ load_dotenv()
 
 from nextcord.ext import commands
 from termcolor import colored
-from mem_top import mem_top
 
 from config.config import bot_owner_id, error_log_channel_id, lang
 from database.guild_handler import get_guild_language
@@ -224,21 +223,7 @@ async def reloadcogs(ctx):
         )
 
 
-@bot.command()
-async def memoryprofile(ctx):
-    if ctx.author.id == bot_owner_id:
-        with open("memory_profile.txt", "w", encoding="utf8") as file:
-            file.write(
-                str(
-                    mem_top(
-                        limit=25,
-                        width=1000,
-                        sep="\n",
-                    )
-                )
-            )
-        await ctx.send(file=nextcord.File("memory_profile.txt"))
-        os.remove("memory_profile.txt")
+
 
 
 @bot.slash_command(
