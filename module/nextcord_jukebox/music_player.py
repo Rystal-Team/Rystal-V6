@@ -147,7 +147,7 @@ class MusicPlayer:
 
         self._members = self.voice.channel.members
 
-    async def _play_func(self, last: Union[Song, None], new):
+    def _play_func(self, last: Union[Song, None], new):
         """
         Plays the next song in the queue.
 
@@ -163,10 +163,7 @@ class MusicPlayer:
                     timer = time.time()
                     print(colored(f"Extracting Song... {new.title}", "dark_grey"))
 
-                    data = await self.loop.run_in_executor(
-                        None,
-                        lambda: ytdlp.extract_info(new.url, download=False),
-                    )
+                    data = ytdlp.extract_info(new.url, download=False),
 
                     print(
                         colored(
@@ -380,7 +377,10 @@ class MusicPlayer:
 
         self.music_queue.append(song)
         if not self.paused and self.music_queue and not self._now_playing:
-            await self._play_func(None, self.music_queue[0])
+            await self.loop.run_in_executor(
+                None,
+                lambda: self._play_func(None, self.music_queue[0]),
+            )
 
         print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
         return song
