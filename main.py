@@ -223,9 +223,6 @@ async def reloadcogs(ctx):
         )
 
 
-
-
-
 @bot.slash_command(
     name="list",
     description="🤖 | See a list of servers that I am in!",

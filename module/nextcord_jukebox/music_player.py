@@ -380,10 +380,8 @@ class MusicPlayer:
 
         self.music_queue.append(song)
         if not self.paused and self.music_queue and not self._now_playing:
-            await self.loop.run_in_executor(
-                None,
-                lambda: self._play_func(None, self.music_queue[0]),
-            )
+            await self._play_func(None, self.music_queue[0])
+
         print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
         return song
 
