@@ -243,7 +243,10 @@ class MusicPlayer:
 
         if len(self.music_queue) > 0:
             new = self.music_queue[0]
-            await self._play_func(last, new)
+            await self.loop.run_in_executor(
+                None,
+                lambda: self._play_func(last, new),
+            )
         else:
             self._now_playing = None
             await EventManager.fire("queue_ended", self, self.interaction)
