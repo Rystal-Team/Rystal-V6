@@ -39,7 +39,7 @@ class NoteSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description="📒 | Note")
+    @nextcord.slash_command(description=class_namespace)
     async def note(
         self,
         interaction: Interaction,

@@ -30,7 +30,7 @@ from nextcord import File
 from nextcord.ext import commands
 
 from config.config import lang, theme_color
-from database import rank_handler
+from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embed import Embeds
 
@@ -44,7 +44,7 @@ class RankSystem(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if not message.author.bot:
-            data = await rank_handler.get_user_data(message.author.id)
+            data = await user_handler.get_user_data(message.author.id)
 
             xp = data["xp"]
             lvl = data["level"]
@@ -65,7 +65,7 @@ class RankSystem(commands.Cog):
             )
 
             data["totalxp"] = usertotalxp
-            await rank_handler.update_user_data(message.author.id, data)
+            await user_handler.update_user_data(message.author.id, data)
 
             if new_level > lvl:
                 await message.channel.send(
@@ -94,7 +94,7 @@ class RankSystem(commands.Cog):
         else:
             user = member
 
-        data = await rank_handler.get_user_data(user.id)
+        data = await user_handler.get_user_data(user.id)
 
         xp = data["xp"]
         lvl = data["level"]
@@ -154,7 +154,7 @@ class RankSystem(commands.Cog):
         card = File(filename="rankcard.png", fp=background.image_bytes)
         await interaction.followup.send(files=[card])
 
-    @nextcord.slash_command(
+    @rank.subcommand(
         name="leaderboard",
         description="🎖️ | View the leaderboard of top ranked users!",
     )
@@ -187,7 +187,7 @@ class RankSystem(commands.Cog):
 
         await interaction.response.defer()
 
-        result = await rank_handler.get_leaderboard(include)
+        result = await user_handler.get_leaderboard(include)
 
         mbed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
@@ -195,9 +195,8 @@ class RankSystem(commands.Cog):
             ].format(include=include),
         )
 
-        for user in result:
-            member = await self.bot.fetch_user(user[0])
-            data = json.loads(user[1])
+        for user_id, data in result.items():
+            member = await self.bot.fetch_user(user_id)
             mbed.add_field(
                 name=member.display_name,
                 value=lang[await get_guild_language(interaction.guild.id)][

@@ -28,7 +28,7 @@ import threading
 
 import websockets
 
-from . import LogHandler
+from . import LogHandler, __socket_standard_version__
 from .event_manager import EventManager
 from .exceptions import *
 
@@ -83,6 +83,7 @@ class RPCHandler(EventManager):
                 await self.dispatch(
                     user_secret,
                     {
+                        "version": __socket_standard_version__,
                         "state": "playing",
                         "data": {
                             "title": after.title,
@@ -111,6 +112,7 @@ class RPCHandler(EventManager):
                 await self.dispatch(
                     user_secret,
                     {
+                        "version": __socket_standard_version__,
                         "state": "idle",
                         "data": {},
                     },
@@ -134,6 +136,7 @@ class RPCHandler(EventManager):
             await self.dispatch(
                 user_secret,
                 {
+                    "version": __socket_standard_version__,
                     "state": "playing",
                     "data": {
                         "title": now_playing.title,
@@ -154,6 +157,7 @@ class RPCHandler(EventManager):
             await self.dispatch(
                 user_secret,
                 {
+                    "version": __socket_standard_version__,
                     "state": "idle",
                     "data": {},
                 },

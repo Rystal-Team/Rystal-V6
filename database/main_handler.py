@@ -27,16 +27,56 @@ from config.config import SQLITE_PATH, USE_SQLITE
 from .base import DatabaseHandler
 
 create_statements = {
-    "sqlite": [
-        "CREATE TABLE IF NOT EXISTS note (user_id TEXT PRIMARY KEY, notes TEXT)",
-        "CREATE TABLE IF NOT EXISTS rank (user_id TEXT PRIMARY KEY, data TEXT, total_xp INTEGER)",
-        "CREATE TABLE IF NOT EXISTS guild (guild_id TEXT PRIMARY KEY, language TEXT, settings TEXT)",
-    ],
-    "mysql": [
-        "CREATE TABLE IF NOT EXISTS note (user_id VARCHAR(255) PRIMARY KEY, notes JSON)",
-        "CREATE TABLE IF NOT EXISTS rank (user_id VARCHAR(255) PRIMARY KEY, data JSON, total_xp INT)",
-        "CREATE TABLE IF NOT EXISTS guild (guild_id VARCHAR(255) PRIMARY KEY, language VARCHAR(255), settings JSON)",
-    ],
+    "sqlite": {
+        "note": {
+            "create": "CREATE TABLE IF NOT EXISTS note (user_id TEXT PRIMARY KEY, notes TEXT)",
+            "columns": {"user_id": "TEXT PRIMARY KEY", "notes": "TEXT"},
+        },
+        "users": {
+            "create": "CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, level INTEGER, xp INTEGER, total_xp INTEGER, points INTEGER, last_point_claimed TEXT)",
+            "columns": {
+                "user_id": "TEXT PRIMARY KEY",
+                "level": "INTEGER",
+                "xp": "INTEGER",
+                "total_xp": "INTEGER",
+                "points": "INTEGER",
+                "last_point_claimed": "TEXT",
+            },
+        },
+        "guild": {
+            "create": "CREATE TABLE IF NOT EXISTS guild (guild_id TEXT PRIMARY KEY, language TEXT, settings TEXT)",
+            "columns": {
+                "guild_id": "TEXT PRIMARY KEY",
+                "language": "TEXT",
+                "settings": "TEXT",
+            },
+        },
+    },
+    "mysql": {
+        "note": {
+            "create": "CREATE TABLE IF NOT EXISTS note (user_id VARCHAR(255) PRIMARY KEY, notes JSON)",
+            "columns": {"user_id": "VARCHAR(255) PRIMARY KEY", "notes": "JSON"},
+        },
+        "users": {
+            "create": "CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(255) PRIMARY KEY, level INT, xp INT, total_xp INT, points INT, last_point_claimed DATETIME)",
+            "columns": {
+                "user_id": "VARCHAR(255) PRIMARY KEY",
+                "level": "INT",
+                "xp": "INT",
+                "total_xp": "INT",
+                "points": "INT",
+                "last_point_claimed": "DATETIME",
+            },
+        },
+        "guild": {
+            "create": "CREATE TABLE IF NOT EXISTS guild (guild_id VARCHAR(255) PRIMARY KEY, language VARCHAR(255), settings JSON)",
+            "columns": {
+                "guild_id": "VARCHAR(255) PRIMARY KEY",
+                "language": "VARCHAR(255)",
+                "settings": "JSON",
+            },
+        },
+    },
 }
 
 if USE_SQLITE:

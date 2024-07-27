@@ -22,7 +22,6 @@
 #
 
 import sqlite3
-
 import mysql.connector
 from mysql.connector import Error
 
@@ -35,7 +34,7 @@ class DatabaseHandler:
         db_type (str): The type of the database ('sqlite' or 'mysql').
         connection (object): The database connection object.
         cursor (object): The database cursor object.
-        create_query (dict): A dictionary containing create table queries for both SQLite and MySQL.
+        create_query (dict): A dictionary containing table creation queries for both SQLite and MySQL.
     """
 
     def __init__(self, db_type, create_query, **kwargs):
@@ -44,15 +43,15 @@ class DatabaseHandler:
 
         Args:
             db_type (str): The type of the database ('sqlite' or 'mysql').
-            create_query (dict): A dictionary containing create table queries for both SQLite and MySQL.
+            create_query (dict): A dictionary containing table creation queries for both SQLite and MySQL.
             **kwargs: Additional arguments for database connection.
         """
         self.db_type = db_type
         self.connection = None
         self.cursor = None
         self.create_query = create_query or {
-            "sqlite": [],
-            "mysql": [],
+            "sqlite": {},
+            "mysql": {},
         }
 
         if db_type == "sqlite":
@@ -64,7 +63,7 @@ class DatabaseHandler:
 
     def _connect_sqlite(self, db_file):
         """
-        Connects to a SQLite database and creates necessary tables.
+        Connects to an SQLite database.
 
         Args:
             db_file (str): The SQLite database file path.
@@ -78,7 +77,7 @@ class DatabaseHandler:
 
     def _connect_mysql(self, host, user, password, database, port=3306):
         """
-        Connects to a MySQL database and creates necessary tables.
+        Connects to a MySQL database.
 
         Args:
             host (str): The MySQL server host.
@@ -101,7 +100,7 @@ class DatabaseHandler:
         Executes a query on the connected database.
 
         Args:
-            query_dict (dict): A dictionary containing the query for both SQLite and MySQL.
+            query_dict (dict): A dictionary containing SQL queries for both SQLite and MySQL.
             params (tuple, optional): Parameters to be passed with the query. Defaults to None.
 
         Raises:
@@ -128,17 +127,95 @@ class DatabaseHandler:
             print(f"Database error: {e}")
 
     def create_tables(self):
-        """Creates necessary tables in the database."""
-        for query in self.create_query[self.db_type]:
-            self.cursor.execute(query)
+        """
+        Creates tables in the connected database based on the create_query attribute.
+        """
+        for table, queries in self.create_query[self.db_type].items():
+            self._create_or_update_table(table, queries)
+
+    def _create_or_update_table(self, table_name, queries):
+        """
+        Creates or updates a table in the connected database.
+
+        Args:
+            table_name (str): The name of the table.
+            queries (dict): A dictionary containing 'create' and 'columns' queries.
+        """
+        if not self._table_exists(table_name):
+            self._create_table(table_name, queries["create"])
+        else:
+            self._update_table(table_name, queries["columns"])
+
+    def _create_table(self, table_name, create_query):
+        """
+        Creates a table in the connected database.
+
+        Args:
+            table_name (str): The name of the table.
+            create_query (str): The SQL query to create the table.
+        """
+        self.cursor.execute(create_query)
         self.connection.commit()
+
+    def _update_table(self, table_name, columns):
+        """
+        Updates a table in the connected database by adding new columns.
+
+        Args:
+            table_name (str): The name of the table.
+            columns (dict): A dictionary containing column names and their definitions.
+        """
+        existing_columns = self._get_existing_columns(table_name)
+        for column, column_def in columns.items():
+            if column not in existing_columns:
+                alter_query = (
+                    f"ALTER TABLE {table_name} ADD COLUMN {column} {column_def}"
+                )
+                self.cursor.execute(alter_query)
+                self.connection.commit()
+
+    def _table_exists(self, table_name):
+        """
+        Checks if a table exists in the connected database.
+
+        Args:
+            table_name (str): The name of the table.
+
+        Returns:
+            bool: True if the table exists, False otherwise.
+        """
+        if self.db_type == "sqlite":
+            self.cursor.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                (table_name,),
+            )
+        elif self.db_type == "mysql":
+            self.cursor.execute("SHOW TABLES LIKE %s", (table_name,))
+        return bool(self.cursor.fetchone())
+
+    def _get_existing_columns(self, table_name):
+        """
+        Gets the existing columns of a table in the connected database.
+
+        Args:
+            table_name (str): The name of the table.
+
+        Returns:
+            set: A set of existing column names.
+        """
+        if self.db_type == "sqlite":
+            self.cursor.execute(f"PRAGMA table_info({table_name})")
+            return {col[1] for col in self.cursor.fetchall()}
+        elif self.db_type == "mysql":
+            self.cursor.execute(f"DESCRIBE {table_name}")
+            return {col[0] for col in self.cursor.fetchall()}
 
     def fetchall(self):
         """
         Fetches all rows from the last executed query.
 
         Returns:
-            list: A list of all rows from the last executed query, or None if an error occurs.
+            list: A list of all rows, or None if an error occurs.
         """
         try:
             return self.cursor.fetchall() if self.cursor else None
@@ -151,7 +228,7 @@ class DatabaseHandler:
         Fetches one row from the last executed query.
 
         Returns:
-            tuple: A single row from the last executed query, or None if an error occurs.
+            tuple: A single row, or None if an error occurs.
         """
         try:
             return self.cursor.fetchone() if self.cursor else None
@@ -160,7 +237,9 @@ class DatabaseHandler:
             return None
 
     def close(self):
-        """Closes the database connection and cursor."""
+        """
+        Closes the database connection and cursor.
+        """
         if self.cursor:
             self.cursor.close()
         if self.connection:

@@ -25,6 +25,7 @@ import os
 import time
 from datetime import timedelta
 from io import BytesIO
+from typing import Optional
 
 import cv2
 import nextcord
@@ -161,7 +162,7 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @nextcord.slash_command(description="🎵 | Music")
+    @nextcord.slash_command(description=class_namespace)
     async def music(self, interaction):
         return
 
@@ -170,7 +171,11 @@ class Music(commands.Cog, EventManager):
         self,
         interaction: Interaction,
         query: str = SlashOption(name="query", description="Enter the song name!"),
+        shuffle_after: Optional[bool] = SlashOption(
+            name="shuffle", choices=[True, False], required=False
+        ),
     ):
+
         await interaction.response.defer()
         player = await self.ensure_voice_state(self.bot, interaction)
         if not player:
@@ -216,6 +221,8 @@ class Music(commands.Cog, EventManager):
                         message_type="success",
                     )
                 )
+            if shuffle_after:
+                await player.shuffle()
         except NoQueryResult:
             pass
         except LoadingStream:
