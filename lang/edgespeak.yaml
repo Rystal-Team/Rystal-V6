@@ -110,4 +110,4 @@ not_enough_points: "You don’t have enough points to do this. Try again later, 
 coinflip_win: "Congrats! You won {points} points! Don’t get used to it."
 coinflip_lose: "Sorry, you lost {points} points. Better luck next time!"
 cooldown_message: "You can only claim points once every 2 hours. Try again in {hours} hours, {minutes} minutes, and {seconds} seconds. Stop being greedy."
-"points_given": "You’ve given {amount} points to {recipient}! Hope they appreciate it."
+points_given: "You’ve given {amount} points to {recipient}! Hope they appreciate it."
