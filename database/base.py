@@ -238,9 +238,7 @@ class DatabaseHandler:
             return None
 
     def close(self):
-        """
-        Closes the database connection and cursor.
-        """
+        """Closes the database connection and cursor."""
         if self.cursor:
             self.cursor.close()
         if self.connection:
