@@ -207,7 +207,7 @@ class DatabaseHandler:
         if self.db_type == "sqlite":
             self.cursor.execute(f"PRAGMA table_info({table_name})")
             return {col[1] for col in self.cursor.fetchall()}
-        elif self.db_type == "mysql":
+        if self.db_type == "mysql":
             self.cursor.execute(f"DESCRIBE {table_name}")
             return {col[0] for col in self.cursor.fetchall()}
 
@@ -238,9 +238,7 @@ class DatabaseHandler:
             return None
 
     def close(self):
-        """
-        Closes the database connection and cursor.
-        """
+        """Closes the database connection and cursor."""
         if self.cursor:
             self.cursor.close()
         if self.connection:
