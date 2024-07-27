@@ -73,11 +73,18 @@ class RankSystem(commands.Cog):
                     )
                 )
 
-    @nextcord.slash_command(
-        name="rank",
+    @nextcord.slash_command(description=class_namespace)
+    async def rank(
+        self,
+        interaction: nextcord.Interaction,
+    ):
+        return
+
+    @rank.subcommand(
+        name="card",
         description="🎖️ | Get your rank or other member's rank!",
     )
-    async def rank(
+    async def card(
         self,
         interaction: nextcord.Interaction,
         member: Optional[nextcord.User] = nextcord.SlashOption(

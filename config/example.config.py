@@ -95,13 +95,13 @@ langs = []
 
 if multi_lang:
     for filename in os.listdir("./lang"):
-        if filename.endswith(".yaml"):
+        if filename.endswith(".hi.yaml"):
             filename = filename[:-5]
-            with open(f"./lang/{filename}.yaml", "r", encoding="utf8") as stream:
+            with open(f"./lang/{filename}.hi.yaml", "r", encoding="utf8") as stream:
                 lang[filename] = yaml.safe_load(stream)
                 print(f"Loaded Language: {filename}")
 else:
-    with open(f"./lang/{default_language}.yaml", "r", encoding="utf8") as stream:
+    with open(f"./lang/{default_language}.hi.yaml", "r", encoding="utf8") as stream:
         lang[default_language] = yaml.safe_load(stream)
         print(f"Loaded Language: {default_language}")
 
