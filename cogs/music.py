@@ -223,6 +223,17 @@ class Music(commands.Cog, EventManager):
                 )
             if shuffle_after:
                 await player.shuffle()
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "shuffled_queue"
+                        ],
+                        message_type="info",
+                    )
+                )
         except NoQueryResult:
             pass
         except LoadingStream:
