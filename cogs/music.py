@@ -811,7 +811,7 @@ class Music(commands.Cog, EventManager):
     ):
         await interaction.response.defer(with_message=True)
         timer = time.time()
-        print(colored("Obtaining Entries...", "dark_grey"))
+        print(colored(f"Obtaining Entries...", "dark_grey"))
         guild_language = await get_guild_language(interaction.guild.id)
         period_dict = {"Week": 7, "Month": 30, "Year": 365}
         cutoff_days = period_dict.get(period, 30)
@@ -887,7 +887,7 @@ class Music(commands.Cog, EventManager):
         )
 
         timer = time.time()
-        print(colored("Generating Canvas...", "dark_grey"))
+        print(colored(f"Generating Canvas...", "dark_grey"))
         canvas = await self.bot.loop.run_in_executor(
             None,
             lambda: self.generate_canvas(
@@ -896,9 +896,7 @@ class Music(commands.Cog, EventManager):
         )
 
         with BytesIO() as image_binary:
-            _, buffer = cv2.imencode(".png", canvas)
-            image_binary = BytesIO(buffer)
-
+            canvas.save(image_binary, "PNG")
             image_binary.seek(0)
             poster = File(filename="most_played.png", fp=image_binary)
             await interaction.followup.send(files=[poster])

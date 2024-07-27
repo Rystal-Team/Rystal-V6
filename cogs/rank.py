@@ -1,30 +1,8 @@
-#  ------------------------------------------------------------
-#  Copyright (c) 2024 Rystal-Team
-#
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to deal
-#  in the Software without restriction, including without limitation the rights
-#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#  copies of the Software, and to permit persons to whom the Software is
-#  furnished to do so, subject to the following conditions:
-#
-#  The above copyright notice and this permission notice shall be included in
-#  all copies or substantial portions of the Software.
-#
-#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#  THE SOFTWARE.
-#  ------------------------------------------------------------
-#
-
+from io import BytesIO
 from typing import Optional
 
 import nextcord
-from easy_pil import Editor, Font, load_image_async
+from PIL import Image, ImageDraw, ImageFont
 from nextcord import File
 from nextcord.ext import commands
 
@@ -115,50 +93,56 @@ class RankSystem(commands.Cog):
             percentage = 0
 
         # Rank card
-        background = Editor("./rankCardBase.png")
-        profile = await load_image_async(str(user.display_avatar.url))
+        background = Image.open("./rankCardBase.png").convert("RGBA")
+        profile = Image.open(BytesIO(await user.display_avatar.read())).convert("RGBA")
+        profile = profile.resize((135, 135), Image.LANCZOS)
+        mask = Image.new("L", profile.size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0) + profile.size, fill=255)
+        profile.putalpha(mask)
 
-        profile = Editor(profile).resize((135, 135)).circle_image()
+        background.paste(profile, (40, 70), profile)
 
-        poppins = Font.poppins(variant="bold", size=45)
-        poppins_small = Font.poppins(size=22)
+        draw = ImageDraw.Draw(background)
+        font_paths = {
+            "title": "./font/GoNotoKurrent-Bold.ttf",
+            "description": "./font/GoNotoKurrent-Regular.ttf",
+        }
+        title_font = ImageFont.truetype(font_paths["title"], 45)
+        description_font = ImageFont.truetype(font_paths["description"], 22)
 
-        background.paste(profile.image, (40, 70))
-
-        background.rectangle((200, 200), width=500, height=8, fill="#D7D7D7", radius=5)
-        background.bar(
-            (200, 200),
-            max_width=500,
-            height=8,
-            percentage=percentage,
+        draw.rectangle((200, 200, 700, 208), fill="#D7D7D7", outline=None)
+        draw.rectangle(
+            (200, 200, 200 + int(500 * (percentage / 100)), 208),
             fill=theme_color,
-            radius=5,
+            outline=None,
         )
 
-        background.text(
-            (560, 70),
+        draw.text(
+            (560, 75),
             lang[await get_guild_language(interaction.guild.id)]["level_text"],
-            font=poppins_small,
-            color="#e6e6e6",
+            font=description_font,
+            fill="#e6e6e6",
         )
-        background.text((625, 57), f"{lvl}", font=poppins, color=theme_color)
+        draw.text((625, 57), f"{lvl}", font=title_font, fill=theme_color)
 
-        name_font = Font.poppins(variant="bold", size=50)
-        background.text(
-            (200, 100), str(user.global_name), font=name_font, color=theme_color
-        )
+        name_font = ImageFont.truetype(font_paths["title"], 50)
+        draw.text((200, 100), str(user.global_name), font=name_font, fill=theme_color)
 
-        background.text(
-            (550, 167),
+        draw.text(
+            (560, 160),
             lang[await get_guild_language(interaction.guild.id)]["level_xp"].format(
                 xp=xp, totalxp=(lvl + 1) * 100
             ),
-            font=poppins_small,
-            color="#fff",
+            font=description_font,
+            fill="#fff",
         )
 
-        card = File(filename="rankcard.png", fp=background.image_bytes)
-        await interaction.followup.send(files=[card])
+        with BytesIO() as image_binary:
+            background.save(image_binary, "PNG")
+            image_binary.seek(0)
+            card = File(fp=image_binary, filename="rankcard.png")
+            await interaction.followup.send(files=[card])
 
     @rank.subcommand(
         name="leaderboard",
