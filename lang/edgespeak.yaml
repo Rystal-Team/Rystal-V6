@@ -97,12 +97,12 @@ queue_footer: "{page}/{total_pages} - That’s how far you’ve gone"
 queue_footer_with_query: "{page}/{total_pages} | Query: {query} - If you care"
 
 # music poster
-music_poster_title: "Rystal Music - Because we have to"
-most_played_week: "Most played songs this week - Not that anyone cares"
-most_played_month: "Most played songs this month - Like it matters"
-most_played_year: "Most played songs this year - Impressive, right?"
-played_duration: "{hour}h+ - Do you even have a life?"
-total_played: "Played {count} songs - Congrats, I guess"
+music_poster_title: "Rystal Music"
+most_played_week: "Most played this week... Anyone cares?"
+most_played_month: "Most played this month... Like it matters"
+most_played_year: "Most played this year... Impressive, right?"
+played_duration: "{hour}h+ - Life?"
+total_played: "Played {count} songs - TYFS"
 
 # points
 points_claimed: "You’ve claimed {points} points! Don’t blow it all at once!"
