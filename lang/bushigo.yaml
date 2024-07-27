@@ -1,0 +1,113 @@
+# Bushigo translations
+name: "武士語"
+
+# general
+must_be_positive: "`{option}` の値は正でなければならぬ！"
+must_be_positive_or_zero: "`{option}` の値は正またはゼロでなければならぬ！"
+must_be_non_negative: "`{option}` の値は非負でなければならぬ！"
+must_be_non_negative_or_zero: "`{option}` の値は非負またはゼロでなければならぬ！"
+must_be_boolean: "`{option}` の値はブール値でなければならぬ！"
+must_be_string: "`{option}` の値は文字列でなければならぬ！"
+must_be_number: "`{option}` の値は数値でなければならぬ！"
+must_include: "`{option}` には `{value}` が含まれておらねばならぬ！"
+
+# embed titles
+music_class_title: "🎵 | 音楽モジュール"
+level_class_title: "🎖️ | レベルアップモジュール"
+system_class_title: "🤖 | システム"
+setting_class_title: "⚙️ | 設定"
+note_class_title: "📒 | ノート"
+point_class_title: "⭐️ | ポイントシステム"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "オペレーティングシステム: {platform}"
+version: "バージョン: {os_version}"
+release: "リリース: {os_release}"
+uptime: "稼働時間: {uptime}"
+ping: "ポン！ {ping}ms"
+
+# settings
+language_changed: "言語を {language} に変更致した！"
+
+# music
+queued_playlist: "プレイリスト **{playlist}** をキューに追加致した！"
+all_songs: "すべての曲"
+queue_ended: "キューが終了致した！"
+player_disconnected: "音楽プレーヤーが切断され申した！"
+loading_playlist: "プレイリストを読み込み中..."
+not_in_voice: "お主はボイスチャンネルにおらぬ！"
+in_different_voice: "お主はボットと同じボイスチャンネルにおらぬ！"
+failed_to_add_song: "曲 **{title}** の追加に失敗致した！"
+invalid_playlist: "無効なプレイリストでござる！"
+playing_song: "**{title}** を再生中でござる！"
+queued_song: "**{title}** をキューに追加致した！"
+removed_song: "**{title}** を削除致した！"
+nothing_is_playing: "再生中の曲はありませぬ！"
+stopped_player: "プレーヤーを停止致した！"
+changed_volume: "**{title}** の音量を {volume}% に変更致した！"
+currently_playing: "現在再生中... {title}"
+shuffled_queue: "キューをシャッフル致した！"
+invalid_index: "無効なインデックスでござる！"
+
+toggle_silent_mode: "サイレントモードは {toggle} でござる"
+toggle_auto_leave: "自動退出は {toggle} でござる"
+volume_out_of_range: "音量は0％から200％の間で設定せねばならぬ！"
+
+disabled_loop: "ループモードを無効に致した！"
+enabled_loop_single: "**{title}** のループモードを有効に致した！"
+enabled_loop_queue: "このキューのループモードを有効に致した！"
+disabled_loop_single: "**{title}** のループモードを無効に致した！"
+disabled_loop_queue: "このキューのループモードを無効に致した！"
+music_already_paused: "音楽は既に一時停止しておる！ `/resume` を使って再開致せ！"
+music_already_playing: "音楽は既に再生中でござる！ `/pause` を使って一時停止致せ！"
+paused_queue: "キューを一時停止致した！"
+resumed_queue: "キューを再開致した！"
+skipped_from: "**{old}** から **{new}** にスキップ致した！"
+skipped: "**{old}** をスキップ致した！"
+replayed_from: "**{old}** から **{new}** に再生致した！"
+replayed: "**{old}** を再生致した！"
+jumped_from: "**{old}** から **{new}** にジャンプ致した！"
+jumped: "**{old}** にジャンプ致した！"
+
+music_registered_secret: "シークレットの登録に成功致した。詳細についてはプライベートメッセージを確認致せ。何も受信しておらぬ場合は、プライバシー設定で「サーバーメンバーからのダイレクトメッセージを許可する」が有効になっておることを確認致せ。"
+music_secret: "これがお主の新しいシークレットでござる\n ```{secret}```"
+
+# level
+level_up: "{user} 殿、レベル {level} に到達致した！！！"
+level_text: "レベル"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "リーダーボード - トップ {include}"
+leaderboard_out_of_range: "範囲は最小1、最大50でなければならぬ！"
+leaderboard_user_row: "**レベル: {level} | 合計XP: {totalxp}**"
+
+# system
+unknown_error: "不明なエラーが発生致した！"
+missing_permission: "この行動を取るための許可がござらぬ！"
+author_only_interactions: "この命令は作者のみが行うことができるのでござる。"
+not_implemented: "この命令はまだ実装されておらぬ！"
+command_slowdown: "速度を落として、しばらくしてからもう一度お試しくだされ！"
+
+# queue search query
+queue_serach_query: "検索クエリ（すべてを表示するには空のままにしてくだされ）"
+queue_query: "クエリ"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | クエリ: {query}"
+
+# music poster
+music_poster_title: "リスタル音楽"
+most_played_week: "今週最も再生された曲"
+most_played_month: "今月最も再生された曲"
+most_played_year: "今年最も再生された曲"
+played_duration: "{hour}時間+"
+total_played: "{count} 曲再生"
+
+# points
+points_claimed: "{points} ポイントを獲得致した！"
+not_enough_points: "これを行うための十分なポイントがござらぬ。"
+coinflip_win: "おめでとうござる！ {points} ポイントを獲得致した！"
+coinflip_lose: "残念ながら {points} ポイントを失い申した。"
+cooldown_message: "ポイントは2時間ごとに1回しか請求できぬ。{hours}時間{minutes}分{seconds}秒後に再度お試しくだされ。"
+points_given: "{recipient} 殿に {amount} ポイントを渡し申した！"
