@@ -21,8 +21,8 @@
 #  ------------------------------------------------------------
 #
 
-import json
 import datetime
+
 from termcolor import colored
 
 from .main_handler import check_exists, db_handler
