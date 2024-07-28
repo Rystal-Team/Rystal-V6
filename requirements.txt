@@ -1,14 +1,12 @@
 PyYAML==6.0.1
 easy-pil>=0.3.2
 flask>=3.0.3
-lyricsgenius>=3.0.1
 meta-yt>=0.1.0b0
 mysql-connector-python>=8.3.0
 nest-asyncio>=1.6.0
 nextcord>=2.6.0
 nextcord[speed]>=2.6.0
 nextcord[voice]>=2.6.0
-opencv-python>=4.10.0.84
 psutil>=5.9.8
 python-dotenv>=1.0.1
 pytube>=15.0.0
@@ -22,5 +20,3 @@ xmltodict>=0.13.0
 youtube-search>=2.1.2
 yt-dlp>=2024.5.27
 Pillow~=10.1.0
-numpy~=2.0.1
-imageio~=2.34.2
