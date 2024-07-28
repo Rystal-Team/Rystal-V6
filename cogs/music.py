@@ -42,6 +42,7 @@ from module.nextcord_jukebox.event_manager import EventManager
 from module.nextcord_jukebox.exceptions import (
     AlreadyPaused,
     EmptyQueue,
+    InvalidPlaylist,
     LoadingStream,
     NoQueryResult,
     NotConnected,
@@ -183,24 +184,6 @@ class Music(commands.Cog, EventManager):
         try:
             playlist_id = await get_playlist_id(query)
             if playlist_id and not player._fetching_stream:
-                # Send POST request to validate the playlist URL
-                response = requests.post(
-                    "https://example.com/validate_playlist", json={"url": query}
-                )
-                if response.status_code != 200 or not response.json().get("valid"):
-                    await interaction.followup.send(
-                        embed=Embeds.message(
-                            title=lang[await get_guild_language(interaction.guild.id)][
-                                class_namespace
-                            ],
-                            message=lang[
-                                await get_guild_language(interaction.guild.id)
-                            ]["invalid_playlist"],
-                            message_type="error",
-                        )
-                    )
-                    return
-
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -287,6 +270,19 @@ class Music(commands.Cog, EventManager):
                         "not_in_voice"
                     ],
                     message_type="warn",
+                )
+            )
+            return
+        except InvalidPlaylist:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "invalid_playlist"
+                    ],
+                    message_type="error",
                 )
             )
             return

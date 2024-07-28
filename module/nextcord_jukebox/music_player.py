@@ -27,6 +27,7 @@ import random
 import time
 from typing import Callable, Optional, Union
 from urllib import parse
+import urllib.error
 
 import yt_dlp
 from meta_yt import Video, YouTube
@@ -501,19 +502,28 @@ class MusicPlayer:
         result = None
 
         if self.is_valid_playlist_url(query):
-            playlist = await asyncio.to_thread(Playlist, query)
-            if playlist:
-                await EventManager.fire("loading_playlist", self, interaction, None)
-                for url in playlist.video_urls:
-                    song = await self._queue_single(url)
-                    await EventManager.fire("loading_playlist", self, interaction, song)
-                result = playlist
+            try:
+                playlist = await asyncio.to_thread(Playlist, query)
+                if playlist:
+                    await EventManager.fire("loading_playlist", self, interaction, None)
+                    for url in playlist.video_urls:
+                        song = await self._queue_single(url)
+                        await EventManager.fire(
+                            "loading_playlist", self, interaction, song
+                        )
+                    result = playlist
+            except urllib.error.HTTPError as e:
+                LogHandler.error(f"Failed to fetch playlist: {e}")
+                self._fetching_stream = False
+                raise InvalidPlaylist from e
         else:
             try:
                 yt = await asyncio.to_thread(YouTube, query)
             except Exception as e:
-                raise NoQueryResult
+                self._fetching_stream = False
+                raise NoQueryResult from e
             if not yt:
+                self._fetching_stream = False
                 raise NoQueryResult
             if yt.video and yt:
                 result = await self._queue_single(yt.video.url)
@@ -624,6 +634,7 @@ class MusicPlayer:
 
         if not self.music_queue:
             self._now_playing = None
+            await EventManager.fire("queue_ended", self, self.interaction)
 
         self.voice.stop()
         return last, new
