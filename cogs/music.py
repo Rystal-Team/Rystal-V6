@@ -27,8 +27,8 @@ from datetime import timedelta
 from io import BytesIO
 from typing import Optional
 
-import cv2
 import nextcord
+import requests
 from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
 from termcolor import colored
@@ -175,7 +175,6 @@ class Music(commands.Cog, EventManager):
             name="shuffle", choices=[True, False], required=False
         ),
     ):
-
         await interaction.response.defer()
         player = await self.ensure_voice_state(self.bot, interaction)
         if not player:
@@ -184,6 +183,24 @@ class Music(commands.Cog, EventManager):
         try:
             playlist_id = await get_playlist_id(query)
             if playlist_id and not player._fetching_stream:
+                # Send POST request to validate the playlist URL
+                response = requests.post(
+                    "https://example.com/validate_playlist", json={"url": query}
+                )
+                if response.status_code != 200 or not response.json().get("valid"):
+                    await interaction.followup.send(
+                        embed=Embeds.message(
+                            title=lang[await get_guild_language(interaction.guild.id)][
+                                class_namespace
+                            ],
+                            message=lang[
+                                await get_guild_language(interaction.guild.id)
+                            ]["invalid_playlist"],
+                            message_type="error",
+                        )
+                    )
+                    return
+
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -235,7 +252,18 @@ class Music(commands.Cog, EventManager):
                     )
                 )
         except NoQueryResult:
-            pass
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "failed_to_add_song"
+                    ].format(title=query),
+                    message_type="warn",
+                ),
+            )
+            return
         except LoadingStream:
             await interaction.followup.send(
                 embed=Embeds.message(

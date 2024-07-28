@@ -32,7 +32,7 @@ from database.guild_handler import get_guild_language
 from database.note_handler import add_note
 from module.embed import Embeds
 
-class_namespace = "music_class_title"
+class_namespace = "note_class_title"
 
 
 class NoteSystem(commands.Cog):

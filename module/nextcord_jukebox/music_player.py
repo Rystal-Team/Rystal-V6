@@ -467,37 +467,60 @@ class MusicPlayer:
         print(colored(text=f"Time taken: {time.time() - timer}", color="dark_grey"))
         return song
 
+    @staticmethod
+    def is_valid_playlist_url(query: str) -> bool:
+        """
+        Checks if the given query URL is a valid playlist URL.
+
+        Args:
+            query (str): The URL to check.
+
+        Returns:
+            bool: True if the URL is a valid playlist URL, False otherwise.
+        """
+        parsed_url = parse.urlparse(query)
+        query_params = parse.parse_qs(parsed_url.query)
+        return "list" in query_params
+
     @pre_check(check_fetching_stream=True)
     async def queue(self, interaction: Interaction, query: str):
         """
-        Queues a song or playlist based on a query.
+        Queues a song or playlist based on the given query.
 
         Args:
-            interaction (Interaction): The interaction object.
-            query (str): The query string.
+            interaction (Interaction): The interaction object containing information about the user and the guild.
+            query (str): The search query or URL to queue.
 
         Returns:
-            Playlist or Song: The queued playlist or song.
+            Union[Playlist, Song]: The queued playlist or song.
+
+        Raises:
+            NoQueryResult: If no results are found for the given query.
         """
         self._fetching_stream = True
         result = None
 
-        playlist = await asyncio.to_thread(Playlist, query)
-        if playlist:
-            await EventManager.fire("loading_playlist", self, interaction, None)
-            for url in playlist.video_urls:
-                song = await self._queue_single(url)
-                await EventManager.fire("loading_playlist", self, interaction, song)
-            result = playlist
+        if self.is_valid_playlist_url(query):
+            playlist = await asyncio.to_thread(Playlist, query)
+            if playlist:
+                await EventManager.fire("loading_playlist", self, interaction, None)
+                for url in playlist.video_urls:
+                    song = await self._queue_single(url)
+                    await EventManager.fire("loading_playlist", self, interaction, song)
+                result = playlist
         else:
-            yt = await asyncio.to_thread(YouTube, query)
-            if yt.video:
+            try:
+                yt = await asyncio.to_thread(YouTube, query)
+            except Exception as e:
+                raise NoQueryResult
+            if not yt:
+                raise NoQueryResult
+            if yt.video and yt:
                 result = await self._queue_single(yt.video.url)
 
         self._fetching_stream = False
         if result:
             return result
-        raise NoQueryResult()
 
     @pre_check(check_connection=False)
     async def connect(self, interaction: Interaction) -> Optional[bool]:

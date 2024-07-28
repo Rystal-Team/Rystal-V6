@@ -167,7 +167,7 @@ class RankSystem(commands.Cog):
                         class_namespace
                     ],
                     message=lang[await get_guild_language(interaction.guild.id)][
-                        "leaderboard_out_of_include"
+                        "leaderboard_out_of_range"
                     ],
                     message_type="warn",
                 ),
