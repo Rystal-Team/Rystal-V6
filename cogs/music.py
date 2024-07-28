@@ -28,7 +28,6 @@ from io import BytesIO
 from typing import Optional
 
 import nextcord
-import requests
 from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
 from termcolor import colored
