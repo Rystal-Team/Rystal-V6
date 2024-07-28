@@ -1,0 +1,113 @@
+# Yapping translations
+name: "Yapping"
+
+# general
+must_be_positive: "honestly stop `{option}`ting negative shit"
+must_be_positive_or_zero: "honestly stop `{option}`ting negative shit or maybe stop being broke as fuck"
+must_be_non_negative: "honestly stop `{option}`ting negative shit"
+must_be_non_negative_or_zero: "honestly stop `{option}`ting negative shit or maybe stop being broke as fuck"
+must_be_boolean: "`{option}` is just simple yes no question honestly stop yapping"
+must_be_string: "`{option}` needs to be string tbh..."
+must_be_number: "`{option}` needs to be a number tbh... not an excuse if u havent learnt that in preschool"
+must_include: "`{option}` is a couple `{value}` and everyone knows... why u tryna break them up"
+
+# embed titles
+music_class_title: "🎵 | music thing i think"
+level_class_title: "🎖️ | solo leveling i think"
+system_class_title: "🤖 | it just system thing what u looking at this for"
+setting_class_title: "⚙️ | settings i think dont touch this if ur stupid"
+note_class_title: "📒 | it notes but i dont see u have any plans so"
+point_class_title: "⭐️ | gambling 🤑🤑🤑"
+
+# status
+cpu: "**CP**U: {cpu}%"
+ram: "allat RAM but u still cant remember shit: {ram_used}/{ram_total} GB"
+os: "Operating System: {platform} (honestly a nerd if u looking at this"
+version: "Version: {os_version} (honestly 🤓 as well"
+release: "Release: {os_release} (same with this"
+uptime: "Uptime: {uptime} (if this shit running longer than 1 min then its a miracle"
+ping: "{ping}ms (honestly stop using virgin media"
+
+# settings
+language_changed: "it now {language}, happy?"
+
+# music
+queued_playlist: "**{playlist}** queued, slower than u thought eh?"
+all_songs: "every fucking thing"
+queue_ended: "ended lmfao, might as well end yourself here as well"
+player_disconnected: "dc'd lmao"
+loading_playlist: "it loading ok?"
+not_in_voice: "v-v-v-v-v-v-vc?"
+in_different_voice: "join me cuz i cba to join ur ass"
+failed_to_add_song: "cant add **{title}**, probably cuz u not loved tbh"
+invalid_playlist: "fix yo playlist before playing that shit"
+playing_song: "playing **{title}**"
+queued_song: "q'd **{title}**"
+removed_song: "killed **{title}** i think"
+nothing_is_playing: "nothing playing vro"
+stopped_player: "stopped lmao"
+changed_volume: "change volume **{title}** to {volume}%, honestly change it to 200 for a better experience"
+currently_playing: "{title} rn i think"
+shuffled_queue: "shuffled i think, ngl just rearrange ur shit"
+invalid_index: "invalid ting, pls read ty"
+
+toggle_silent_mode: "silent mode turns me {toggle} 👅"
+toggle_auto_leave: "auto leave turns me {toggle} 👅"
+volume_out_of_range: "0% - 200% only mf"
+
+disabled_loop: "disabled loop i think, just a theory not confirmed yet"
+enabled_loop_single: "looping **{title}**, honestly how are u not bored of this shit"
+enabled_loop_queue: "looping queue i think (please get a life"
+disabled_loop_single: "no longer looping **{title}** (finally ur bored of this shit"
+disabled_loop_queue: "no longer looping queue (i think vro is planning to get a life"
+music_already_paused: "paused already mf, `/resume` aint that deep tbh"
+music_already_playing: "paused already mf, `/pause` aint that deep tbh"
+paused_queue: "paused i think, just a theory not confirmed yet"
+resumed_queue: "resumed i think, just a theory not confirmed yet"
+skipped_from: "skipped from **{old}** to **{new}** i think, just a theory not confirmed yet"
+skipped: "skipped **{old}**, honestly if u dont like it just remove it"
+replayed_from: "Replayed from **{old}** to **{new}**!"
+replayed: "Replayed **{old}**!"
+jumped_from: "Jumped from **{old}** to **{new}**!"
+jumped: "Jumped **{old}**!"
+
+music_registered_secret: "You have successfully registered a secret. Please check your private messages for further details. If you haven't received anything, ensure that 'allow direct messages from server members' is enabled in your privacy settings. (yes im serious for this once"
+music_secret: "This is your new secret\n ```{secret}```"
+
+# level
+level_up: "{user} is lvl {level} i think (get a life honestly"
+level_text: "lvl"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "leaderboard - top {include}"
+leaderboard_out_of_range: "1 to 50 only mf it aint hard"
+leaderboard_user_row: "**Level: {level} | Total XP: {totalxp}**"
+
+# system
+unknown_error: "e-e-e-e-e-error??? idk wtf happened tbh"
+missing_permission: "no perms lmao"
+author_only_interactions: "only author of this thing can use it i think(idk i just do shit"
+not_implemented: "this thing not done yet bruh calm ur ass down"
+command_slowdown: "slow tf down who tf u think u are"
+
+# queue search query
+queue_serach_query: "search query (leave empty to show all)"
+queue_query: "thing"
+queue_search: "🔎?"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | query: {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "most played songs this week"
+most_played_month: "most played songs this month"
+most_played_year: "most played songs this year (pls grass"
+played_duration: "{hour}h+"
+total_played: "played {count} songs"
+
+# points
+points_claimed: "claimed {points} points? whatever you'll lose it all in 30 seconds either way"
+not_enough_points: "lmao u broke as shit"
+coinflip_win: "won {points} points? whatever you'll lose it all in 30 seconds either way"
+coinflip_lose: "lost {points} points (L tbh"
+cooldown_message: "2 hours cooldown mf calm ur ass down {hours} hours {minutes} minutes {seconds} seconds lmao"
+"points_given": "gave {amount} points to {recipient} i think, just a theory not confirmed yet"
