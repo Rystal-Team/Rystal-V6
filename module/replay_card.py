@@ -88,17 +88,15 @@ def create_top_songs_poster(
         return Image.new("RGBA", (200, 200), (0, 0, 0, 0))
 
     def get_smallest_thumbnail(thumbnails):
-        if thumbnails == "":
-            return ""
-        min_dimensions = float("inf")
-        min_url = ""
-        for thumb in thumbnails:
-            dimensions = thumb["width"] * thumb["height"]
-            if dimensions < min_dimensions:
-                print(f"Using size: {thumb['width']}x{thumb['height']}")
-                min_dimensions = dimensions
-                min_url = thumb["url"]
-        return min_url
+        return min(
+            (
+                thumb
+                for thumb in thumbnails
+                if (thumb["width"], thumb["height"]) != (120, 90)
+            ),
+            key=lambda t: t["width"] * t["height"],
+            default="",
+        )["url"]
 
     canvas = Image.new("RGB", (800, 1300), color="#16181d")
     draw = ImageDraw.Draw(canvas)
