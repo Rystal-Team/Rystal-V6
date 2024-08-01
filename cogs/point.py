@@ -162,7 +162,7 @@ class PointSystem(commands.Cog):
                     class_namespace
                 ],
                 message=result_message,
-                message_type="info",
+                message_type="win" if outcome == guess else "lose",
             ),
         )
 
@@ -233,6 +233,42 @@ class PointSystem(commands.Cog):
                     "points_given"
                 ].format(amount=amount, recipient=recipient.display_name),
                 message_type="success",
+            ),
+        )
+
+    @points.subcommand(
+        description="🎖️ | Show your points or another user's points!",
+    )
+    async def balance(
+        self,
+        interaction: nextcord.Interaction,
+        user: nextcord.Member = nextcord.SlashOption(
+            name="user",
+            description="The user whose points you want to see",
+            required=False,
+        ),
+    ):
+        await interaction.response.defer()
+        user_id = user.id if user else interaction.user.id
+        user_data = await user_handler.get_user_data(user_id)
+        points = user_data["points"]
+
+        if user:
+            message = lang[await get_guild_language(interaction.guild.id)][
+                "points_show_user"
+            ].format(user=user.display_name, points=points)
+        else:
+            message = lang[await get_guild_language(interaction.guild.id)][
+                "points_show_self"
+            ].format(points=points)
+
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=message,
+                message_type="info",
             ),
         )
 
