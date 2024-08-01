@@ -16,6 +16,7 @@ type_color:
   list: [ 157, 200, 255 ]
   win: [ 255, 194, 125 ]
   lose: [ 52, 55, 74 ]
+  game: [ 97, 113, 255 ]
 
 error_log_channel_id: 000000000000000000
 bug_report_channel_id: 000000000000000000

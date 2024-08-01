@@ -99,7 +99,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description="🎖️ | Bet your points on a coin flip!",
     )
-    async def bet(
+    async def coinflip(
         self,
         interaction: nextcord.Interaction,
         guess=nextcord.SlashOption(

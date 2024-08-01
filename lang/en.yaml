@@ -3,6 +3,7 @@ name: "English"
 
 # general
 must_be_positive: "`{option}` value must be positive!"
+must_be_positive_not_zero: "`{option}` value must be positive and not zero!"
 
 # embed titles
 music_class_title: "🎵 | Music Module"
@@ -103,3 +104,14 @@ points_show_self: "You have {points} points!"
 
 # games
 blackjack_game_title: "🃏 | Blackjack"
+blackjack_your_move: "Your move!"
+blackjack_timeout_message: "Player took too long! Dealer wins by default."
+blackjack_your_hand: "Your hand"
+blackjack_dealer_hand: "Dealer's hand"
+blackjack_player_busts: "Player busts!"
+blackjack_dealer_busts: "Dealer busts!"
+blackjack_tie: "It's a tie!"
+blackjack_player_wins: "Player wins!"
+blackjack_dealer_wins: "Dealer wins!"
+blackjack_player_blackjack: "Player hits Blackjack!"
+blackjack_total: "total: {total}"

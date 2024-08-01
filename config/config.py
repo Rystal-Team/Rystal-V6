@@ -25,6 +25,7 @@ type_color = {
     "list": Color.from_rgb(*config["type_color"]["list"]),
     "win": Color.from_rgb(*config["type_color"]["win"]),
     "lose": Color.from_rgb(*config["type_color"]["lose"]),
+    "game": Color.from_rgb(*config["type_color"]["game"]),
 }
 
 error_log_channel_id = config["error_log_channel_id"]

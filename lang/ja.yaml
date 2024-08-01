@@ -3,6 +3,7 @@ name: "日本語"
 
 # general
 must_be_positive: "`{option}` の値は正でなければなりません！"
+must_be_positive_not_zero: "`{option}` の値は正でなければならず、ゼロではありません！"
 
 # embed titles
 music_class_title: "🎵 | 音楽モジュール"
@@ -11,6 +12,7 @@ system_class_title: "🤖 | システム"
 setting_class_title: "⚙️ | 設定"
 note_class_title: "📒 | ノート"
 point_class_title: "⭐️ | ポイントシステム"
+game_class_title: "🎮 | ゲーム"
 
 # status
 cpu: "CPU: {cpu}%"
@@ -97,3 +99,19 @@ coinflip_win: "おめでとうございます！ {points} ポイントを獲得�
 coinflip_lose: "残念！ {points} ポイントを失いました。"
 cooldown_message: "ポイントは2時間ごとに1回しか請求できません。{hours}時間{minutes}分{seconds}秒後に再度お試しください。"
 points_given: "{recipient} に {amount} ポイントを渡しました！"
+points_show_user: "{user} には {points} ポイントがあります！"
+points_show_self: "あなたには {points} ポイントがあります！"
+
+# games
+blackjack_game_title: "🃏 | ブラックジャック"
+blackjack_your_move: "あなたの手番です！"
+blackjack_timeout_message: "プレイヤーが時間切れになりました！ ディーラーの勝ちです。"
+blackjack_your_hand: "あなたの手札"
+blackjack_dealer_hand: "ディーラーの手札"
+blackjack_player_busts: "プレイヤーがバストしました！"
+blackjack_dealer_busts: "ディーラーがバストしました！"
+blackjack_tie: "引き分けです！"
+blackjack_player_wins: "プレイヤーの勝ちです！"
+blackjack_dealer_wins: "ディーラーの勝ちです！"
+blackjack_player_blackjack: "プレイヤーがブラックジャックを達成しました！"
+blackjack_total: "合計: {total}"
