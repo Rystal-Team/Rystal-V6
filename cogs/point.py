@@ -154,9 +154,9 @@ class PointSystem(commands.Cog):
                 "coinflip_lose"
             ].format(points=bet)
 
-            bot_data = await user_handler.get_user_data(self.bot.id)
+            bot_data = await user_handler.get_user_data(self.bot.user.id)
             bot_data["points"] += bet
-            await user_handler.update_user_data(self.bot.id, bot_data)
+            await user_handler.update_user_data(self.bot.user.id, bot_data)
 
         await user_handler.update_user_data(user_id, data)
 
