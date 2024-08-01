@@ -34,6 +34,7 @@ import traceback
 import nest_asyncio
 import nextcord
 from dotenv import load_dotenv
+from mem_top import mem_top
 
 nest_asyncio.apply()
 load_dotenv()
@@ -43,7 +44,7 @@ from termcolor import colored
 
 from config.config import bot_owner_id, error_log_channel_id, lang
 from database.guild_handler import get_guild_language
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents.default()
@@ -153,12 +154,23 @@ Follow Up Sent: {follow_up_sent}
 
 async def setup():
     cogs = 0
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not "old" in filename:
-            try:
-                bot.load_extension(f"cogs.{filename[:-3]}")
-                print(colored(text=f"Cogs: {filename[:-3]} is ready!", color="green"))
+    for root, dirs, files in os.walk("./cogs"):
+        dirs[:] = [d for d in dirs if "disabled" not in d]
+        files = [f for f in files if f.endswith(".py") and "disabled" not in f]
 
+        for filename in files:
+            if (
+                os.path.normpath(root) == os.path.normpath("./cogs/games")
+                and filename != "base.py"
+            ):
+                continue
+            cog_path = os.path.join(root, filename)
+            relative_path = os.path.relpath(cog_path, "./cogs")
+            module_name = relative_path.replace(os.sep, ".")[:-3]
+
+            try:
+                bot.load_extension(f"cogs.{module_name}")
+                print(colored(text=f"Cogs: {module_name} is ready!", color="green"))
                 cogs += 1
             except Exception as exception:
                 full_error = traceback.format_exception(
@@ -166,35 +178,44 @@ async def setup():
                 )
                 print(
                     colored(
-                        text=f"Unable to load {filename[:-3]} Error: {full_error}",
+                        text=f"Unable to load {module_name} Error: {full_error}",
                         color="red",
                     )
                 )
-
-        else:
-            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
+        for d in dirs:
+            print(colored(text=f"Passed directory {d}", color="yellow"))
 
     return cogs
 
 
 async def reloadSetup():
     cogs = 0
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not "old" in filename:
+    for root, dirs, files in os.walk("./cogs"):
+        dirs[:] = [d for d in dirs if "disabled" not in d]
+        files = [f for f in files if f.endswith(".py") and "disabled" not in f]
+
+        for filename in files:
+            if (
+                os.path.normpath(root) == os.path.normpath("./cogs/games")
+                and filename != "base.py"
+            ):
+                continue
+            cog_path = os.path.join(root, filename)
+            relative_path = os.path.relpath(cog_path, "./cogs")
+            module_name = relative_path.replace(os.sep, ".")[:-3]
+
             try:
-                bot.reload_extension(f"cogs.{filename[:-3]}")
-                print(
-                    colored(text=f"Cogs: {filename[:-3]} is reloaded!", color="green")
-                )
+                bot.reload_extension(f"cogs.{module_name}")
+                print(colored(text=f"Cogs: {module_name} is reloaded!", color="green"))
                 cogs += 1
             except Exception as e:
                 print(
                     colored(
-                        text=f"Unable to reload {filename[:-3]} Error: {e}", color="red"
+                        text=f"Unable to reload {module_name} Error: {e}", color="red"
                     )
                 )
-        else:
-            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
+        for d in dirs:
+            print(colored(text=f"Passed directory {d}", color="yellow"))
 
     return cogs
 
@@ -249,6 +270,22 @@ async def list(
             ),
             ephemeral=True,
         )
+
+
+@bot.command()
+async def memtop(ctx):
+    print(
+        mem_top(
+            limit=10,
+            width=1000,
+            sep="\n",
+            refs_format="{num}\t{type} {obj}",
+            bytes_format="{num}\t {obj}",
+            types_format="{num}\t {obj}",
+            verbose_types=None,
+            verbose_file_name="/tmp/mem_top",
+        )
+    )
 
 
 asyncio.run(setup())
