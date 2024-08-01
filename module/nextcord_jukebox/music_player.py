@@ -25,9 +25,9 @@ import asyncio
 import datetime
 import random
 import time
+import urllib.error
 from typing import Callable, Optional, Union
 from urllib import parse
-import urllib.error
 
 import yt_dlp
 from meta_yt import Video, YouTube

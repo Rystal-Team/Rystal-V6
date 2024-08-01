@@ -34,7 +34,9 @@ from termcolor import colored
 
 from config.config import SQLITE_PATH, USE_SQLITE, lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
-from module.embed import Embeds, NowPlayingMenu
+from module.embeds.generic import Embeds
+from module.embeds.nowplaying import NowPlayingMenu
+from module.embeds.queue import Pagination
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
@@ -53,7 +55,6 @@ from module.nextcord_jukebox.exceptions import (
 )
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
-from module.pagination import Pagination
 from module.progressBar import progressBar
 from module.replay_card import create_top_songs_poster
 

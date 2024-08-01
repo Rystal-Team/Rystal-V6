@@ -33,7 +33,7 @@ from termcolor import colored
 
 from config.config import lang, status_text, use_ytdlp
 from database.guild_handler import get_guild_language
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
 start_time = time.time()
 class_namespace = "system_class_title"

@@ -32,7 +32,7 @@ import nextcord
 from nextcord import SelectOption
 from nextcord.ui import Select, View
 
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 from module.split_str import split_string
 
 

@@ -9,13 +9,13 @@ theme_color: "#2b67ab"
 max_note: 500
 
 type_color:
-  success: [157, 255, 158]
-  error: [255, 157, 157]
-  warn: [255, 206, 157]
-  info: [219, 157, 255]
-  list: [157, 200, 255]
-  win: [255, 194, 125]
-  lose: [52, 55, 74]
+  success: [ 157, 255, 158 ]
+  error: [ 255, 157, 157 ]
+  warn: [ 255, 206, 157 ]
+  info: [ 219, 157, 255 ]
+  list: [ 157, 200, 255 ]
+  win: [ 255, 194, 125 ]
+  lose: [ 52, 55, 74 ]
 
 error_log_channel_id: 000000000000000000
 bug_report_channel_id: 000000000000000000

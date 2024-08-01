@@ -32,7 +32,7 @@ from database.guild_handler import (
     get_guild_language,
     get_guild_settings,
 )
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
 class_namespace = "setting_class_title"
 

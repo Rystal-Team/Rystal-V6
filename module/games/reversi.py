@@ -38,6 +38,22 @@ class Reversi:
         self.board = [[" " for _ in range(8)] for _ in range(8)]
         self.current_turn = "B"
         self.initialize_board()
+        self.history = []
+
+    def serialize(self):
+        return {
+            "board": self.board,
+            "current_turn": self.current_turn,
+            "history": self.history,
+        }
+
+    @classmethod
+    def deserialize(cls, data):
+        game = cls()
+        game.board = data["board"]
+        game.current_turn = data["current_turn"]
+        game.history = data["history"]
+        return game
 
     def initialize_board(self):
         """
@@ -271,6 +287,13 @@ class AIPlayer:
         self.color = color
         self.difficulty = difficulty
 
+    def serialize(self):
+        return {"color": self.color, "difficulty": self.difficulty}
+
+    @classmethod
+    def deserialize(cls, data):
+        return cls(None, data["color"], data["difficulty"])
+
     def choose_move(self):
         """
         Choose a move based on the difficulty level.
@@ -339,6 +362,32 @@ class Interactor:
         self.ai_player_black = ai_player_black
         self.ai_player_white = ai_player_white
 
+    def serialize(self):
+        return {
+            "game": self.game.serialize(),
+            "ai_player_black": (
+                self.ai_player_black.serialize() if self.ai_player_black else None
+            ),
+            "ai_player_white": (
+                self.ai_player_white.serialize() if self.ai_player_white else None
+            ),
+        }
+
+    @classmethod
+    def deserialize(cls, data):
+        game = Reversi.deserialize(data["game"])
+        ai_player_black = (
+            AIPlayer.deserialize(data["ai_player_black"])
+            if data["ai_player_black"]
+            else None
+        )
+        ai_player_white = (
+            AIPlayer.deserialize(data["ai_player_white"])
+            if data["ai_player_white"]
+            else None
+        )
+        return cls(game, ai_player_black, ai_player_white)
+
     def display_board(self):
         """
         Display the current board state in the console and generate an image of the board.
@@ -355,13 +404,12 @@ class Interactor:
             print(f"{i+1}|{' '.join(row)}")
         print()
         image = self.generate_board_image(board_copy)
-        image.show()
         return image
 
     @staticmethod
     def generate_board_image(board):
         """
-        Generate an image of the board.
+        Generate an image of the board with row and column labels.
 
         Args:
             board (list): The board state.
@@ -370,13 +418,15 @@ class Interactor:
             Image: The generated board image.
         """
         cell_size = 50
-        outer_line_width = 10
+        outer_line_width = 30
         board_size = 8 * cell_size
         image_size = board_size + 2 * outer_line_width
         image = Image.new("RGB", (image_size, image_size), "#219653")
         draw = ImageDraw.Draw(image)
-        font = ImageFont.load_default(size=20)
+        dot_font = ImageFont.load_default(size=20)
+        font = ImageFont.load_default()
 
+        # Draw the board cells and pieces
         for i in range(8):
             for j in range(8):
                 x0, y0 = (
@@ -391,7 +441,27 @@ class Interactor:
                 elif piece == "W":
                     draw.ellipse([x0 + 5, y0 + 5, x1 - 5, y1 - 5], fill="#f2f2f2")
                 elif piece == "*":
-                    draw.text((x0 + 23, y0 + 7), ".", fill="yellow", font=font)
+                    draw.text((x0 + 23, y0 + 7), ".", fill="yellow", font=dot_font)
+
+        for j in range(8):
+            x = j * cell_size + outer_line_width + cell_size // 2
+            draw.text((x, 0 + 10), chr(ord("a") + j), fill="#333333", font=font)
+            draw.text(
+                (x, image_size - outer_line_width + 10),
+                chr(ord("a") + j),
+                fill="#333333",
+                font=font,
+            )
+
+        for i in range(8):
+            y = i * cell_size + outer_line_width + cell_size // 2
+            draw.text((0 + 10, y), str(i + 1), fill="#333333", font=font)
+            draw.text(
+                (image_size - outer_line_width + 10, y),
+                str(i + 1),
+                fill="#333333",
+                font=font,
+            )
 
         return image
 

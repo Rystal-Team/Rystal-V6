@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 #
 
+
 from datetime import timedelta
 from typing import Callable
 
@@ -34,32 +35,6 @@ from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
 
 class_namespace = "music_class_title"
-
-
-class Embeds:
-    """Class for creating Nextcord embed messages."""
-
-    def message(title, message, message_type, thumbnail=None):
-        """
-        Create an embed message.
-
-        Args:
-            title (str): The title of the embed.
-            message (str): The message content of the embed.
-            message_type (str): The type of the message to determine the embed color.
-            thumbnail (str, optional): URL of the thumbnail image.
-
-        Returns:
-            nextcord.Embed: The generated embed message.
-        """
-        embed = nextcord.Embed(
-            title=title, description=message, color=(type_color[message_type])
-        )
-
-        if thumbnail is not None:
-            embed.set_thumbnail(url=thumbnail)
-
-        return embed
 
 
 class NowPlayingMenu(nextcord.ui.View):

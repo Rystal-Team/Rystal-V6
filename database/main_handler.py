@@ -51,6 +51,15 @@ create_statements = {
                 "settings": "TEXT",
             },
         },
+        "game_sessions": {
+            "create": "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
+            "columns": {
+                "thread_id": "TEXT PRIMARY KEY",
+                "game": "TEXT",
+                "data": "TEXT",
+                "players": "TEXT",
+            },
+        },
     },
     "mysql": {
         "note": {
@@ -74,6 +83,15 @@ create_statements = {
                 "guild_id": "VARCHAR(255) PRIMARY KEY",
                 "language": "VARCHAR(255)",
                 "settings": "JSON",
+            },
+        },
+        "game_sessions": {
+            "create": "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
+            "columns": {
+                "thread_id": "TEXT PRIMARY KEY",
+                "game": "TEXT",
+                "data": "TEXT",
+                "players": "TEXT",
             },
         },
     },

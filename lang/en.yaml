@@ -11,6 +11,7 @@ system_class_title: "🤖 | System"
 setting_class_title: "⚙️ | Settings"
 note_class_title: "📒 | Note"
 point_class_title: "⭐️ | Points System"
+game_class_title: "🎮 | Games"
 
 # status
 cpu: "CPU: {cpu}%"
@@ -99,3 +100,6 @@ cooldown_message: "You can only claim points once every 2 hours. Please try agai
 points_given: "You have given {amount} points to {recipient}!"
 points_show_user: "{user} have {points} points!"
 points_show_self: "You have {points} points!"
+
+# games
+blackjack_game_title: "🃏 | Blackjack"

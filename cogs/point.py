@@ -30,7 +30,7 @@ from nextcord.ext import commands
 from config.config import lang
 from database import user_handler
 from database.guild_handler import get_guild_language
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
 class_namespace = "point_class_title"
 
