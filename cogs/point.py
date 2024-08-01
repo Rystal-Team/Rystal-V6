@@ -154,6 +154,10 @@ class PointSystem(commands.Cog):
                 "coinflip_lose"
             ].format(points=bet)
 
+            bot_data = await user_handler.get_user_data(self.bot.id)
+            bot_data["points"] += bet
+            await user_handler.update_user_data(self.bot.id, bot_data)
+
         await user_handler.update_user_data(user_id, data)
 
         await interaction.followup.send(
@@ -239,7 +243,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description="🎖️ | Show your points or another user's points!",
     )
-    async def balance(
+    async def show(
         self,
         interaction: nextcord.Interaction,
         user: nextcord.Member = nextcord.SlashOption(
