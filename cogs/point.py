@@ -277,5 +277,59 @@ class PointSystem(commands.Cog):
         )
 
 
+@points.subcommand(
+    name="leaderboard",
+    description="🎖️ | View the leaderboard of top point holders!",
+)
+async def leaderboard(
+    self,
+    interaction: nextcord.Interaction,
+    include: Optional[int] = nextcord.SlashOption(
+        name="include",
+        description="Select how many users you want to include on the list!",
+        required=False,
+    ),
+):
+    if include is None:
+        include = 5
+
+    if include < 1 or include > 50:
+        await interaction.response.send_message(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "leaderboard_out_of_range"
+                ],
+                message_type="warn",
+            ),
+            ephemeral=True,
+        )
+        return
+
+    await interaction.response.defer()
+
+    result = await user_handler.get_leaderboard(include, key="points")
+
+    mbed = nextcord.Embed(
+        title=lang[await get_guild_language(interaction.guild.id)][
+            "leaderboard_header"
+        ].format(include=include),
+    )
+
+    for user_id, data in result.items():
+        member = await self.bot.fetch_user(user_id)
+        mbed.add_field(
+            name=member.display_name,
+            value=lang[await get_guild_language(interaction.guild.id)][
+                "leaderboard_user_row"
+            ].format(points=data["points"]),
+            inline=False,
+        )
+
+    await interaction.followup.send(embed=mbed)
+
+
 def setup(bot):
     bot.add_cog(PointSystem(bot))
