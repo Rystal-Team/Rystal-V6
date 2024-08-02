@@ -23,6 +23,7 @@
 
 import nextcord
 from nextcord.ext import commands
+import random
 
 from config.config import lang, type_color
 from database import user_handler
@@ -43,7 +44,15 @@ class GameSystem(commands.Cog):
         return
 
     @game.subcommand(description="🎮 | Start a game of blackjack!")
-    async def blackjack(self, interaction: nextcord.Interaction, bet: int):
+    async def blackjack(
+        self,
+        interaction: nextcord.Interaction,
+        bet: int = nextcord.SlashOption(
+            name="bet",
+            description="The numer of points you would want to bet?",
+            required=True,
+        ),
+    ):
         await interaction.response.defer()
 
         user_id = interaction.user.id
@@ -105,6 +114,54 @@ class GameSystem(commands.Cog):
         view = BlackjackView(blackjack, interaction, bet)
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)
         view.set_follow_up(follow_up_msg)
+
+    @game.subcommand(description="🎲 | Roll a specified number of dice!")
+    async def dice(
+        self,
+        interaction: nextcord.Interaction,
+        amount: int = nextcord.SlashOption(
+            name="amount",
+            description="The number of dices.",
+            required=False,
+            default=1,
+        ),
+    ):
+        await interaction.response.defer()
+
+        if amount <= 0:
+            await interaction.followup.send(
+                embed=nextcord.Embed(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    description=lang[await get_guild_language(interaction.guild.id)][
+                        "must_be_positive_not_zero"
+                    ].format(option="number of dice"),
+                    color=type_color["error"],
+                )
+            )
+            return
+
+        dice_results = [random.randint(1, 6) for _ in range(amount)]
+        total = sum(dice_results)
+
+        embed = nextcord.Embed(
+            title=lang[await get_guild_language(interaction.guild.id)][
+                "dice_roll_title"
+            ],
+            description=lang[await get_guild_language(interaction.guild.id)][
+                "dice_roll_description"
+            ].format(num_dices=amount, total=total),
+            color=type_color["game"],
+        )
+        embed.add_field(
+            name=lang[await get_guild_language(interaction.guild.id)][
+                "dice_roll_results"
+            ],
+            value=", ".join(map(str, dice_results)),
+        )
+
+        await interaction.followup.send(embed=embed)
 
 
 def setup(bot):
