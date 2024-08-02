@@ -24,16 +24,19 @@
 import random
 from enum import Enum
 
+
 class BlackjackResult(Enum):
     """
     Enum representing the possible outcomes of a Blackjack game.
     """
+
     PLAYER_BUSTS = 1
     DEALER_BUSTS = 2
     TIE = 3
     PLAYER_WINS = 4
     DEALER_WINS = 5
     PLAYER_BLACKJACK = 6
+
 
 class Blackjack:
     """
@@ -84,7 +87,9 @@ class Blackjack:
         for _ in range(2):
             self.deal_card(self.player_hand)
             self.deal_card(self.dealer_hand)
-        return self.calculate_hand(self.player_hand), self.calculate_hand(self.dealer_hand)
+        return self.calculate_hand(self.player_hand), self.calculate_hand(
+            self.dealer_hand
+        )
 
     def hit(self, hand):
         """

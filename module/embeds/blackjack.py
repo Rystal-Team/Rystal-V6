@@ -79,6 +79,8 @@ class BlackjackView(nextcord.ui.View):
             user_data["points"] += self.bet * 2
         elif result == BlackjackResult.PLAYER_BLACKJACK:
             user_data["points"] += self.bet * 2.5
+        elif result == BlackjackResult.TIE:
+            user_data["points"] += self.bet
         else:
             bot_data["points"] += self.bet
 
