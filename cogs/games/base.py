@@ -23,13 +23,13 @@
 
 import nextcord
 from nextcord.ext import commands
-from module.embeds.blackjack import BlackjackView
-from module.games.blackjack import Blackjack
-from config.config import lang, type_color
-from database.guild_handler import get_guild_language
-from database import user_handler
-from module.embeds.generic import Embeds
 
+from config.config import lang, type_color
+from database import user_handler
+from database.guild_handler import get_guild_language
+from module.embeds.blackjack import BlackjackView
+from module.embeds.generic import Embeds
+from module.games.blackjack import Blackjack
 
 class_namespace = "game_class_title"
 
@@ -103,7 +103,8 @@ class GameSystem(commands.Cog):
             value=f"{blackjack.dealer_hand}, total: {dealer_total}",
         )
         view = BlackjackView(blackjack, interaction, bet)
-        await interaction.followup.send(embed=embed, view=view)
+        follow_up_msg = await interaction.followup.send(embed=embed, view=view)
+        view.set_follow_up(follow_up_msg)
 
 
 def setup(bot):

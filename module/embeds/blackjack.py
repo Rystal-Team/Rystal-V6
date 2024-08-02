@@ -22,9 +22,10 @@
 #
 
 import nextcord
+
 from config.config import lang, type_color
-from database.guild_handler import get_guild_language
 from database import user_handler
+from database.guild_handler import get_guild_language
 from module.games.blackjack import BlackjackResult
 
 message_mapper = {
@@ -39,11 +40,15 @@ message_mapper = {
 
 class BlackjackView(nextcord.ui.View):
     def __init__(self, blackjack, interaction, bet):
-        super().__init__(timeout=60)
+        super().__init__(timeout=120)
         self.blackjack = blackjack
         self.interaction = interaction
         self.guild_id = interaction.guild_id
         self.bet = bet
+        self.follow_up = None
+
+    def set_follow_up(self, follow_up):
+        self.follow_up = follow_up
 
     async def get_lang(self):
         return lang[await get_guild_language(self.guild_id)]
@@ -150,11 +155,21 @@ class BlackjackView(nextcord.ui.View):
 
     async def on_timeout(self):
         self.lang = await self.get_lang()
-        await self.update_message(
-            self.interaction,
-            self.lang["blackjack_game_title"],
-            self.lang["blackjack_timeout_message"],
-            type_color["lose"],
-            self.blackjack.calculate_hand(self.blackjack.player_hand),
-            self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+        await self.handle_bet_result(BlackjackResult.DEALER_WINS)
+        await self.interaction.followup.edit_message(
+            message_id=self.follow_up.id,
+            embed=nextcord.Embed(
+                title=self.lang["blackjack_game_title"],
+                description=self.lang["blackjack_timeout_message"],
+                color=type_color["lose"],
+            )
+            .add_field(
+                name=self.lang["blackjack_your_hand"],
+                value=f"{self.blackjack.player_hand}, {self.lang['blackjack_total'].format(total=self.blackjack.calculate_hand(self.blackjack.player_hand))}",
+            )
+            .add_field(
+                name=self.lang["blackjack_dealer_hand"],
+                value=f"{self.blackjack.dealer_hand}, {self.lang['blackjack_total'].format(total=self.blackjack.calculate_hand(self.blackjack.dealer_hand))}",
+            ),
+            view=None,
         )
