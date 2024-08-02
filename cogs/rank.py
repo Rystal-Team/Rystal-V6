@@ -200,7 +200,7 @@ class RankSystem(commands.Cog):
 
         await interaction.response.defer()
 
-        result = await user_handler.get_leaderboard(include)
+        result = await user_handler.get_leaderboard(include, order_by="totalxp")
 
         mbed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][

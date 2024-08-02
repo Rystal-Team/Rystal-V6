@@ -125,7 +125,7 @@ async def get_user_data(user_id: int):
     }
 
 
-async def get_leaderboard(limit):
+async def get_leaderboard(limit, order_by):
     """
     Retrieves the leaderboard from the database.
 
@@ -138,14 +138,19 @@ async def get_leaderboard(limit):
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
     statement = {
-        "sqlite": "SELECT user_id, level, xp, total_xp FROM users ORDER BY total_xp DESC LIMIT ?",
-        "mysql": "SELECT user_id, level, xp, total_xp FROM users ORDER BY total_xp DESC LIMIT %s",
+        "sqlite": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY total_xp DESC LIMIT ?",
+        "mysql": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY total_xp DESC LIMIT %s",
     }
     db_handler.execute(statement, (limit,))
     result = db_handler.fetchall()
 
     leaderboard = {
-        user[0]: {"level": user[1], "xp": user[2], "totalxp": user[3]}
+        user[0]: {
+            "level": user[1],
+            "xp": user[2],
+            "totalxp": user[3],
+            "points": user[4],
+        }
         for user in result
     }
 

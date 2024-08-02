@@ -23,6 +23,7 @@
 
 import datetime
 import random
+from typing import Optional
 
 import nextcord
 from nextcord.ext import commands
@@ -31,7 +32,6 @@ from config.config import lang
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
-from typing import Optional
 
 class_namespace = "point_class_title"
 
@@ -277,7 +277,6 @@ class PointSystem(commands.Cog):
             ),
         )
 
-
     @points.subcommand(
         name="leaderboard",
         description="🎖️ | View the leaderboard of top point holders!",
@@ -311,7 +310,7 @@ class PointSystem(commands.Cog):
 
         await interaction.response.defer()
 
-        result = await user_handler.get_leaderboard(include, key="points")
+        result = await user_handler.get_leaderboard(include, order_by="points")
 
         mbed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
