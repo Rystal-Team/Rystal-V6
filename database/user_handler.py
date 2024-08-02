@@ -138,10 +138,16 @@ async def get_leaderboard(limit, order_by):
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
     statement = {
-        "sqlite": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY total_xp DESC LIMIT ?",
-        "mysql": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY total_xp DESC LIMIT %s",
+        "sqlite": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY ? DESC LIMIT ?",
+        "mysql": "SELECT user_id, level, xp, total_xp, points FROM users ORDER BY %s DESC LIMIT %s",
     }
-    db_handler.execute(statement, (limit,))
+    db_handler.execute(
+        statement,
+        (
+            order_by,
+            limit,
+        ),
+    )
     result = db_handler.fetchall()
 
     leaderboard = {
