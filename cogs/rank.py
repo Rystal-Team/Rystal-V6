@@ -204,7 +204,7 @@ class RankSystem(commands.Cog):
 
         mbed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
-                "leaderboard_header"
+                "points_leaderboard_header"
             ].format(include=include),
         )
 
@@ -213,7 +213,7 @@ class RankSystem(commands.Cog):
             mbed.add_field(
                 name=member.display_name,
                 value=lang[await get_guild_language(interaction.guild.id)][
-                    "leaderboard_user_row"
+                    "points_leaderboard_user_row"
                 ].format(level=data["level"], totalxp=data["totalxp"]),
                 inline=False,
             )
