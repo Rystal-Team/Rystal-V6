@@ -101,6 +101,8 @@ cooldown_message: "ポイントは2時間ごとに1回しか請求できませ�
 points_given: "{recipient} に {amount} ポイントを渡しました！"
 points_show_user: "{user} には {points} ポイントがあります！"
 points_show_self: "あなたには {points} ポイントがあります！"
+points_leaderboard_header: "⭐️ | ポイントリーダーボード - トップ {include}"
+points_leaderboard_user_row: "{points}✨"
 
 # games
 blackjack_game_title: "🃏 | ブラックジャック"
@@ -115,3 +117,8 @@ blackjack_player_wins: "プレイヤーの勝ちです！"
 blackjack_dealer_wins: "ディーラーの勝ちです！"
 blackjack_player_blackjack: "プレイヤーがブラックジャックを達成しました！"
 blackjack_total: "合計: {total}"
+
+dice_roll_title: "🎲 | サイコロを振る"
+dice_roll_description: "{num_dices} 個のサイコロを振って、合計は {total} です。"
+dice_roll_results: "個々のサイコロの結果"
+exceeds_max_dice_limit: "一度に振ることができるサイコロは最大 {limit} 個までです。"
