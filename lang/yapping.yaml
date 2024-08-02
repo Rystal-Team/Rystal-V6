@@ -95,7 +95,6 @@ points_claimed: "claimed {points} points? whatever you'll lose it all in 30 seco
 not_enough_points: "lmao u broke as shit"
 coinflip_win: "won {points} points? whatever you'll lose it all in 30 seconds either way"
 coinflip_lose: "lost {points} points (L tbh"
-cooldown_message: "2 hours cooldown mf calm ur ass down {hours} hours {minutes} minutes {seconds} seconds lmao"
 points_given: "gave {amount} points to {recipient} i think, just a theory not confirmed yet"
 points_show_user: "{user} have {points} points? idk this might be wrong i forgor"
 points_show_self: "u have {points} points? idk this might be wrong i forgor"

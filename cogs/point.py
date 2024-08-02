@@ -48,7 +48,7 @@ class PointSystem(commands.Cog):
         return
 
     @points.subcommand(
-        description="🎖️ | Claim your daily points (10-2000)!",
+        description="🎖️ | Claim your points (10-2000)!",
     )
     async def claim(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
@@ -61,12 +61,11 @@ class PointSystem(commands.Cog):
 
         last_claimed = datetime.datetime.fromisoformat(last_claimed_str)
         now = datetime.datetime.now()
-        cooldown_period = datetime.timedelta(hours=2)
+        cooldown_period = datetime.timedelta(minutes=20)
 
         if now - last_claimed < cooldown_period:
             remaining_time = cooldown_period - (now - last_claimed)
-            hours, remainder = divmod(remaining_time.seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
+            minutes, seconds = divmod(remaining_time.seconds, 60)
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -74,7 +73,7 @@ class PointSystem(commands.Cog):
                     ],
                     message=lang[await get_guild_language(interaction.guild.id)][
                         "cooldown_message"
-                    ].format(hours=hours, minutes=minutes, seconds=seconds),
+                    ].format(minutes=minutes, seconds=seconds),
                     message_type="error",
                 ),
             )

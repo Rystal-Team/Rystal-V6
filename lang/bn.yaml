@@ -95,5 +95,4 @@ points_claimed: "আপনি {points} পয়েন্ট দাবি কর
 not_enough_points: "এটি করার জন্য আপনার পর্যাপ্ত পয়েন্ট নেই।"
 coinflip_win: "অভিনন্দন! আপনি {points} পয়েন্ট জিতেছেন!"
 coinflip_lose: "দুঃখিত, আপনি {points} পয়েন্ট হারিয়েছেন।"
-cooldown_message: "আপনি প্রতি 2 ঘণ্টায় শুধুমাত্র একবার পয়েন্ট দাবি করতে পারেন। দয়া করে {hours} ঘণ্টা, {minutes} মিনিট এবং {seconds} সেকেন্ড পর আবার চেষ্টা করুন।"
 points_given: "আপনি {recipient} কে {amount} পয়েন্ট দিয়েছেন!"
