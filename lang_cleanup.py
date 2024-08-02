@@ -36,7 +36,7 @@ def find_used_keys(directory):
         set: A set of keys found in the Python files.
     """
     used_keys = set()
-    key_pattern = re.compile(r'"(.*?)"')
+    key_pattern = re.compile(r'["\'](.*?)["\']')
     for root, _, files in os.walk(directory):
         if ".venv" in root:
             continue
@@ -68,7 +68,7 @@ def cleanup_unused_keys(excluded_keys=None):
                     lines = []
                     for line in f:
                         lines.append(line)
-                        match = re.match(r'^\s*"?(\w+)"?:', line)
+                        match = re.match(r'^\s*["\']?(\w+)["\']?:', line)
                         if match:
                             all_yaml_keys.add(match.group(1))
                 yaml_files.append((file_path, lines))
@@ -89,7 +89,8 @@ def cleanup_unused_keys(excluded_keys=None):
             with open(file_path, "w", encoding="utf-8") as f:
                 for line in lines:
                     if not any(
-                        re.match(rf'^\s*"?{key}"?:', line) for key in unused_keys_set
+                        re.match(rf'^\s*["\']?{key}["\']?:', line)
+                        for key in unused_keys_set
                     ):
                         f.write(line)
             print(f"Removed unused keys from {file_path}")

@@ -127,7 +127,7 @@ class Blackjack:
         dealer_total = self.calculate_hand(self.dealer_hand)
         if player_total > 21:
             return BlackjackResult.PLAYER_BUSTS
-        if player_total == 21:
+        if player_total == 21 and not dealer_total == 21:
             return BlackjackResult.PLAYER_BLACKJACK
         if dealer_total > 21:
             return BlackjackResult.DEALER_BUSTS

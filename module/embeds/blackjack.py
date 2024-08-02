@@ -156,6 +156,12 @@ class BlackjackView(nextcord.ui.View):
     async def on_timeout(self):
         self.lang = await self.get_lang()
         await self.handle_bet_result(BlackjackResult.DEALER_WINS)
+        player_total = self.lang["blackjack_total"].format(
+            total=self.blackjack.calculate_hand(self.blackjack.player_hand)
+        )
+        dealer_total = self.lang["blackjack_total"].format(
+            total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
+        )
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id,
             embed=nextcord.Embed(
@@ -165,11 +171,11 @@ class BlackjackView(nextcord.ui.View):
             )
             .add_field(
                 name=self.lang["blackjack_your_hand"],
-                value=f"{self.blackjack.player_hand}, {self.lang['blackjack_total'].format(total=self.blackjack.calculate_hand(self.blackjack.player_hand))}",
+                value=f"{self.blackjack.player_hand}, {player_total}",
             )
             .add_field(
                 name=self.lang["blackjack_dealer_hand"],
-                value=f"{self.blackjack.dealer_hand}, {self.lang['blackjack_total'].format(total=self.blackjack.calculate_hand(self.blackjack.dealer_hand))}",
+                value=f"{self.blackjack.dealer_hand}, {dealer_total}",
             ),
             view=None,
         )
