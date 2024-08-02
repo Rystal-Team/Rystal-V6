@@ -102,7 +102,7 @@ points_given: "You have given {amount} points to {recipient}!"
 points_show_user: "{user} have {points} points!"
 points_show_self: "You have {points} points!"
 points_leaderboard_header: "⭐️ | Points Leaderboard - Top {include}"
-points_leaderboard_user_row: "{points}✨"
+points_leaderboard_user_row: "✨ > {points} points"
 
 # games
 blackjack_game_title: "🃏 | Blackjack"

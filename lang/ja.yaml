@@ -102,7 +102,7 @@ points_given: "{recipient} に {amount} ポイントを渡しました！"
 points_show_user: "{user} には {points} ポイントがあります！"
 points_show_self: "あなたには {points} ポイントがあります！"
 points_leaderboard_header: "⭐️ | ポイントリーダーボード - トップ {include}"
-points_leaderboard_user_row: "{points}✨"
+points_leaderboard_user_row: "✨ > {points} ポイント"
 
 # games
 blackjack_game_title: "🃏 | ブラックジャック"
