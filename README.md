@@ -53,7 +53,7 @@ with `pip install -r <path-to>/requirements.txt`.
 
 The main config file is `.env`, make a copy of `.env.example` and rename it into `.env` and enter the required
 tokens.<br>
-Customisations for the bot can be found in `config/config.py`.
+Customisations for the bot can be found in `config/example.config.yaml`, make a copy of it and rename it to `config.yaml` to continue.
 
 ## Built With
 
