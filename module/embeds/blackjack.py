@@ -86,11 +86,11 @@ class BlackjackView(nextcord.ui.View):
             user_data["points"] += self.bet * 2
             bot_data["points"] -= self.bet * 2
         elif result == BlackjackResult.PLAYER_BLACKJACK:
-            user_data["points"] += self.bet * 2.5
-            bot_data["points"] -= self.bet * 2
+            user_data["points"] += round(self.bet * 2.5)
+            bot_data["points"] -= round(self.bet * 2.5)
         elif result == BlackjackResult.TIE:
             user_data["points"] += self.bet
-            bot_data["points"] -= self.bet * 2
+            bot_data["points"] -= self.bet
 
         await user_handler.update_user_data(user_id, user_data)
         await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
