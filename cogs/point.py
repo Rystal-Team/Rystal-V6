@@ -143,19 +143,19 @@ class PointSystem(commands.Cog):
             return
 
         outcome = random.choice(["Heads", "Tails"])
+        bot_data = await user_handler.get_user_data(self.bot.user.id)
         if outcome == guess:
             data["points"] += bet
+            bot_data["points"] -= bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_win"
             ].format(points=bet)
         else:
             data["points"] -= bet
+            bot_data["points"] += bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_lose"
             ].format(points=bet)
-
-            bot_data = await user_handler.get_user_data(self.bot.user.id)
-            bot_data["points"] += bet
             await user_handler.update_user_data(self.bot.user.id, bot_data)
 
         await user_handler.update_user_data(user_id, data)
