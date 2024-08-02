@@ -279,7 +279,7 @@ class PointSystem(commands.Cog):
 
     @points.subcommand(
         name="leaderboard",
-        description="🎖️ | View the leaderboard of top point holders!",
+        description="⭐ | View the leaderboard of top point holders!",
     )
     async def leaderboard(
         self,
