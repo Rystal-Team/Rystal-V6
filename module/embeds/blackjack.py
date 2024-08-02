@@ -46,6 +46,7 @@ class BlackjackView(nextcord.ui.View):
         self.guild_id = interaction.guild_id
         self.bet = bet
         self.follow_up = None
+        self.ended = False
 
     def set_follow_up(self, follow_up):
         self.follow_up = follow_up
@@ -76,6 +77,7 @@ class BlackjackView(nextcord.ui.View):
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def handle_bet_result(self, result):
+        self.ended = True
         user_id = self.interaction.user.id
         user_data = await user_handler.get_user_data(user_id)
         bot_data = await user_handler.get_user_data(self.interaction.client.user.id)
@@ -162,20 +164,21 @@ class BlackjackView(nextcord.ui.View):
         dealer_total = self.lang["blackjack_total"].format(
             total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
         )
-        await self.interaction.followup.edit_message(
-            message_id=self.follow_up.id,
-            embed=nextcord.Embed(
-                title=self.lang["blackjack_game_title"],
-                description=self.lang["blackjack_timeout_message"],
-                color=type_color["lose"],
+        if not self.ended:
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id,
+                embed=nextcord.Embed(
+                    title=self.lang["blackjack_game_title"],
+                    description=self.lang["blackjack_timeout_message"],
+                    color=type_color["lose"],
+                )
+                .add_field(
+                    name=self.lang["blackjack_your_hand"],
+                    value=f"{self.blackjack.player_hand}, {player_total}",
+                )
+                .add_field(
+                    name=self.lang["blackjack_dealer_hand"],
+                    value=f"{self.blackjack.dealer_hand}, {dealer_total}",
+                ),
+                view=None,
             )
-            .add_field(
-                name=self.lang["blackjack_your_hand"],
-                value=f"{self.blackjack.player_hand}, {player_total}",
-            )
-            .add_field(
-                name=self.lang["blackjack_dealer_hand"],
-                value=f"{self.blackjack.dealer_hand}, {dealer_total}",
-            ),
-            view=None,
-        )
