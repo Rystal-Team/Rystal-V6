@@ -21,9 +21,10 @@
 #  ------------------------------------------------------------
 #
 
+import random
+
 import nextcord
 from nextcord.ext import commands
-import random
 
 from config.config import lang, type_color
 from database import user_handler
@@ -33,6 +34,7 @@ from module.embeds.generic import Embeds
 from module.games.blackjack import Blackjack
 
 class_namespace = "game_class_title"
+MAX_DICE_LIMIT = 10
 
 
 class GameSystem(commands.Cog):
@@ -137,6 +139,20 @@ class GameSystem(commands.Cog):
                     description=lang[await get_guild_language(interaction.guild.id)][
                         "must_be_positive_not_zero"
                     ].format(option="number of dice"),
+                    color=type_color["error"],
+                )
+            )
+            return
+
+        if amount > MAX_DICE_LIMIT:
+            await interaction.followup.send(
+                embed=nextcord.Embed(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    description=lang[await get_guild_language(interaction.guild.id)][
+                        "exceeds_max_dice_limit"
+                    ].format(limit=MAX_DICE_LIMIT),
                     color=type_color["error"],
                 )
             )
