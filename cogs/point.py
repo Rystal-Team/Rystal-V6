@@ -277,7 +277,6 @@ class PointSystem(commands.Cog):
             ),
         )
 
-
     @points.subcommand(
         name="leaderboard",
         description="🎖️ | View the leaderboard of top point holders!",
