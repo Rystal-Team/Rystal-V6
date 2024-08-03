@@ -29,8 +29,7 @@
     - Player works without any remote server setup such as lavalink/wavelink
     - Provides rich features compared to most discord bots out there written in Python
 - Rank System
-- Multi-Language Support (English, Japanese, Simplified Chinese and Traditional Chinese are included by default, you can
-  create your own translation to any desired language)
+- Multi-Language Support
 
 ## Screenshots
 
