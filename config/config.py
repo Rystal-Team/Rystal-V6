@@ -62,7 +62,7 @@ lang = {}
 lang_mapping = {}
 langs = []
 
-with open(f"./lang/en.yaml", "r", encoding="utf8") as stream:
+with open("./lang/en.yaml", "r", encoding="utf8") as stream:
     default_lang = yaml.safe_load(stream)
 
 for filename in os.listdir("./lang"):

@@ -476,13 +476,13 @@ class Interactor:
         if self.game.current_turn == "B" and self.ai_player_black:
             move = self.ai_player_black.choose_move()
             if move is None or not self.ai_player_black.is_valid_move(move):
-                print(f"AI (Black) has no valid moves.")
+                print("AI (Black) has no valid moves.")
                 return None
             return move
         elif self.game.current_turn == "W" and self.ai_player_white:
             move = self.ai_player_white.choose_move()
             if move is None or not self.ai_player_white.is_valid_move(move):
-                print(f"AI (White) has no valid moves.")
+                print("AI (White) has no valid moves.")
                 return None
             return move
         while True:
