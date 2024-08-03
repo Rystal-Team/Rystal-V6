@@ -61,7 +61,8 @@ class Blackjack:
         """
         hand.append(self.deck.pop())
 
-    def calculate_hand(self, hand):
+    @staticmethod
+    def calculate_hand(hand):
         """
         Calculate the total value of a hand, adjusting for Aces as necessary.
 
