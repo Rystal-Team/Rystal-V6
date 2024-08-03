@@ -48,7 +48,7 @@ class PointSystem(commands.Cog):
         return
 
     @points.subcommand(
-        description="🎖️ | Claim your points (10-2000)!",
+        description="⭐️️ | Claim your points (10-2000)!",
     )
     async def claim(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
@@ -97,7 +97,7 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description="🎖️ | Bet your points on a coin flip!",
+        description="⭐️ | Bet your points on a coin flip!",
     )
     async def coinflip(
         self,
@@ -171,7 +171,7 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description="🎖️ | Give your points to another user!",
+        description="⭐️️ | Give your points to another user!",
     )
     async def give(
         self,
@@ -241,7 +241,7 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description="🎖️ | Show your points or another user's points!",
+        description="⭐️️ | Show your points or another user's points!",
     )
     async def show(
         self,
