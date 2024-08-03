@@ -26,9 +26,7 @@ from enum import Enum
 
 
 class BlackjackResult(Enum):
-    """
-    Enum representing the possible outcomes of a Blackjack game.
-    """
+    """Enum representing the possible outcomes of a Blackjack game."""
 
     PLAYER_BUSTS = 1
     DEALER_BUSTS = 2
@@ -39,9 +37,7 @@ class BlackjackResult(Enum):
 
 
 class Blackjack:
-    """
-    A class to represent a game of Blackjack.
-    """
+    """A class to represent a game of Blackjack."""
 
     def __init__(self):
         """
@@ -61,7 +57,8 @@ class Blackjack:
         """
         hand.append(self.deck.pop())
 
-    def calculate_hand(self, hand):
+    @staticmethod
+    def calculate_hand(hand):
         """
         Calculate the total value of a hand, adjusting for Aces as necessary.
 

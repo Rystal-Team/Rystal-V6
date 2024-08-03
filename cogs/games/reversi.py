@@ -27,7 +27,6 @@ from module.games.reversi import Reversi
 class ReversiInteractor:
     def __init__(self, thread_id):
         self.reversi = Reversi()
-        pass
 
     async def on_messsage(self, message):
         pass

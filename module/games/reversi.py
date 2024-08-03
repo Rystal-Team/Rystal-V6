@@ -28,9 +28,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 class Reversi:
-    """
-    A class to represent the Reversi game.
-    """
+    """A class to represent the Reversi game."""
 
     def __init__(self):
         """
@@ -64,9 +62,7 @@ class Reversi:
         self.board[4][3], self.board[4][4] = "B", "W"
 
     def new_game(self):
-        """
-        Start a new game by reinitializing the board and current turn.
-        """
+        """Start a new game by reinitializing the board and current turn."""
         self.__init__()
 
     def place(self, color, position):
@@ -271,9 +267,7 @@ class Reversi:
 
 
 class AIPlayer:
-    """
-    A class to represent an AI player for the Reversi game.
-    """
+    """A class to represent an AI player for the Reversi game."""
 
     def __init__(self, game, color, difficulty="medium"):
         """
@@ -308,13 +302,13 @@ class AIPlayer:
 
         if self.difficulty == "easy":
             return random.choice(valid_moves)
-        elif self.difficulty == "medium":
+        if self.difficulty == "medium":
             return (
                 random.choice(valid_moves)
                 if random.random() < 0.5
                 else max(valid_moves, key=self.evaluate_move)
             )
-        elif self.difficulty == "hard":
+        if self.difficulty == "hard":
             return max(valid_moves, key=self.evaluate_move)
 
     def evaluate_move(self, move):
@@ -346,9 +340,7 @@ class AIPlayer:
 
 
 class Interactor:
-    """
-    A class to handle console interactions for the Reversi game.
-    """
+    """A class to handle console interactions for the Reversi game."""
 
     def __init__(self, game, ai_player_black=None, ai_player_white=None):
         """
@@ -476,13 +468,13 @@ class Interactor:
         if self.game.current_turn == "B" and self.ai_player_black:
             move = self.ai_player_black.choose_move()
             if move is None or not self.ai_player_black.is_valid_move(move):
-                print(f"AI (Black) has no valid moves.")
+                print("AI (Black) has no valid moves.")
                 return None
             return move
-        elif self.game.current_turn == "W" and self.ai_player_white:
+        if self.game.current_turn == "W" and self.ai_player_white:
             move = self.ai_player_white.choose_move()
             if move is None or not self.ai_player_white.is_valid_move(move):
-                print(f"AI (White) has no valid moves.")
+                print("AI (White) has no valid moves.")
                 return None
             return move
         while True:
@@ -498,9 +490,7 @@ class Interactor:
             print("Invalid move. Please enter a valid move (e.g., d3).")
 
     def show_score(self):
-        """
-        Display the current score of the game.
-        """
+        """Display the current score of the game."""
         score = self.game.score()
         print(f"Score - Black (B): {score['B']}, White (W): {score['W']}")
 
