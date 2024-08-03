@@ -59,6 +59,7 @@ class GameSystem(commands.Cog):
 
         user_id = interaction.user.id
         user_data = await user_handler.get_user_data(user_id)
+        bot_data = await user_handler.get_user_data(self.bot.user.id)
 
         if bet <= 0:
             await interaction.followup.send(
@@ -88,6 +89,7 @@ class GameSystem(commands.Cog):
             return
 
         user_data["points"] -= bet
+        bot_data["points"] += bet
         await user_handler.update_user_data(user_id, user_data)
 
         blackjack = Blackjack()
