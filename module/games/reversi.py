@@ -302,13 +302,13 @@ class AIPlayer:
 
         if self.difficulty == "easy":
             return random.choice(valid_moves)
-        elif self.difficulty == "medium":
+        if self.difficulty == "medium":
             return (
                 random.choice(valid_moves)
                 if random.random() < 0.5
                 else max(valid_moves, key=self.evaluate_move)
             )
-        elif self.difficulty == "hard":
+        if self.difficulty == "hard":
             return max(valid_moves, key=self.evaluate_move)
 
     def evaluate_move(self, move):
@@ -471,7 +471,7 @@ class Interactor:
                 print("AI (Black) has no valid moves.")
                 return None
             return move
-        elif self.game.current_turn == "W" and self.ai_player_white:
+        if self.game.current_turn == "W" and self.ai_player_white:
             move = self.ai_player_white.choose_move()
             if move is None or not self.ai_player_white.is_valid_move(move):
                 print("AI (White) has no valid moves.")
