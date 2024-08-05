@@ -28,11 +28,11 @@ import nextcord
 
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
+from module.embeds.generic import Embeds
 from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
-from module.embeds.generic import Embeds
 
 class_namespace = "music_class_title"
 

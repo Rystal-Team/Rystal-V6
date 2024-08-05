@@ -1,7 +1,7 @@
 USE_SQLITE: true
 SQLITE_PATH: "sqlite/database.db"
 DEBUG: false
-status_text: "🌟 v6.5.1a"
+status_text: "🌟 v6.5.2a"
 default_language: "en"
 multi_lang: true
 use_informal_lang: false

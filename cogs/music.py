@@ -196,7 +196,7 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            feed = await player.queue(interaction, query)
+            feed = await self.bot.loop.create_task(player.queue(interaction, query))
             if playlist_id:
                 await interaction.channel.send(
                     embed=Embeds.message(

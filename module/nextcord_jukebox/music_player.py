@@ -507,7 +507,7 @@ class MusicPlayer:
                 if playlist:
                     await EventManager.fire("loading_playlist", self, interaction, None)
                     for url in playlist.video_urls:
-                        song = await self._queue_single(url)
+                        song = await self.loop.create_task(self._queue_single(url))
                         await EventManager.fire(
                             "loading_playlist", self, interaction, song
                         )

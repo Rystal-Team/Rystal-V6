@@ -21,47 +21,39 @@
 #  ------------------------------------------------------------
 #
 
-import json
-
 from termcolor import colored
-
-from config.loader import default_language, multi_lang
+from config.loader import default_language
 from .main_handler import check_exists, db_handler
-
-default_guild_settings = {
-    "music_silent_mode": False,
-    "music_auto_leave": True,
-}
 
 
 async def append_guild(guild_id: int):
     """
-    Registers a new guild in the database.
+    Registers a new guild in the database with default settings.
 
     Args:
-        guild_id (int): The ID of the guild to register.
+        guild_id (int): The ID of the guild to be registered.
     """
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
     try:
         statement = {
-            "sqlite": "INSERT INTO guild (guild_id, language, settings) VALUES (?, ?, ?)",
-            "mysql": "INSERT INTO guild (guild_id, language, settings) VALUES (%s, %s, %s)",
+            "sqlite": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave) VALUES (?, ?, ?, ?)",
+            "mysql": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave) VALUES (%s, %s, %s, %s)",
         }
-        values = (str(guild_id), default_language, json.dumps(default_guild_settings))
+        values = (str(guild_id), default_language, False, True)
         db_handler.execute(statement, values)
-        print(colored(f"[GUILD DATABASE] Registered Guild: {guild_id}", "light_yellow"))
+        print(colored(f"Registered Guild: {guild_id}", "light_yellow"))
     except Exception:
-        print(colored(f"[GUILD DATABASE] Failed to Register Guild: {guild_id}", "red"))
+        print(colored(f"Failed to Register Guild: {guild_id}", "red"))
 
 
-async def change_guild_language(guild_id: int, language):
+async def change_guild_language(guild_id: int, language: str):
     """
-    Changes the language setting of a guild.
+    Updates the language setting for a specific guild.
 
     Args:
         guild_id (int): The ID of the guild.
-        language (str): The new language to set for the guild.
+        language (str): The new language setting.
     """
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
@@ -73,16 +65,13 @@ async def change_guild_language(guild_id: int, language):
     }
     db_handler.execute(statement, (language, str(guild_id)))
     print(
-        colored(
-            f"[GUILD DATABASE] Updated Guild {guild_id}'s Language to [{language}]",
-            "light_yellow",
-        )
+        colored(f"Updated Guild {guild_id}'s Language to [{language}]", "light_yellow")
     )
 
 
 async def get_guild_language(guild_id: int):
     """
-    Retrieves the language setting of a guild.
+    Retrieves the language setting for a specific guild.
 
     Args:
         guild_id (int): The ID of the guild.
@@ -90,72 +79,61 @@ async def get_guild_language(guild_id: int):
     Returns:
         str: The language setting of the guild.
     """
-    if multi_lang:
-        if db_handler.db_type == "mysql":
-            db_handler.connection.ping(reconnect=True, attempts=3)
-        if not check_exists("guild", "guild_id", guild_id):
-            await append_guild(guild_id)
-        statement = {
-            "sqlite": "SELECT language FROM guild WHERE guild_id = ?",
-            "mysql": "SELECT language FROM guild WHERE guild_id = %s",
-        }
-        db_handler.execute(statement, (guild_id,))
-        return db_handler.fetchall()[0][0]
-    return default_language
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
+    if not check_exists("guild", "guild_id", guild_id):
+        await append_guild(guild_id)
+    statement = {
+        "sqlite": "SELECT language FROM guild WHERE guild_id = ?",
+        "mysql": "SELECT language FROM guild WHERE guild_id = %s",
+    }
+    db_handler.execute(statement, (guild_id,))
+    return db_handler.fetchall()[0][0]
 
 
 async def change_guild_settings(guild_id: int, key, value):
     """
-    Changes a specific setting of a guild.
+    Updates a specific setting for a guild.
 
     Args:
         guild_id (int): The ID of the guild.
-        key (str): The setting key to change.
-        value (any): The new value for the setting.
+        key (str): The setting key to be updated.
+        value: The new value for the setting.
     """
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
     if not check_exists("guild", "guild_id", guild_id):
         await append_guild(guild_id)
     statement = {
-        "sqlite": "SELECT settings FROM guild WHERE guild_id = ?",
-        "mysql": "SELECT settings FROM guild WHERE guild_id = %s",
+        "sqlite": f"UPDATE guild SET {key} = ? WHERE guild_id = ?",
+        "mysql": f"UPDATE guild SET {key} = %s WHERE guild_id = %s",
     }
-    db_handler.execute(statement, (guild_id,))
-    settings = json.loads(db_handler.fetchall()[0][0])
-    settings[key] = value
-    statement = {
-        "sqlite": "UPDATE guild SET settings = ? WHERE guild_id = ?",
-        "mysql": "UPDATE guild SET settings = %s WHERE guild_id = %s",
-    }
-    db_handler.execute(statement, (json.dumps(settings), str(guild_id)))
+    db_handler.execute(statement, (value, str(guild_id)))
     print(
         colored(
-            f"[GUILD DATABASE] Updated Guild {guild_id}'s setting: {key} to [{value}]",
-            "light_yellow",
+            f"Updated Guild {guild_id}'s setting: {key} to [{value}]", "light_yellow"
         )
     )
 
 
 async def get_guild_settings(guild_id: int, key):
     """
-    Retrieves a specific setting of a guild.
+    Retrieves a specific setting for a guild.
 
     Args:
         guild_id (int): The ID of the guild.
-        key (str): The setting key to retrieve.
+        key (str): The setting key to be retrieved.
 
     Returns:
-        any: The value of the requested setting.
+        The value of the specified setting.
     """
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
     if not check_exists("guild", "guild_id", guild_id):
         await append_guild(guild_id)
     statement = {
-        "sqlite": "SELECT settings FROM guild WHERE guild_id = ?",
-        "mysql": "SELECT settings FROM guild WHERE guild_id = %s",
+        "sqlite": f"SELECT {key} FROM guild WHERE guild_id = ?",
+        "mysql": f"SELECT {key} FROM guild WHERE guild_id = %s",
     }
     db_handler.execute(statement, (guild_id,))
-    settings = json.loads(db_handler.fetchall()[0][0])
-    return settings.get(key)
+    return db_handler.fetchall()[0][0]

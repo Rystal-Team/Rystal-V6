@@ -44,11 +44,19 @@ create_statements = {
             },
         },
         "guild": {
-            "create": "CREATE TABLE IF NOT EXISTS guild (guild_id TEXT PRIMARY KEY, language TEXT, settings TEXT)",
+            "create": """
+                CREATE TABLE IF NOT EXISTS guild (
+                    guild_id TEXT PRIMARY KEY,
+                    language TEXT,
+                    music_silent_mode BOOLEAN,
+                    music_auto_leave BOOLEAN
+                )
+            """,
             "columns": {
                 "guild_id": "TEXT PRIMARY KEY",
                 "language": "TEXT",
-                "settings": "TEXT",
+                "music_silent_mode": "BOOLEAN",
+                "music_auto_leave": "BOOLEAN",
             },
         },
         "game_sessions": {
@@ -78,11 +86,19 @@ create_statements = {
             },
         },
         "guild": {
-            "create": "CREATE TABLE IF NOT EXISTS guild (guild_id VARCHAR(255) PRIMARY KEY, language VARCHAR(255), settings JSON)",
+            "create": """
+                CREATE TABLE IF NOT EXISTS guild (
+                    guild_id TEXT PRIMARY KEY,
+                    language TEXT,
+                    music_silent_mode BOOLEAN,
+                    music_auto_leave BOOLEAN
+                )
+            """,
             "columns": {
-                "guild_id": "VARCHAR(255) PRIMARY KEY",
-                "language": "VARCHAR(255)",
-                "settings": "JSON",
+                "guild_id": "TEXT PRIMARY KEY",
+                "language": "TEXT",
+                "music_silent_mode": "BOOLEAN",
+                "music_auto_leave": "BOOLEAN",
             },
         },
         "game_sessions": {
