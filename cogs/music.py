@@ -221,6 +221,40 @@ class Music(commands.Cog, EventManager):
                         message_type="success",
                     )
                 )
+
+            loop_method = LOOPMODE(
+                await get_guild_settings(
+                    interaction.guild.id, "music_default_loop_mode"
+                )
+            )
+            await player.change_loop_mode(loop_method)
+
+            if loop_method != LOOPMODE.off:
+                message_key = (
+                    "enabled_loop_single"
+                    if loop_method == LOOPMODE.single
+                    else (
+                        "enabled_loop_queue"
+                        if loop_method == LOOPMODE.all
+                        else "disabled_loop"
+                    )
+                )
+                message = lang[await get_guild_language(interaction.guild.id)][
+                    message_key
+                ]
+                if loop_method == LOOPMODE.single:
+                    now_playing = await player.now_playing()
+                    message = message.format(title=now_playing.name)
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=message,
+                        message_type="success",
+                    )
+                )
+
             if shuffle_after:
                 await player.shuffle()
                 await interaction.followup.send(

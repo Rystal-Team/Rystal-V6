@@ -22,6 +22,7 @@
 #
 
 from termcolor import colored
+
 from config.loader import default_language
 from .main_handler import check_exists, db_handler
 
@@ -37,10 +38,10 @@ async def append_guild(guild_id: int):
         db_handler.connection.ping(reconnect=True, attempts=3)
     try:
         statement = {
-            "sqlite": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave) VALUES (?, ?, ?, ?)",
-            "mysql": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave) VALUES (%s, %s, %s, %s)",
+            "sqlite": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave, music_default_loop_mode) VALUES (?, ?, ?, ?, ?)",
+            "mysql": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave, music_default_loop_mode) VALUES (%s, %s, %s, %s, %s)",
         }
-        values = (str(guild_id), default_language, False, True)
+        values = (str(guild_id), default_language, False, True, 1)
         db_handler.execute(statement, values)
         print(colored(f"Registered Guild: {guild_id}", "light_yellow"))
     except Exception:

@@ -83,7 +83,11 @@ class Settings(commands.Cog):
                 )
             )
 
-    @setting.subcommand(
+    @setting.subcommand(description="🎵 | Music Settings")
+    async def music(self, interaction: Interaction):
+        return
+
+    @music.subcommand(
         description="🎵 | Toggle silent mode in this server! (Mutes track-start notification)"
     )
     async def silent_mode(self, interaction: Interaction):
@@ -111,7 +115,7 @@ class Settings(commands.Cog):
             )
         )
 
-    @setting.subcommand(
+    @music.subcommand(
         description="🎵 | Toggle leave when voice channel is empty in this server!"
     )
     async def auto_leave(self, interaction: Interaction):
@@ -135,6 +139,44 @@ class Settings(commands.Cog):
                 message=lang[await get_guild_language(interaction.guild.id)][
                     "toggle_auto_leave"
                 ].format(toggle=toggle_represent[toggle]),
+                message_type="info",
+            )
+        )
+
+    @music.subcommand(description="🎵 | Change the default loop mode in this server!")
+    async def default_loop_mode(
+        self,
+        interaction: Interaction,
+        mode: str = nextcord.SlashOption(
+            name="mode",
+            description="Loop mode",
+            choices=[
+                "Off",
+                "Single",
+                "All",
+            ],
+            required=True,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        loop_mode = {
+            "Off": 1,
+            "Single": 2,
+            "All": 3,
+        }
+
+        await change_guild_settings(
+            interaction.guild.id, "music_default_loop_mode", loop_mode[mode]
+        )
+
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "default_loop_mode_changed"
+                ].format(mode=mode),
                 message_type="info",
             )
         )

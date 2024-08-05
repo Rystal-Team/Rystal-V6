@@ -47,6 +47,7 @@ invalid_index: "無効なインデックスです！"
 
 toggle_silent_mode: "サイレントモードは {toggle} です"
 toggle_auto_leave: "自動退出は {toggle} です"
+default_loop_mode_changed: "デフォルトループモードが {mode} に変更されました！"
 volume_out_of_range: "音量は0％から200％の間で設定してください！"
 
 disabled_loop: "ループモードを無効にしました！"

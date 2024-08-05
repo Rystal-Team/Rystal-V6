@@ -47,6 +47,7 @@ invalid_index: "Invalid index!"
 
 toggle_silent_mode: "Silent mode is {toggle}"
 toggle_auto_leave: "Auto leave voice is {toggle}"
+default_loop_mode_changed: "Default loop mode changed to {mode}!"
 volume_out_of_range: "Volume must be between 0% and 200%!"
 
 disabled_loop: "Disabled loop mode!"

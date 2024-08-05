@@ -49,7 +49,8 @@ create_statements = {
                     guild_id TEXT PRIMARY KEY,
                     language TEXT,
                     music_silent_mode BOOLEAN,
-                    music_auto_leave BOOLEAN
+                    music_auto_leave BOOLEAN,
+                    music_default_loop_mode INTEGER
                 )
             """,
             "columns": {
@@ -57,6 +58,7 @@ create_statements = {
                 "language": "TEXT",
                 "music_silent_mode": "BOOLEAN",
                 "music_auto_leave": "BOOLEAN",
+                "music_default_loop_mode": "INTEGER",
             },
         },
         "game_sessions": {
@@ -91,7 +93,8 @@ create_statements = {
                     guild_id TEXT PRIMARY KEY,
                     language TEXT,
                     music_silent_mode BOOLEAN,
-                    music_auto_leave BOOLEAN
+                    music_auto_leave BOOLEAN,
+                    music_default_loop_mode INT
                 )
             """,
             "columns": {
@@ -99,6 +102,7 @@ create_statements = {
                 "language": "TEXT",
                 "music_silent_mode": "BOOLEAN",
                 "music_auto_leave": "BOOLEAN",
+                "music_default_loop_mode": "INT",
             },
         },
         "game_sessions": {
