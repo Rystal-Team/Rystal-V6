@@ -25,7 +25,7 @@ import json
 
 from termcolor import colored
 
-from config.config import default_language, multi_lang
+from config.loader import default_language, multi_lang
 from .main_handler import check_exists, db_handler
 
 default_guild_settings = {

@@ -23,7 +23,7 @@
 
 import os
 
-from config.config import SQLITE_PATH, USE_SQLITE
+from config.loader import SQLITE_PATH, USE_SQLITE
 from .base import DatabaseHandler
 
 create_statements = {

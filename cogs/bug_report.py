@@ -24,7 +24,7 @@
 import nextcord
 from nextcord.ext import commands
 
-from config.config import bug_report_channel_id
+from config.loader import bug_report_channel_id
 
 
 class BugReport(commands.Cog):

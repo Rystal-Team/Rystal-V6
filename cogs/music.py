@@ -32,7 +32,7 @@ from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.config import SQLITE_PATH, USE_SQLITE, lang, type_color
+from config.loader import SQLITE_PATH, USE_SQLITE, lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embeds.generic import Embeds
 from module.embeds.nowplaying import NowPlayingMenu

@@ -50,7 +50,7 @@ from typing import Callable, Optional
 
 import nextcord
 
-from config.config import lang
+from config.loader import lang
 from database.guild_handler import get_guild_language
 
 

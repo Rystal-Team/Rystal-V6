@@ -23,7 +23,7 @@
 
 import nextcord
 
-from config.config import type_color
+from config.loader import type_color
 
 
 class Embeds:

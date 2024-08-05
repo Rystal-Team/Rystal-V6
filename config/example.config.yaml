@@ -4,6 +4,7 @@ DEBUG: false
 status_text: "🌟 v6.5.1a"
 default_language: "en"
 multi_lang: true
+use_informal_lang: false
 use_ytdlp: false
 theme_color: "#2b67ab"
 max_note: 500

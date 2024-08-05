@@ -26,7 +26,7 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.config import lang, type_color
+from config.loader import lang, type_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.blackjack import BlackjackView

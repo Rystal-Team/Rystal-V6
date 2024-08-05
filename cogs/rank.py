@@ -29,7 +29,7 @@ from PIL import Image, ImageDraw, ImageFont
 from nextcord import File
 from nextcord.ext import commands
 
-from config.config import lang, theme_color
+from config.loader import lang, theme_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds

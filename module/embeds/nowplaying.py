@@ -26,7 +26,7 @@ from typing import Callable
 
 import nextcord
 
-from config.config import lang, type_color
+from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying
 from module.nextcord_jukebox.music_player import MusicPlayer

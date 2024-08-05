@@ -25,7 +25,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from config.config import lang, lang_mapping, langs
+from config.loader import lang, lang_mapping, langs
 from database.guild_handler import (
     change_guild_language,
     change_guild_settings,

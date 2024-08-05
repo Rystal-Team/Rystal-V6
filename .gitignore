@@ -228,9 +228,6 @@ fabric.properties
 *.json
 *.db
 
-#Config stuff
-config/config.py
-
 #Other stuff
 app.py
 launcher.py

@@ -31,7 +31,7 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.config import lang, status_text, use_ytdlp
+from config.loader import lang, status_text, use_ytdlp
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 

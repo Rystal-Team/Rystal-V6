@@ -27,7 +27,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from config.config import lang
+from config.loader import lang
 from database.guild_handler import get_guild_language
 from database.note_handler import add_note
 from module.embeds.generic import Embeds
