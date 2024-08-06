@@ -78,8 +78,11 @@ class System(commands.Cog):
             print(
                 colored(text="Using Meta-YT to extract video data", color="dark_grey")
             )
+        print(colored(text=f"Default language: {default_language}", color="dark_grey"))
 
-    @nextcord.slash_command(description=lang[default_language]["system_ping_description"])
+    @nextcord.slash_command(
+        description=lang[default_language]["system_ping_description"]
+    )
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -96,7 +99,9 @@ class System(commands.Cog):
             )
         )
 
-    @nextcord.slash_command(description=lang[default_language]["system_info_description"])
+    @nextcord.slash_command(
+        description=lang[default_language]["system_info_description"]
+    )
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
