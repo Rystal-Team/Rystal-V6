@@ -61,14 +61,14 @@ logging_channe_id = config["logging_channe_id"]
 
 lang = {}
 lang_mapping = {}
-langs = []
+lang_list = []
 
 lang_dirs = ["./lang"]
 if use_informal_lang:
     lang_dirs.append("./lang/informal")
 
 with open("./lang/en.yaml", "r", encoding="utf8") as stream:
-    default_lang = yaml.safe_load(stream)
+    base_lang = yaml.safe_load(stream)
 
 for lang_dir in lang_dirs:
     for filename in os.listdir(lang_dir):
@@ -76,7 +76,7 @@ for lang_dir in lang_dirs:
             lang_name = filename[:-5]
             with open(f"{lang_dir}/{lang_name}.yaml", "r", encoding="utf8") as stream:
                 lang_data = yaml.safe_load(stream)
-                for key, value in default_lang.items():
+                for key, value in base_lang.items():
                     if key not in lang_data:
                         print(
                             colored(
@@ -89,5 +89,5 @@ for lang_dir in lang_dirs:
                 print(f"Loaded Language: {lang_name}")
 
 for language in lang:
-    langs.append(lang[language]["name"])
+    lang_list.append(lang[language]["name"])
     lang_mapping[lang[language]["name"]] = language

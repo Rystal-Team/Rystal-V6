@@ -29,7 +29,7 @@ from PIL import Image, ImageDraw, ImageFont
 from nextcord import File
 from nextcord.ext import commands
 
-from config.loader import default_lang, lang, theme_color
+from config.loader import default_language, lang, theme_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -74,7 +74,7 @@ class RankSystem(commands.Cog):
                     )
                 )
 
-    @nextcord.slash_command(description=lang[default_lang][class_namespace])
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def rank(
         self,
         interaction: nextcord.Interaction,
@@ -82,14 +82,14 @@ class RankSystem(commands.Cog):
         return
 
     @rank.subcommand(
-        description=lang[default_lang]["rank_card_description"],
+        description=lang[default_language]["rank_card_description"],
     )
     async def card(
         self,
         interaction: nextcord.Interaction,
         member: Optional[nextcord.User] = nextcord.SlashOption(
             name="member",
-            description=lang[default_lang]["rank_card_member_description"],
+            description=lang[default_language]["rank_card_member_description"],
             required=False,
         ),
     ):
@@ -167,14 +167,14 @@ class RankSystem(commands.Cog):
             await interaction.followup.send(files=[card])
 
     @rank.subcommand(
-        description=lang[default_lang]["rank_leaderboard_description"],
+        description=lang[default_language]["rank_leaderboard_description"],
     )
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
         include: Optional[int] = nextcord.SlashOption(
             name="include",
-            description=lang[default_lang]["rank_leaderboard_include_description"],
+            description=lang[default_language]["rank_leaderboard_include_description"],
             required=False,
         ),
     ):

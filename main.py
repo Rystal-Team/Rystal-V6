@@ -42,7 +42,7 @@ load_dotenv()
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.loader import bot_owner_id, error_log_channel_id, lang
+from config.loader import bot_owner_id, error_log_channel_id, lang, default_language
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -60,6 +60,9 @@ if not os.path.exists("./sqlite"):
 bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
 class_namespace = "system_class_title"
+
+print(f"default lang: {default_language}")
+print(lang[default_language])
 
 logger = logging.getLogger("nextcord")
 logger.setLevel(logging.DEBUG)

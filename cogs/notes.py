@@ -27,7 +27,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from config.loader import default_lang, lang
+from config.loader import default_language, lang
 from database.guild_handler import get_guild_language
 from database.note_handler import add_note
 from database.note_handler import get_notes
@@ -41,24 +41,24 @@ class NoteSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description=lang[default_lang][class_namespace])
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def note(
         self,
         interaction: Interaction,
     ):
         return
 
-    @note.subcommand(description=lang[default_lang]["note_create_description"])
+    @note.subcommand(description=lang[default_language]["note_create_description"])
     async def create(
         self,
         interaction: Interaction,
         title: str = SlashOption(
             name="title",
-            description=lang[default_lang]["note_create_title_description"],
+            description=lang[default_language]["note_create_title_description"],
         ),
         description: str = SlashOption(
             name="description",
-            description=lang[default_lang]["note_create_description_description"],
+            description=lang[default_language]["note_create_description_description"],
         ),
     ):
         note_content = {
@@ -79,7 +79,7 @@ class NoteSystem(commands.Cog):
             ephemeral=True,
         )
 
-    @note.subcommand(description=lang[default_lang]["note_list_description"])
+    @note.subcommand(description=lang[default_language]["note_list_description"])
     async def list(
         self,
         interaction: Interaction,
@@ -113,13 +113,13 @@ class NoteSystem(commands.Cog):
         pagination = NotesPagination(notes, interaction)
         await pagination.send_initial_message()
 
-    @note.subcommand(description=lang[default_lang]["note_view_description"])
+    @note.subcommand(description=lang[default_language]["note_view_description"])
     async def view(
         self,
         interaction: Interaction,
         note_id: str = SlashOption(
             name="id",
-            description=lang[default_lang]["note_view_id_description"],
+            description=lang[default_language]["note_view_id_description"],
             required=True,
         ),
     ):

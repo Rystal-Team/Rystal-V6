@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_lang, lang
+from config.loader import default_language, lang
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -40,7 +40,7 @@ class PointSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description=lang[default_lang][class_namespace])
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def points(
         self,
         interaction: nextcord.Interaction,
@@ -48,7 +48,7 @@ class PointSystem(commands.Cog):
         return
 
     @points.subcommand(
-        description=lang[default_lang]["points_claim_description"],
+        description=lang[default_language]["points_claim_description"],
     )
     async def claim(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
@@ -97,7 +97,7 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description=lang[default_lang]["points_coinflip_description"],
+        description=lang[default_language]["points_coinflip_description"],
     )
     async def coinflip(
         self,
@@ -107,7 +107,7 @@ class PointSystem(commands.Cog):
         ),
         bet: int = nextcord.SlashOption(
             name="bet",
-            description=lang[default_lang]["points_coinflip_bet_description"],
+            description=lang[default_language]["points_coinflip_bet_description"],
             required=True,
         ),
     ):
@@ -171,19 +171,19 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description=lang[default_lang]["points_give_description"],
+        description=lang[default_language]["points_give_description"],
     )
     async def give(
         self,
         interaction: nextcord.Interaction,
         recipient: nextcord.Member = nextcord.SlashOption(
             name="recipient",
-            description=lang[default_lang]["points_give_recipient_description"],
+            description=lang[default_language]["points_give_recipient_description"],
             required=True,
         ),
         amount: int = nextcord.SlashOption(
             name="amount",
-            description=lang[default_lang]["points_give_amount_description"],
+            description=lang[default_language]["points_give_amount_description"],
             required=True,
         ),
     ):
@@ -241,14 +241,14 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description=lang[default_lang]["points_show_description"],
+        description=lang[default_language]["points_show_description"],
     )
     async def show(
         self,
         interaction: nextcord.Interaction,
         user: nextcord.Member = nextcord.SlashOption(
             name="user",
-            description=lang[default_lang]["points_show_user_description"],
+            description=lang[default_language]["points_show_user_description"],
             required=False,
         ),
     ):
@@ -277,14 +277,14 @@ class PointSystem(commands.Cog):
         )
 
     @points.subcommand(
-        description=lang[default_lang]["points_leaderboard_description"],
+        description=lang[default_language]["points_leaderboard_description"],
     )
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
         include: Optional[int] = nextcord.SlashOption(
             name="include",
-            description=lang[default_lang]["points_leaderboard_include_description"],
+            description=lang[default_language]["points_leaderboard_include_description"],
             required=False,
         ),
     ):

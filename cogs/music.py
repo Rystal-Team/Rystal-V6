@@ -32,7 +32,7 @@ from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.loader import SQLITE_PATH, USE_SQLITE, default_lang, lang, type_color
+from config.loader import SQLITE_PATH, USE_SQLITE, default_language, lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embeds.generic import Embeds
 from module.embeds.nowplaying import NowPlayingMenu
@@ -163,24 +163,24 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @nextcord.slash_command(description=lang[default_lang][class_namespace])
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def music(self, interaction):
         return
 
-    @music.subcommand(description=lang[default_lang]["music_play_description"])
+    @music.subcommand(description=lang[default_language]["music_play_description"])
     async def play(
         self,
         interaction: Interaction,
         query: str = SlashOption(
             name="query",
-            description=lang[default_lang]["music_play_query_description"],
+            description=lang[default_language]["music_play_query_description"],
             required=True,
         ),
         shuffle_after: Optional[bool] = SlashOption(
             name="shuffle",
             choices=[True, False],
             required=False,
-            description=lang[default_lang]["music_play_shuffle_description"],
+            description=lang[default_language]["music_play_shuffle_description"],
         ),
     ):
         await interaction.response.defer()
@@ -328,13 +328,13 @@ class Music(commands.Cog, EventManager):
             )
             return
 
-    @music.subcommand(description=lang[default_lang]["music_skip_description"])
+    @music.subcommand(description=lang[default_language]["music_skip_description"])
     async def skip(
         self,
         interaction: Interaction,
         index: int = nextcord.SlashOption(
             name="index",
-            description=lang[default_lang]["music_skip_index_description"],
+            description=lang[default_language]["music_skip_index_description"],
             required=False,
             default=1,
         ),
@@ -394,7 +394,7 @@ class Music(commands.Cog, EventManager):
                 ),
             )
 
-    @music.subcommand(description=lang[default_lang]["music_queue_description"])
+    @music.subcommand(description=lang[default_language]["music_queue_description"])
     async def queue(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -486,7 +486,7 @@ class Music(commands.Cog, EventManager):
         await Pagination(interaction, get_page).navegate()
         Pagination.compute_total_pages(len(await player.current_queue()), 10)
 
-    @music.subcommand(description=lang[default_lang]["music_shuffle_description"])
+    @music.subcommand(description=lang[default_language]["music_shuffle_description"])
     async def shuffle(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         player = await self.ensure_voice_state(self.bot, interaction)
@@ -519,7 +519,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_loop_description"])
+    @music.subcommand(description=lang[default_language]["music_loop_description"])
     async def loop(
         self,
         interaction: Interaction,
@@ -527,7 +527,7 @@ class Music(commands.Cog, EventManager):
             name="mode",
             choices=["Off", "Single", "All"],
             required=True,
-            description=lang[default_lang]["music_loop_mode_description"],
+            description=lang[default_language]["music_loop_mode_description"],
         ),
     ):
         await interaction.response.defer(with_message=True)
@@ -576,7 +576,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_nowplaying_description"])
+    @music.subcommand(description=lang[default_language]["music_nowplaying_description"])
     async def nowplaying(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -613,7 +613,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_stop_description"])
+    @music.subcommand(description=lang[default_language]["music_stop_description"])
     async def stop(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -636,7 +636,7 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @music.subcommand(description=lang[default_lang]["music_pause_description"])
+    @music.subcommand(description=lang[default_language]["music_pause_description"])
     async def pause(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -682,7 +682,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_resume_description"])
+    @music.subcommand(description=lang[default_language]["music_resume_description"])
     async def resume(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -728,13 +728,13 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_remove_description"])
+    @music.subcommand(description=lang[default_language]["music_remove_description"])
     async def remove(
         self,
         interaction: Interaction,
         index: int = nextcord.SlashOption(
             name="index",
-            description=lang[default_lang]["music_remove_index_description"],
+            description=lang[default_language]["music_remove_index_description"],
             required=True,
         ),
     ):
@@ -805,7 +805,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_lang]["music_register_description"])
+    @music.subcommand(description=lang[default_language]["music_register_description"])
     async def register(
         self,
         interaction: Interaction,
@@ -864,14 +864,14 @@ class Music(commands.Cog, EventManager):
 
         return canvas
 
-    @music.subcommand(description=lang[default_lang]["music_most_played_description"])
+    @music.subcommand(description=lang[default_language]["music_most_played_description"])
     async def most_played(
         self,
         interaction: Interaction,
         period: str = SlashOption(
             name="period",
             choices=["Week", "Month", "Year"],
-            description=lang[default_lang]["music_most_played_period_description"],
+            description=lang[default_language]["music_most_played_period_description"],
             required=False,
             default="Month",
         ),

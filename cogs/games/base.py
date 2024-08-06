@@ -26,7 +26,7 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_lang, lang, type_color
+from config.loader import default_language, lang, type_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.blackjack import BlackjackView
@@ -41,17 +41,17 @@ class GameSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description=lang[default_lang][class_namespace])
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def game(self, interaction: nextcord.Interaction):
         return
 
-    @game.subcommand(description=lang[default_lang]["game_blackjack_description"])
+    @game.subcommand(description=lang[default_language]["game_blackjack_description"])
     async def blackjack(
         self,
         interaction: nextcord.Interaction,
         bet: int = nextcord.SlashOption(
             name="bet",
-            description=lang[default_lang]["game_blackjack_bet_description"],
+            description=lang[default_language]["game_blackjack_bet_description"],
             required=True,
         ),
     ):
@@ -119,13 +119,13 @@ class GameSystem(commands.Cog):
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)
         view.set_follow_up(follow_up_msg)
 
-    @game.subcommand(description=lang[default_lang]["game_dice_description"])
+    @game.subcommand(description=lang[default_language]["game_dice_description"])
     async def dice(
         self,
         interaction: nextcord.Interaction,
         amount: int = nextcord.SlashOption(
             name="amount",
-            description=lang[default_lang]["game_dice_amount_description"],
+            description=lang[default_language]["game_dice_amount_description"],
             required=False,
             default=1,
         ),
