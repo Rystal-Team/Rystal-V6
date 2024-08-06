@@ -36,10 +36,6 @@ class Logger(commands.Cog):
         self.bot.loop.set_debug(True)
         logging.basicConfig(level=logging.DEBUG)
 
-    """@commands.Cog.listener()
-    async def on_ready(self):
-        print("Music Cog Ready!")"""
-
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         channel = self.bot.get_channel(logging_channe_id)

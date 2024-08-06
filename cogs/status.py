@@ -31,7 +31,7 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.loader import lang, status_text, use_ytdlp
+from config.loader import default_lang, lang, status_text, use_ytdlp
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -79,7 +79,7 @@ class System(commands.Cog):
                 colored(text="Using Meta-YT to extract video data", color="dark_grey")
             )
 
-    @nextcord.slash_command(description="🤖 | Pong!")
+    @nextcord.slash_command(description=lang[default_lang]["system_ping_description"])
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -96,7 +96,7 @@ class System(commands.Cog):
             )
         )
 
-    @nextcord.slash_command(description="🤖 | Get the System info of the bot!")
+    @nextcord.slash_command(description=lang[default_lang]["system_info_description"])
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 

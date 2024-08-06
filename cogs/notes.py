@@ -27,10 +27,12 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from config.loader import lang
+from config.loader import default_lang, lang
 from database.guild_handler import get_guild_language
 from database.note_handler import add_note
+from database.note_handler import get_notes
 from module.embeds.generic import Embeds
+from module.embeds.noteview import Note, NotesPagination
 
 class_namespace = "note_class_title"
 
@@ -39,20 +41,24 @@ class NoteSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description=class_namespace)
+    @nextcord.slash_command(description=lang[default_lang][class_namespace])
     async def note(
         self,
         interaction: Interaction,
     ):
         return
 
-    @note.subcommand(description="📒 | Create a new note!")
+    @note.subcommand(description=lang[default_lang]["note_create_description"])
     async def create(
         self,
         interaction: Interaction,
-        title: str = SlashOption(name="title", description="Title of the note!"),
+        title: str = SlashOption(
+            name="title",
+            description=lang[default_lang]["note_create_title_description"],
+        ),
         description: str = SlashOption(
-            name="description", description="Description of the note!"
+            name="description",
+            description=lang[default_lang]["note_create_description_description"],
         ),
     ):
         note_content = {
@@ -73,32 +79,48 @@ class NoteSystem(commands.Cog):
             ephemeral=True,
         )
 
-    @note.subcommand(description="📒 | Create a new note!")
+    @note.subcommand(description=lang[default_lang]["note_list_description"])
     async def list(
         self,
         interaction: Interaction,
     ):
-        await interaction.response.send_message(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(interaction.guild.id)][
-                    class_namespace
-                ],
-                message=lang[await get_guild_language(interaction.guild.id)][
-                    "not_implemented"
-                ],
-                message_type="warn",
-            ),
-            ephemeral=True,
-        )
-        return
+        await interaction.response.defer()
+        notes_data = await get_notes(interaction.user.id)
+        if not notes_data:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message="No notes found.",
+                    message_type="warn",
+                ),
+                ephemeral=True,
+            )
+            return
 
-    @note.subcommand(description="📒 | Create a new note!")
+        notes = [
+            Note(
+                note_id,
+                parsed_data["title"],
+                parsed_data["description"],
+                parsed_data["state"],
+            )
+            for note_id, data in notes_data.items()
+            for parsed_data in [json.loads(data)]
+        ]
+
+        pagination = NotesPagination(notes, interaction)
+        await pagination.send_initial_message()
+
+    @note.subcommand(description=lang[default_lang]["note_view_description"])
     async def view(
         self,
         interaction: Interaction,
-        title: str = SlashOption(name="title", description="Title of the note!"),
-        description: str = SlashOption(
-            name="description", description="Description of the note!"
+        note_id: str = SlashOption(
+            name="id",
+            description=lang[default_lang]["note_view_id_description"],
+            required=True,
         ),
     ):
         await interaction.response.send_message(
@@ -113,7 +135,7 @@ class NoteSystem(commands.Cog):
             ),
             ephemeral=True,
         )
-        return title, description
+        return note_id
 
 
 async def setup(bot):

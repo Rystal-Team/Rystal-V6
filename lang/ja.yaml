@@ -5,14 +5,80 @@ name: "日本語"
 must_be_positive: "`{option}` の値は正でなければなりません！"
 must_be_positive_not_zero: "`{option}` の値は正でなければならず、ゼロではありません！"
 
-# embed titles
+# title & descriptions
 music_class_title: "🎵 | 音楽モジュール"
-level_class_title: "🎖️ | レベルアップモジュール"
+music_play_description: "🎵 | 曲を再生！"
+music_skip_description: "🎵 | 曲をスキップ！"
+music_queue_description: "🎵 | キューを表示！"
+music_shuffle_description: "🎵 | キューをシャッフル！"
+music_loop_description: "🎵 | キューをループ！"
+music_nowplaying_description: "🎵 | 現在再生中の曲を表示！"
+music_pause_description: "🎵 | 音楽を一時停止！"
+music_resume_description: "🎵 | 音楽を再開！"
+music_stop_description: "🎵 | 音楽を停止！"
+music_remove_description: "🎵 | キューから曲を削除！"
+music_register_description: "🎵 | RPCクライアントを使用するための秘密を登録/再生成！"
+music_most_played_description: "🎵 | 最も再生された曲を表示！"
+
+rank_class_title: "🎖️ | ランキングモジュール"
+rank_card_description: "🎖️ | ユーザーのランクを表示！"
+rank_leaderboard_description: "🎖️ | リーダーボードを表示！"
+
 system_class_title: "🤖 | システム"
+system_ping_description: "🤖 | ボットのピングをチェック！"
+system_info_description: "🤖 | ボットの情報を表示！"
+
 setting_class_title: "⚙️ | 設定"
+setting_language_description: "⚙️ | ボットの言語を変更！"
+setting_music_description: "⚙️ | 音楽設定を変更！"
+setting_music_volume_description: "⚙️ | サイレントモードを切り替え（再生通知を非表示）！"
+setting_music_auto_leave_description: "⚙️ | 自動退室を切り替え！"
+setting_music_default_loop_description: "⚙️ | デフォルトのループモードを変更！"
+
 note_class_title: "📒 | ノート"
+note_create_description: "📒 | ノートを作成！"
+note_list_description: "📒 | 全てのノートをリスト！"
+note_view_description: "📒 | ノートを表示！"
+
 point_class_title: "⭐️ | ポイントシステム"
+points_claim_description: "⭐️ | ポイントを請求！"
+points_give_description: "⭐️ | 他のユーザーにポイントを与える！"
+points_coinflip_description: "⭐️ | コインフリップゲームをプレイ！"
+points_show_description: "⭐️ | ポイントを表示！"
+points_leaderboard_description: "⭐️ | ポイントリーダーボードを表示！"
+
 game_class_title: "🎮 | ゲーム"
+game_blackjack_description: "🎮 | ブラックジャックをプレイ！"
+game_dice_description: "🎮 | サイコロを振る！"
+
+bug_class_title: "🐞 | バグ報告"
+
+# option descriptions
+music_skip_index_description: "スキップする曲のインデックス。"
+music_most_played_period_description: "最も再生された曲を表示する期間。"
+music_remove_index_description: "削除する曲のインデックス。-1で全て削除。"
+music_loop_mode_description: "設定するループモード。"
+music_play_shuffle_description: "曲/プレイリストが追加された後にキューをシャッフル。"
+music_play_query_description: "曲を検索するクエリ。（プレイリストURLも可）"
+
+rank_leaderboard_include_description: "リーダーボードに含めるユーザー数。"
+rank_card_member_description: "ランクを表示するメンバー。"
+
+setting_language_option_description: "希望の言語を選択！"
+setting_music_default_loop_mode_description: "デフォルトのループモードを選択！"
+
+game_dice_amount_description: "振るサイコロの数。"
+game_blackjack_bet_description: "賭けるポイント数。"
+
+points_coinflip_bet_description: "賭けるポイント数。"
+points_give_recipient_description: "ポイントの受取人。"
+points_give_amount_description: "与えるポイント数。"
+points_leaderboard_include_description: "リーダーボードに含めるユーザー数。"
+points_show_user_description: "ポイントを表示するユーザー。"
+
+note_create_title_description: "ノートのタイトル。"
+note_create_description_description: "ノートの説明。"
+note_view_id_description: "表示するノートのID。"
 
 # status
 cpu: "CPU: {cpu}%"

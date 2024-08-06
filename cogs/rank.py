@@ -29,12 +29,12 @@ from PIL import Image, ImageDraw, ImageFont
 from nextcord import File
 from nextcord.ext import commands
 
-from config.loader import lang, theme_color
+from config.loader import default_lang, lang, theme_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
-class_namespace = "level_class_title"
+class_namespace = "rank_class_title"
 
 
 class RankSystem(commands.Cog):
@@ -74,7 +74,7 @@ class RankSystem(commands.Cog):
                     )
                 )
 
-    @nextcord.slash_command(description=class_namespace)
+    @nextcord.slash_command(description=lang[default_lang][class_namespace])
     async def rank(
         self,
         interaction: nextcord.Interaction,
@@ -82,15 +82,14 @@ class RankSystem(commands.Cog):
         return
 
     @rank.subcommand(
-        name="card",
-        description="🎖️ | Get your rank or other member's rank!",
+        description=lang[default_lang]["rank_card_description"],
     )
     async def card(
         self,
         interaction: nextcord.Interaction,
         member: Optional[nextcord.User] = nextcord.SlashOption(
             name="member",
-            description="Choose a user to view their rank!",
+            description=lang[default_lang]["rank_card_member_description"],
             required=False,
         ),
     ):
@@ -168,15 +167,14 @@ class RankSystem(commands.Cog):
             await interaction.followup.send(files=[card])
 
     @rank.subcommand(
-        name="leaderboard",
-        description="🎖️ | View the leaderboard of top ranked users!",
+        description=lang[default_lang]["rank_leaderboard_description"],
     )
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
         include: Optional[int] = nextcord.SlashOption(
             name="include",
-            description="Select how many users you want to include on the list!",
+            description=lang[default_lang]["rank_leaderboard_include_description"],
             required=False,
         ),
     ):

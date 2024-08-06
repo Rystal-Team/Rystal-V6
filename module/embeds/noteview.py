@@ -25,10 +25,11 @@ import nextcord
 
 
 class Note:
-    def __init__(self, note_id: int, title: str, message: str):
+    def __init__(self, note_id: int, title: str, message: str, state: int):
         self.id = note_id
         self.title = title
         self.message = message
+        self.state = 30
 
 
 class NotesEmbed:
@@ -45,11 +46,11 @@ class NotesEmbed:
 class NotesPagination(nextcord.ui.View):
     def __init__(self, notes, interaction: nextcord.Interaction):
         super().__init__(timeout=180)
-        self.notes = notes
+        self.notes = list(notes)
         self.interaction = interaction
         self.index = 0
         self.notes_per_page = 10
-        self.total_pages = (len(notes) - 1) // self.notes_per_page + 1
+        self.total_pages = (len(self.notes) - 1) // self.notes_per_page + 1
 
     async def send_initial_message(self):
         embed = self.create_embed()

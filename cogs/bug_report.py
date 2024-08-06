@@ -24,14 +24,16 @@
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import bug_report_channel_id
+from config.loader import bug_report_channel_id, default_lang, lang
+
+class_namespace = "bug_class_title"
 
 
 class BugReport(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description="Report a bug")
+    @nextcord.slash_command(description=lang[default_lang][class_namespace])
     async def bug(self, interaction: nextcord.Interaction):
         modal = BugReportModal(title="Bug Report")
         await interaction.response.send_modal(modal)

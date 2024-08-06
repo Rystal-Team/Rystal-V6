@@ -25,7 +25,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from config.loader import lang, lang_mapping, langs
+from config.loader import default_lang, lang, lang_list, lang_mapping
 from database.guild_handler import (
     change_guild_language,
     change_guild_settings,
@@ -41,18 +41,23 @@ class Settings(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @nextcord.slash_command(description="⚙️ | Setting")
+    @nextcord.slash_command(description=lang[default_lang][class_namespace])
     async def setting(
         self,
         interaction: Interaction,
     ):
         return
 
-    @setting.subcommand(description="⚙️ | Change the bot language in this server!")
+    @setting.subcommand(description=lang[default_lang]["setting_language_description"])
     async def language(
         self,
         interaction: Interaction,
-        language: str = SlashOption(name="language", choices=langs, required=True),
+        language: str = SlashOption(
+            name="language",
+            choices=lang_list,
+            required=True,
+            description=lang[default_lang]["setting_language_option_description"],
+        ),
     ):
         await interaction.response.defer(with_message=True)
 
@@ -83,12 +88,12 @@ class Settings(commands.Cog):
                 )
             )
 
-    @setting.subcommand(description="🎵 | Music Settings")
+    @setting.subcommand(description=lang[default_lang]["setting_music_description"])
     async def music(self, interaction: Interaction):
         return
 
     @music.subcommand(
-        description="🎵 | Toggle silent mode in this server! (Mutes track-start notification)"
+        description=lang[default_lang]["setting_music_volume_description"]
     )
     async def silent_mode(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
@@ -116,7 +121,7 @@ class Settings(commands.Cog):
         )
 
     @music.subcommand(
-        description="🎵 | Toggle leave when voice channel is empty in this server!"
+        description=lang[default_lang]["setting_music_auto_leave_description"]
     )
     async def auto_leave(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
@@ -143,13 +148,17 @@ class Settings(commands.Cog):
             )
         )
 
-    @music.subcommand(description="🎵 | Change the default loop mode in this server!")
+    @music.subcommand(
+        description=lang[default_lang]["setting_music_default_loop_description"]
+    )
     async def default_loop_mode(
         self,
         interaction: Interaction,
         mode: str = nextcord.SlashOption(
             name="mode",
-            description="Loop mode",
+            description=lang[default_lang][
+                "setting_music_default_loop_mode_description"
+            ],
             choices=[
                 "Off",
                 "Single",
