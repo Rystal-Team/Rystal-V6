@@ -284,7 +284,9 @@ class PointSystem(commands.Cog):
         interaction: nextcord.Interaction,
         include: Optional[int] = nextcord.SlashOption(
             name="include",
-            description=lang[default_language]["points_leaderboard_include_description"],
+            description=lang[default_language][
+                "points_leaderboard_include_description"
+            ],
             required=False,
         ),
     ):

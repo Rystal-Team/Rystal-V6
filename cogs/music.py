@@ -576,7 +576,9 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description=lang[default_language]["music_nowplaying_description"])
+    @music.subcommand(
+        description=lang[default_language]["music_nowplaying_description"]
+    )
     async def nowplaying(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -864,7 +866,9 @@ class Music(commands.Cog, EventManager):
 
         return canvas
 
-    @music.subcommand(description=lang[default_language]["music_most_played_description"])
+    @music.subcommand(
+        description=lang[default_language]["music_most_played_description"]
+    )
     async def most_played(
         self,
         interaction: Interaction,
