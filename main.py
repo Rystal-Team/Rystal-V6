@@ -61,9 +61,6 @@ bot = commands.Bot(command_prefix="!", intents=intents, case_insensitive=True)
 bot.remove_command("help")
 class_namespace = "system_class_title"
 
-print(f"default lang: {default_language}")
-print(lang[default_language])
-
 logger = logging.getLogger("nextcord")
 logger.setLevel(logging.DEBUG)
 time_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
