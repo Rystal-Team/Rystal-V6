@@ -21,15 +21,10 @@
 #  ------------------------------------------------------------
 #
 
-import datetime
-import random
-from typing import Optional
-
 import nextcord
 from nextcord.ext import commands
 
 from config.loader import default_language, lang
-from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -49,7 +44,19 @@ class ShopSystem(commands.Cog):
 
     @shop.subcommand(description=lang[default_language]["shop_catalog_description"])
     async def catalog(self, interaction):
-        pass
+        await interaction.response.send_message(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "not_implemented"
+                ],
+                message_type="warn",
+            ),
+            ephemeral=True,
+        )
+        return
 
     @shop.subcommand(description=lang[default_language]["shop_buy_description"])
     async def buy(
@@ -60,7 +67,19 @@ class ShopSystem(commands.Cog):
             required=True,
         ),
     ):
-        pass
+        await interaction.response.send_message(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "not_implemented"
+                ],
+                message_type="warn",
+            ),
+            ephemeral=True,
+        )
+        return item_id
 
 
 def setup(bot):

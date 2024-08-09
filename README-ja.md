@@ -1,6 +1,3 @@
-
-
-
 <div align="center">
   <a href="https://github.com/Rystal-Team/Rystal-V6/blob/main/assets/logo.png?raw=true">
     <img src="assets/logo.png" alt="Logo" width="80" height="80">
@@ -48,11 +45,13 @@
 
 ## セットアップ
 
-[リリース](https://github.com/Rystal-Team/Rystal-V6/releases)から最新の[リリース](https://github.com/Rystal-Team/Rystal-V6/releases/latest)をダウンロードしてください。
+[リリース](https://github.com/Rystal-Team/Rystal-V6/releases)
+から最新の[リリース](https://github.com/Rystal-Team/Rystal-V6/releases/latest)をダウンロードしてください。
 
 ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`でインストールするだけです。
 
-メインの設定ファイルは`.env`です。`.env.example`のコピーを作成し、それを`.env`にリネームして必要なトークンを入力してください。<br>
+メインの設定ファイルは`.env`です。`.env.example`のコピーを作成し、それを`.env`
+にリネームして必要なトークンを入力してください。<br>
 ボットのカスタマイズは`config/example.config.yaml`にあります。コピーを作成し、それを`config.yaml`にリネームして続行してください。
 
 ## 使用技術

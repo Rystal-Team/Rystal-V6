@@ -22,7 +22,8 @@
 #
 
 import json
-import uuid
+import random
+import string
 
 from termcolor import colored
 
@@ -63,7 +64,9 @@ async def add_note(user_id: int, note_content: str):
     """
     if db_handler.db_type == "mysql":
         db_handler.connection.ping(reconnect=True, attempts=3)
-    note_id = str(uuid.uuid4())
+    note_id = random.choice(string.ascii_letters) + "".join(
+        random.choices("0123456789", k=7)
+    )
     try:
         if not check_exists("note", "user_id", user_id):
             await register_user(user_id)
@@ -123,3 +126,129 @@ async def get_notes(user_id: int):
             )
         )
         return {}
+
+
+async def fetch_note(user_id: int, note_id: str) -> str | None:
+    """
+    Fetches a specific note for a user from the database.
+
+    Args:
+        user_id (int): The ID of the user.
+        note_id (str): The ID of the note to be fetched.
+
+    Returns:
+        dict: The content of the note if found, otherwise an appropriate message.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
+    try:
+        if not check_exists("note", "user_id", user_id):
+            await register_user(user_id)
+
+        statement = {
+            "sqlite": "SELECT notes FROM note WHERE user_id = ?",
+            "mysql": "SELECT notes FROM note WHERE user_id = %s",
+        }
+        db_handler.execute(statement, (str(user_id),))
+        result = db_handler.fetchone()
+        if result:
+            notes = json.loads(result[0])
+            if note_id in notes:
+                return notes[note_id]
+            else:
+                return None
+        return None
+    except Exception as e:
+        print(
+            colored(
+                f"[NOTE DATABASE] Failed to fetch note for User: {user_id} - {e}",
+                "red",
+            )
+        )
+        raise e
+
+
+async def update_note_state(user_id: int, note_id: str, new_state: int):
+    """
+    Updates the state of a specific note for a user in the database.
+
+    Args:
+        user_id (int): The ID of the user.
+        note_id (str): The ID of the note to be updated.
+        new_state (int): The new state of the note.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
+    try:
+        if not check_exists("note", "user_id", user_id):
+            await register_user(user_id)
+
+        statement = {
+            "sqlite": "SELECT notes FROM note WHERE user_id = ?",
+            "mysql": "SELECT notes FROM note WHERE user_id = %s",
+        }
+        db_handler.execute(statement, (str(user_id),))
+        result = db_handler.fetchone()
+        if result:
+            notes = json.loads(result[0])
+            if note_id in notes:
+                note_content = json.loads(notes[note_id])
+                note_content["state"] = new_state
+                notes[note_id] = json.dumps(note_content)
+                update_statement = {
+                    "sqlite": "UPDATE note SET notes = ? WHERE user_id = ?",
+                    "mysql": "UPDATE note SET notes = %s WHERE user_id = %s",
+                }
+                db_handler.execute(update_statement, (json.dumps(notes), str(user_id)))
+    except Exception as e:
+        print(
+            colored(
+                f"[NOTE DATABASE] Failed to update note state for User: {user_id} - {e}",
+                "red",
+            )
+        )
+        raise e
+
+
+async def remove_note(user_id: int, note_id: str) -> bool:
+    """
+    Removes a specific note for a user from the database.
+
+    Args:
+        user_id (int): The ID of the user.
+        note_id (str): The ID of the note to be removed.
+
+    Returns:
+        bool: True if the note was removed, False if the note was not found.
+    """
+    if db_handler.db_type == "mysql":
+        db_handler.connection.ping(reconnect=True, attempts=3)
+    try:
+        if not check_exists("note", "user_id", user_id):
+            await register_user(user_id)
+
+        statement = {
+            "sqlite": "SELECT notes FROM note WHERE user_id = ?",
+            "mysql": "SELECT notes FROM note WHERE user_id = %s",
+        }
+        db_handler.execute(statement, (str(user_id),))
+        result = db_handler.fetchone()
+        if result:
+            notes = json.loads(result[0])
+            if note_id in notes:
+                del notes[note_id]
+                update_statement = {
+                    "sqlite": "UPDATE note SET notes = ? WHERE user_id = ?",
+                    "mysql": "UPDATE note SET notes = %s WHERE user_id = %s",
+                }
+                db_handler.execute(update_statement, (json.dumps(notes), str(user_id)))
+                return True
+        return False
+    except Exception as e:
+        print(
+            colored(
+                f"[NOTE DATABASE] Failed to remove note for User: {user_id} - {e}",
+                "red",
+            )
+        )
+        raise e
