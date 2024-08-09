@@ -28,6 +28,7 @@ from database import user_handler
 from database.guild_handler import get_guild_language
 from module.games.blackjack import BlackjackResult
 
+# Mapping of BlackjackResult to language keys
 message_mapper = {
     BlackjackResult.PLAYER_BUSTS: "blackjack_player_busts",
     BlackjackResult.DEALER_BUSTS: "blackjack_dealer_busts",
@@ -39,7 +40,27 @@ message_mapper = {
 
 
 class BlackjackView(nextcord.ui.View):
+    """
+    A view for handling Blackjack game interactions in a Discord bot.
+
+    Attributes:
+        blackjack (Blackjack): The Blackjack game instance.
+        interaction (nextcord.Interaction): The interaction that triggered the view.
+        guild_id (int): The ID of the guild where the interaction occurred.
+        bet (int): The bet amount placed by the player.
+        follow_up (nextcord.Message): The follow-up message to edit.
+        ended (bool): Flag indicating if the game has ended.
+    """
+
     def __init__(self, blackjack, interaction, bet):
+        """
+        Initialize the BlackjackView.
+
+        Args:
+            blackjack (Blackjack): The Blackjack game instance.
+            interaction (nextcord.Interaction): The interaction that triggered the view.
+            bet (int): The bet amount placed by the player.
+        """
         super().__init__(timeout=120)
         self.blackjack = blackjack
         self.interaction = interaction
@@ -49,9 +70,21 @@ class BlackjackView(nextcord.ui.View):
         self.ended = False
 
     def set_follow_up(self, follow_up):
+        """
+        Set the follow-up message to edit.
+
+        Args:
+            follow_up (nextcord.Message): The follow-up message.
+        """
         self.follow_up = follow_up
 
     async def get_lang(self):
+        """
+        Get the language dictionary for the guild.
+
+        Returns:
+            dict: The language dictionary.
+        """
         return lang[await get_guild_language(self.guild_id)]
 
     async def update_message(
@@ -64,6 +97,18 @@ class BlackjackView(nextcord.ui.View):
         dealer_total,
         view=None,
     ):
+        """
+        Update the game message with the current game state.
+
+        Args:
+            interaction (nextcord.Interaction): The interaction to respond to.
+            title (str): The title of the embed.
+            description (str): The description of the embed.
+            color (int): The color of the embed.
+            player_total (int): The total value of the player's hand.
+            dealer_total (int): The total value of the dealer's hand.
+            view (nextcord.ui.View, optional): The view to attach to the message.
+        """
         self.lang = await self.get_lang()
         embed = nextcord.Embed(title=title, description=description, color=color)
         embed.add_field(
@@ -77,6 +122,12 @@ class BlackjackView(nextcord.ui.View):
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def handle_bet_result(self, result):
+        """
+        Handle the result of the bet and update user points.
+
+        Args:
+            result (BlackjackResult): The result of the Blackjack game.
+        """
         self.ended = True
         user_id = self.interaction.user.id
         user_data = await user_handler.get_user_data(user_id)
@@ -97,6 +148,13 @@ class BlackjackView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Hit", style=nextcord.ButtonStyle.primary)
     async def hit_button(self, button, interaction):
+        """
+        Handle the "Hit" button interaction.
+
+        Args:
+            button (nextcord.ui.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
         player_total, game_end = self.blackjack.hit(self.blackjack.player_hand)
         self.lang = await self.get_lang()
         if game_end:
@@ -133,6 +191,13 @@ class BlackjackView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Stand", style=nextcord.ButtonStyle.secondary)
     async def stand_button(self, button, interaction):
+        """
+        Handle the "Stand" button interaction.
+
+        Args:
+            button (nextcord.ui.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
         dealer_total = self.blackjack.stand()
         self.lang = await self.get_lang()
         result = self.blackjack.check_winner()
@@ -157,6 +222,9 @@ class BlackjackView(nextcord.ui.View):
         await self.handle_bet_result(result)
 
     async def on_timeout(self):
+        """
+        Handle the timeout event for the view.
+        """
         self.lang = await self.get_lang()
         await self.handle_bet_result(BlackjackResult.DEALER_WINS)
         player_total = self.lang["blackjack_total"].format(

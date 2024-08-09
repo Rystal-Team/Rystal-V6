@@ -125,6 +125,12 @@ class RPCHandler(EventManager):
 
     @EventManager.listener
     async def member_joined_voice(self, player, member):
+        """
+        Event listener for when a member joins a voice channel. Dispatches the currently playing track to the client.
+        Args:
+            player: The player instance.
+            member: The member who joined the voice channel.
+        """
         if member == player.bot or member is None:
             return
         user_secret = await self.database.get_user_secret(member.id)
@@ -150,6 +156,12 @@ class RPCHandler(EventManager):
 
     @EventManager.listener
     async def member_left_voice(self, player, member):
+        """
+        Event listener for when a member leaves a voice channel. Dispatches an idle state to the client.
+        Args:
+            player: The player instance.
+            member: The member who left the voice channel.
+        """
         if member == player.bot or member is None or member == "None":
             return
         user_secret = await self.database.get_user_secret(member.id)

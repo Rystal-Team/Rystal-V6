@@ -66,6 +66,14 @@ def create_top_songs_poster(
         return rect_w
 
     def format_number(num: float) -> str:
+        """
+        Format a number with a suffix for thousands, millions, billions, etc.
+        Args:
+            num: The number to be formatted.
+
+        Returns:
+            str: The formatted number with a suffix.
+        """
         if num < 1000:
             return str(num)
         for unit in ["", "k", "M", "B", "T"]:
@@ -74,6 +82,17 @@ def create_top_songs_poster(
             num /= 1000.0
 
     def truncate_text(text_str: str, font: ImageFont.FreeTypeFont, max_w: int) -> str:
+        """
+        Truncate a text string to fit within a specified maximum width.
+
+        Args:
+            text_str (str): The text string to be truncated.
+            font (ImageFont.FreeTypeFont): The font used to measure the text width.
+            max_w (int): The maximum allowed width for the text.
+
+        Returns:
+            str: The truncated text string with "..." appended if truncation was necessary.
+        """
         width, _ = draw.textbbox((0, 0), text_str, font=font)[2:4]
         if width <= max_w:
             return text_str
@@ -83,11 +102,32 @@ def create_top_songs_poster(
         return text_str + "..."
 
     def load_image_from_url(url: str) -> Image:
+        """
+        Load an image from a given URL.
+
+        Args:
+            url (str): The URL of the image to be loaded.
+
+        Returns:
+            Image: The image object in RGBA mode if the URL is valid.
+                   A blank image with RGBA mode is returned if the URL is empty.
+        """
         if url != "":
             return Image.open(BytesIO(requests.get(url).content)).convert("RGBA")
         return Image.new("RGBA", (200, 200), (0, 0, 0, 0))
 
-    def get_smallest_thumbnail(thumbnails):
+    def get_smallest_thumbnail(thumbnails) -> str:
+        """
+        Get the URL of the smallest thumbnail from a list of thumbnails.
+
+        Args:
+            thumbnails (list): A list of thumbnail dictionaries, each containing
+                               'url', 'width', and 'height' keys.
+
+        Returns:
+            str: The URL of the smallest thumbnail that does not have the size (120, 90).
+                 Returns an empty string if no such thumbnail is found.
+        """
         return min(
             (
                 thumb
