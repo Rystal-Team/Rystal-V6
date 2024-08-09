@@ -155,8 +155,7 @@ async def fetch_note(user_id: int, note_id: str) -> str | None:
             notes = json.loads(result[0])
             if note_id in notes:
                 return notes[note_id]
-            else:
-                return None
+            return None
         return None
     except Exception as e:
         print(
