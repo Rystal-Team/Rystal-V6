@@ -53,6 +53,10 @@ game_dice_description: "🎮 | サイコロを振る！"
 
 bug_class_title: "🐞 | バグ報告"
 
+shop_class_title: "🛒 | ショップ"
+shop_buy_description: "🛒 | ショップでアイテムを購入する！"
+shop_catalog_description: "🛒 | ショップのカタログを表示する！"
+
 # option descriptions
 music_skip_index_description: "スキップする曲のインデックス。"
 music_most_played_period_description: "最も再生された曲を表示する期間。"
@@ -79,6 +83,8 @@ points_show_user_description: "ポイントを表示するユーザー。"
 note_create_title_description: "ノートのタイトル。"
 note_create_description_description: "ノートの説明。"
 note_view_id_description: "表示するノートのID。"
+
+shop_buy_item_id_description: "購入するアイテムのID。"
 
 # status
 cpu: "CPU: {cpu}%"

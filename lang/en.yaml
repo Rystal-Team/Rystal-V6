@@ -53,6 +53,10 @@ game_dice_description: "🎮 | Roll a dice!"
 
 bug_class_title: "🐞 | Bug Report"
 
+shop_class_title: "🛒 | Shop"
+shop_buy_description: "🛒 | Buy an item from the shop!"
+shop_catalog_description: "🛒 | Show the shop catalog!"
+
 # option descriptions
 music_skip_index_description: "The index of the song to skip."
 music_most_played_period_description: "The period to show the most played songs."
@@ -79,6 +83,8 @@ points_show_user_description: "The user to show the points of."
 note_create_title_description: "The title of the note."
 note_create_description_description: "The description of the note."
 note_view_id_description: "The ID of the note to view."
+
+shop_buy_item_id_description: "The ID of the item to buy."
 
 # status
 cpu: "CPU: {cpu}%"
