@@ -25,12 +25,14 @@ import asyncio
 import json
 import os
 import threading
+from typing import Dict, Optional
 
 import websockets
+from websockets.server import WebSocketServerProtocol
 
 from . import LogHandler, __socket_standard_version__
 from .event_manager import EventManager
-from .exceptions import *
+from .exceptions import NothingPlaying
 
 
 class RPCHandler(EventManager):
@@ -38,34 +40,33 @@ class RPCHandler(EventManager):
     Handles WebSocket connections and dispatches events to clients.
 
     Attributes:
-        clients (dict): A dictionary of connected clients.
+        clients (Dict[str, WebSocketServerProtocol]): A dictionary of connected clients.
         port (int): The port on which the WebSocket server listens.
         address (str): The address on which the WebSocket server listens.
+        database: The database instance from the manager.
     """
 
-    def __init__(self, manager):
+    def __init__(self, manager) -> None:
         """
         Initializes the RPCHandler with the WebSocket server settings from environment variables.
         """
-        self.clients = {}
+        self.clients: Dict[str, WebSocketServerProtocol] = {}
         self.database = manager.database
         ws_port = os.getenv("RPC_WEBSOCKET_PORT")
         ws_address = os.getenv("RPC_WEBSOCKET_IP")
+
         if ws_port is not None:
             try:
-                self.port = int(ws_port)
+                self.port: int = int(ws_port)
             except ValueError:
                 raise ValueError("RPC_WEBSOCKET_PORT in .env file must be an integer")
         else:
             self.port = 8098
 
-        if ws_address is not None:
-            self.address = ws_address
-        else:
-            self.address = "localhost"
+        self.address: str = ws_address if ws_address is not None else "localhost"
 
     @EventManager.listener
-    async def track_start(self, player, interaction, before, after):
+    async def track_start(self, player, interaction, before, after) -> None:
         """
         Event listener for when a track starts playing. Dispatches the track's information to connected clients.
 
@@ -78,7 +79,7 @@ class RPCHandler(EventManager):
         for member in player._members:
             if member == player.bot or member is None:
                 continue
-            user_secret = await self.database.get_user_secret(member.id)
+            user_secret: Optional[str] = await self.database.get_user_secret(member.id)
             if user_secret is not None:
                 await self.dispatch(
                     user_secret,
@@ -96,7 +97,7 @@ class RPCHandler(EventManager):
                 LogHandler.info(f"Client {member.global_name} not registered")
 
     @EventManager.listener
-    async def queue_ended(self, player, interaction):
+    async def queue_ended(self, player, interaction) -> None:
         """
         Event listener for when the queue ends. Dispatches an idle state to connected clients.
 
@@ -107,7 +108,7 @@ class RPCHandler(EventManager):
         for member in player._members:
             if member == player.bot or member is None or member == "None":
                 continue
-            user_secret = await self.database.get_user_secret(member.id)
+            user_secret: Optional[str] = await self.database.get_user_secret(member.id)
             if user_secret is not None:
                 await self.dispatch(
                     user_secret,
@@ -124,16 +125,17 @@ class RPCHandler(EventManager):
                 LogHandler.info(f"Client {member.global_name} not registered")
 
     @EventManager.listener
-    async def member_joined_voice(self, player, member):
+    async def member_joined_voice(self, player, member) -> None:
         """
         Event listener for when a member joins a voice channel. Dispatches the currently playing track to the client.
+
         Args:
             player: The player instance.
             member: The member who joined the voice channel.
         """
         if member == player.bot or member is None:
             return
-        user_secret = await self.database.get_user_secret(member.id)
+        user_secret: Optional[str] = await self.database.get_user_secret(member.id)
         try:
             now_playing = await player.now_playing()
         except NothingPlaying:
@@ -155,16 +157,17 @@ class RPCHandler(EventManager):
             LogHandler.info(f"Client {member.global_name} not registered")
 
     @EventManager.listener
-    async def member_left_voice(self, player, member):
+    async def member_left_voice(self, player, member) -> None:
         """
         Event listener for when a member leaves a voice channel. Dispatches an idle state to the client.
+
         Args:
             player: The player instance.
             member: The member who left the voice channel.
         """
         if member == player.bot or member is None or member == "None":
             return
-        user_secret = await self.database.get_user_secret(member.id)
+        user_secret: Optional[str] = await self.database.get_user_secret(member.id)
         if user_secret is not None:
             await self.dispatch(
                 user_secret,
@@ -178,15 +181,15 @@ class RPCHandler(EventManager):
         else:
             LogHandler.info(f"Client {member.global_name} not registered")
 
-    async def handler(self, websocket, path):
+    async def handler(self, websocket: WebSocketServerProtocol, path: str) -> None:
         """
         Handles incoming WebSocket connections and messages.
 
         Args:
-            websocket: The WebSocket connection instance.
-            path: The path of the WebSocket connection.
+            websocket (WebSocketServerProtocol): The WebSocket connection instance.
+            path (str): The path of the WebSocket connection.
         """
-        secret = path.strip("/")
+        secret: str = path.strip("/")
         self.clients[secret] = websocket
         LogHandler.info(f"Client {secret} connected")
 
@@ -198,7 +201,7 @@ class RPCHandler(EventManager):
         finally:
             del self.clients[secret]
 
-    async def dispatch(self, secret, data):
+    async def dispatch(self, secret: str, data: dict) -> None:
         """
         Dispatches a message to a connected client.
 
@@ -213,7 +216,7 @@ class RPCHandler(EventManager):
         else:
             LogHandler.info(f"Client {secret} not connected")
 
-    async def start_server(self):
+    async def start_server(self) -> None:
         """Starts the WebSocket server."""
         async with websockets.serve(self.handler, self.address, self.port):
             LogHandler.info(
@@ -222,7 +225,7 @@ class RPCHandler(EventManager):
             await asyncio.Future()
 
 
-def start_websocket_server(handler):
+def start_websocket_server(handler: RPCHandler) -> None:
     """
     Starts the WebSocket server using the provided handler.
 
@@ -235,9 +238,12 @@ def start_websocket_server(handler):
     loop.run_forever()
 
 
-def attach(manager):
+def attach(manager) -> RPCHandler:
     """
     Attaches the RPCHandler to the EventManager and starts the WebSocket server in a separate thread.
+
+    Args:
+        manager: The manager instance that provides the database and other services.
 
     Returns:
         RPCHandler: The attached handler instance.

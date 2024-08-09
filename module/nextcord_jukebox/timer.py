@@ -23,135 +23,115 @@
 
 import time
 from math import inf
+from typing import Optional
 
 
 class CountTimer:
-    def __init__(self, duration=0):
-        """
-        This Python function initializes a timer object with specified duration and default values for
-        time-related attributes.
+    """
+    A class to represent a countdown timer.
 
-        :param duration: The `duration` parameter in the `__init__` method of the class is used to
-        specify the total duration of the timer in seconds. It is set to 0 by default if no value is
-        provided when creating an instance of the class, defaults to 0 (optional)
-        """
-        self._time_started = None
-        self._timepaused = None
-        self._elapsed = 0
-        self.paused = True
-        self.duration = duration
+    Attributes:
+        duration (int): The duration of the timer in seconds.
+        _time_started (Optional[float]): The time when the timer was started.
+        _timepaused (Optional[float]): The time when the timer was paused.
+        paused (bool): Indicates if the timer is paused.
+    """
 
-    def reset(self, duration=0):
+    def __init__(self, duration: int = 0) -> None:
         """
-        The `reset` function in Python reinitialized an object with an optional duration parameter.
+        Initialize the CountTimer with a specified duration.
 
-        :param duration: The `duration` parameter in the `reset` method is used to specify the duration
-        for which the object should be reset. If a duration is provided, the object will be reset with
-        that duration, otherwise, it will be reset with a default duration of 0, defaults to 0
-        (optional)
+        Args:
+            duration (int): The duration of the timer in seconds. Default is 0.
+        """
+        self._time_started: Optional[float] = None
+        self._timepaused: Optional[float] = None
+        self.paused: bool = True
+        self.duration: int = duration
+
+    def reset(self, duration: int = 0) -> None:
+        """
+        Reset the timer with a new duration.
+
+        Args:
+            duration (int): The new duration of the timer in seconds. Default is 0.
         """
         self.__init__(duration)
 
-    def start(self):
+    def start(self) -> None:
         """
-        The `start` function initializes a timer if it has not already been started.
-
-        :return: If `start` is called and `self._time_started` is already set, then the function will
-        reset the time start value and start over.
+        Start the timer.
         """
         self._time_started = time.time()
         self.paused = False
 
-    def pause(self):
+    def pause(self) -> None:
         """
-        The function `pause` checks if the object is already paused or if the time started is not set,
-        and if not, it records the time paused and sets the object as paused.
-
-        :return: If the conditions in the `if` statement are met (i.e., `self.paused` is already `True`
-        or `self._time_started` is `None`), then nothing is being returned. The function will exit
-        without returning anything in that case.
+        Pause the timer.
         """
-        if self.paused or self._time_started is None:
-            return
-        self._timepaused = time.time()
-        self.paused = True
+        if not self.paused and self._time_started is not None:
+            self._timepaused = time.time()
+            self.paused = True
 
-    def resume(self):
+    def resume(self) -> None:
         """
-        This Python function resumes a timer by adjusting the start time based on the duration it was
-        paused.
-
-        :return: If the conditions are met (self.paused is False or self._time_started is None), nothing
-        will be returned.
+        Resume the timer from a paused state.
         """
-        if not self.paused or self._time_started is None:
-            return
+        if self.paused and self._time_started is not None:
+            self._time_started += time.time() - (self._timepaused or 0)
+            self._timepaused = None
+            self.paused = False
 
-        # The line `pause duration = time.time() - self._timepaused` in the `resume` method of the
-        # `CountTimer` class is calculating the duration for which the timer was paused.
-        pauseduration = time.time() - self._timepaused
-        self._time_started = self._time_started + pauseduration
-        self.paused = False
-
-    def _get(self):
+    def _get(self) -> float:
         """
-        This function calculates the elapsed time based on the start time and whether the timer is
-        paused.
+        Get the elapsed time since the timer started.
 
-        :return: The method `_get` returns the elapsed time in seconds based on the conditions specified
-        in the code snippet. If the timer has not been started (`self._time_started` is not set), it
-        returns 0. If the timer is paused (`self.paused` is True), it returns the difference between the
-        paused time (`self._timepaused`) and the time the timer was started (`self._time
+        Returns:
+            float: The elapsed time in seconds.
         """
-        if not self._time_started:
-            return 0
+        if self._time_started is None:
+            return 0.0
         if self.paused:
-            return self._timepaused - self._time_started
+            return (self._timepaused or 0) - self._time_started
         return time.time() - self._time_started
 
     @property
     def running(self) -> bool:
         """
-        The function `running` returns `True` if the object is not paused, and `False` otherwise.
+        Check if the timer is running.
 
-        :return: The `running` method is returning the opposite of the `paused` attribute of the object.
-        It returns `True` if the object is not paused, and `False` if it is paused.
+        Returns:
+            bool: True if the timer is running, False otherwise.
         """
         return not self.paused
 
     @property
     def expired(self) -> bool:
         """
-        The function `expired` returns `True` if the elapsed time is greater than or equal to the
-        duration and the duration is not zero.
-        :return: The `expired` method is returning a boolean value. It checks if the elapsed time is
-        greater than or equal to the duration and if the duration is not equal to 0. If both conditions
-        are met, it returns `True`, indicating that the object has expired. Otherwise, it returns
-        `False`.
+        Check if the timer has expired.
+
+        Returns:
+            bool: True if the timer has expired, False otherwise.
         """
         return self.elapsed >= self.duration != 0
 
     @property
     def elapsed(self) -> float:
         """
-        The `elapsed` function returns the value obtained from `_get` method or 0 if the value is None.
+        Get the elapsed time since the timer started.
 
-        :return: The `elapsed` method is returning the value of `got` if it is not None, otherwise it
-        returns 0.
+        Returns:
+            float: The elapsed time in seconds.
         """
-        got = self._get()
-        return got or 0
+        return self._get() or 0.0
 
     @property
     def remaining(self) -> float:
         """
-        This Python function calculates the remaining time based on the duration and the time already
-        elapsed.
+        Get the remaining time until the timer expires.
 
-        :return: The `remaining` method is returning the maximum value between the time left (calculated
-        as the difference between the duration and the time already spent) and 0. This ensures that the
-        method always returns a non-negative value representing the remaining time.
+        Returns:
+            float: The remaining time in seconds.
         """
-        got = self._get()
-        time_left = self.duration - got if self.duration else inf
-        return max(time_left, 0)
+        time_left = self.duration - self._get() if self.duration else inf
+        return max(time_left, 0.0)
