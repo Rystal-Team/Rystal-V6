@@ -4,14 +4,82 @@ name: "Yapping"
 
 # general
 must_be_positive: "honestly stop `{option}`ting negative shit"
+must_be_positive_not_zero: "honestly stop `{option}`ting negative shit as well as nothing u broke shit"
 
-# embed titles
+# title & descriptions
 music_class_title: "🎵 | music thing i think"
-level_class_title: "🎖️ | solo leveling i think"
+music_play_description: "🎵 | Play a song!"
+music_skip_description: "🎵 | Skip the music!"
+music_queue_description: "🎵 | Show the queue!"
+music_shuffle_description: "🎵 | Shuffle the queue!"
+music_loop_description: "🎵 | Loop the queue!"
+music_nowplaying_description: "🎵 | Show the currently playing song!"
+music_pause_description: "🎵 | Pause the music!"
+music_resume_description: "🎵 | Resume the music!"
+music_stop_description: "🎵 | Stop the music!"
+music_remove_description: "🎵 | Remove a song from the queue!"
+music_register_description: "🎵 | Register/Regenerate a secret to use our RPC client!"
+music_most_played_description: "🎵 | Show the most played songs!"
+
+rank_class_title: "🎖️ | solo leveling i think"
+rank_card_description: "🎖️ | Show the rank of a user!"
+rank_leaderboard_description: "🎖️ | Show the leaderboard!"
+
 system_class_title: "🤖 | it just system thing what u looking at this for"
+system_ping_description: "🤖 | Check the bot's ping!"
+system_info_description: "🤖 | Show the bot's information!"
+
 setting_class_title: "⚙️ | settings i think dont touch this if ur stupid"
+setting_language_description: "⚙️ | Change the bot's language!"
+setting_music_description: "⚙️ | Change the music settings!"
+setting_music_volume_description: "⚙️ | Toggle silent mode (Hide play notifications)!"
+setting_music_auto_leave_description: "⚙️ | Toggle auto leave voice channel!"
+setting_music_default_loop_description: "⚙️ | Change the default loop mode!"
+
 note_class_title: "📒 | it notes but i dont see u have any plans so"
+note_create_description: "📒 | Create a note!"
+note_list_description: "📒 | List all notes!"
+note_view_description: "📒 | View a note!"
+
 point_class_title: "⭐️ | gambling 🤑🤑🤑"
+points_claim_description: "⭐️ | Claim your points!"
+points_give_description: "⭐️ | Give points to another user!"
+points_coinflip_description: "⭐️ | Play a game of coinflip!"
+points_show_description: "⭐️ | Show your points!"
+points_leaderboard_description: "⭐️ | Show the points leaderboard!"
+
+game_class_title: "🎮 | games but u can gamble ur life savings 🤑🤑🤑"
+game_blackjack_description: "🎮 | Play a game of Blackjack!"
+game_dice_description: "🎮 | Roll a dice!"
+
+bug_class_title: "🐞 | bug report!?11!1!1!?"
+
+# option descriptions
+music_skip_index_description: "The index of the song to skip."
+music_most_played_period_description: "The period to show the most played songs."
+music_remove_index_description: "The index of the song to remove. -1 to remove all."
+music_loop_mode_description: "The loop mode to set."
+music_play_shuffle_description: "Shuffle the queue after song/playlist is added."
+music_play_query_description: "The query to search for a song. (Can be a playlist URL)"
+
+rank_leaderboard_include_description: "The amount of users to include in the leaderboard."
+rank_card_member_description: "The member to show the rank of."
+
+setting_language_option_description: "Select the desired language!"
+setting_music_default_loop_mode_description: "Select the default loop mode!"
+
+game_dice_amount_description: "The amount of dice to roll."
+game_blackjack_bet_description: "The amount of points to bet."
+
+points_coinflip_bet_description: "The amount of points to bet."
+points_give_recipient_description: "The recipient of the points."
+points_give_amount_description: "The amount of points to give."
+points_leaderboard_include_description: "The amount of users to include in the leaderboard."
+points_show_user_description: "The user to show the points of."
+
+note_create_title_description: "The title of the note."
+note_create_description_description: "The description of the note."
+note_view_id_description: "The ID of the note to view."
 
 # status
 cpu: "**CP**U: {cpu}%"
