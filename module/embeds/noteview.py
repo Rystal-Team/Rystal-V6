@@ -21,12 +21,13 @@
 #  ------------------------------------------------------------
 #
 import json
+from enum import Enum, unique
 
 import nextcord
-from enum import Enum, unique
-from database.note_handler import fetch_note, remove_note, update_note_state
-from database.guild_handler import get_guild_language
+
 from config.loader import lang, type_color
+from database.guild_handler import get_guild_language
+from database.note_handler import fetch_note, remove_note, update_note_state
 
 class_namespace = "note_class_title"
 

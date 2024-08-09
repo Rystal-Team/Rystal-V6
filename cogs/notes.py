@@ -32,7 +32,7 @@ from database.guild_handler import get_guild_language
 from database.note_handler import add_note, remove_note
 from database.note_handler import fetch_note, get_notes
 from module.embeds.generic import Embeds
-from module.embeds.noteview import Note, NotesPagination, NoteState, NoteStateView
+from module.embeds.noteview import Note, NoteState, NoteStateView, NotesPagination
 
 class_namespace = "note_class_title"
 

@@ -31,6 +31,9 @@
     - Provides rich features compared to most discord bots out there written in Python
 - Rank System
 - Multi-Language Support
+- Point System
+- Notes System
+- Mini-games
 
 ## Screenshots
 
