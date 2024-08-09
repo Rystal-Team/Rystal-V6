@@ -99,8 +99,6 @@ class NowPlayingMenu(nextcord.ui.View):
         if self.thumbnail is not None:
             embed.set_thumbnail(url=self.thumbnail)
 
-        from datetime import timedelta
-
         time_elapsed = self.song.timer.elapsed
 
         elapsed_time_str = str(timedelta(seconds=round(time_elapsed)))
