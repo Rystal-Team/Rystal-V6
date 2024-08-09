@@ -141,7 +141,7 @@ music_secret: "This is your new secret\n ```{secret}```"
 level_up: "{user} has reached level {level}!!!"
 level_text: "Level"
 level_xp: "{xp} / {totalxp} XP"
-leaderboard_header: "Leaderboard - Top {include}"
+leaderboard_header: "🎖️ | Top {include} Leaderboard"
 leaderboard_out_of_range: "Range must have a minimum value of 1 and maximum value of 50!"
 leaderboard_user_row: "**Level: {level} | Total XP: {totalxp}**"
 
