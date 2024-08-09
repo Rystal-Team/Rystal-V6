@@ -99,13 +99,20 @@ class NowPlayingMenu(nextcord.ui.View):
         if self.thumbnail is not None:
             embed.set_thumbnail(url=self.thumbnail)
 
+        from datetime import timedelta
+
         time_elapsed = self.song.timer.elapsed
 
+        elapsed_time_str = str(timedelta(seconds=round(time_elapsed)))
+        duration_str = str(timedelta(seconds=self.song.duration))
+        progress_bar = progressBar.splitBar(self.song.duration, round(time_elapsed))[0]
+
         embed.add_field(
-            name=f"{progressBar.splitBar(self.song.duration, round(time_elapsed))[0]} | {str(timedelta(seconds=(round(time_elapsed))))}/{str(timedelta(seconds=(self.song.duration)))}",
+            name=f"{progress_bar} | {elapsed_time_str}/{duration_str}",
             value=f"👁️ {'{:,}'.format(self.song.views)} | 🧑 {self.song.channel}",
             inline=False,
         )
+
         embed.set_footer(text=f"🔗 {self.song.url}")
 
         await self.update_button()
