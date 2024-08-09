@@ -114,6 +114,7 @@ invalid_index: "invalid ting, pls read ty"
 
 toggle_silent_mode: "silent mode turns me {toggle} 👅"
 toggle_auto_leave: "auto leave turns me {toggle} 👅"
+default_loop_mode_changed: "idk it now {mode}"
 volume_out_of_range: "0% - 200% only mf"
 
 disabled_loop: "disabled loop i think, just a theory not confirmed yet"
@@ -164,9 +165,12 @@ points_claimed: "claimed {points} points? whatever you'll lose it all in 30 seco
 not_enough_points: "lmao u broke as shit"
 coinflip_win: "won {points} points? whatever you'll lose it all in 30 seconds either way"
 coinflip_lose: "lost {points} points (L tbh"
+cooldown_message: "just wait 20 mins u impatient fuck, cum back in {minutes} mins {seconds} secs"
 points_given: "gave {amount} points to {recipient} i think, just a theory not confirmed yet"
 points_show_user: "{user} have {points} points? idk this might be wrong i forgor"
 points_show_self: "u have {points} points? idk this might be wrong i forgor"
+points_leaderboard_header: "top {include} gamblers 🤑🤑🤑"
+points_leaderboard_user_row: "✨ > {points} points"
 
 # games
 blackjack_game_title: "gambling but with cards i think 🤑🤑🤑"
@@ -181,3 +185,8 @@ blackjack_player_wins: "player wins :middle_finger:"
 blackjack_dealer_wins: "dealer wins (L"
 blackjack_player_blackjack: "player hits blackjack (rigged im reporting ur ass"
 blackjack_total: "total: {total}"
+
+dice_roll_title: "gambling but with dice but u cant actually gamble 📉📉📉"
+dice_roll_description: "u rolled {num_dices} dice and only got {total} i think"
+dice_roll_results: "results i think"
+exceeds_max_dice_limit: "i cba to roll more than {limit} so shame on u"
