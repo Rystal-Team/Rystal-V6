@@ -151,6 +151,7 @@ missing_permission: "You are missing permission to execute this action!"
 author_only_interactions: "Only the author of the command can perform this action."
 not_implemented: "This command is not implemented yet!"
 command_slowdown: "Please slow down and try again later!"
+interaction_author_only: "This action is only available to the author of the interaction!"
 
 # queue search query
 queue_serach_query: "Search Query (Leave empty to show all)"

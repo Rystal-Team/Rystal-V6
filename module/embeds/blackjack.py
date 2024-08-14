@@ -64,6 +64,7 @@ class BlackjackView(nextcord.ui.View):
         super().__init__(timeout=120)
         self.blackjack = blackjack
         self.interaction = interaction
+        self.author_id = interaction.user.id
         self.guild_id = interaction.guild_id
         self.bet = bet
         self.follow_up = None
@@ -155,9 +156,62 @@ class BlackjackView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        player_total, game_end = self.blackjack.hit(self.blackjack.player_hand)
-        self.lang = await self.get_lang()
-        if game_end:
+        if interaction.user.id == self.author_id:
+            player_total, game_end = self.blackjack.hit(self.blackjack.player_hand)
+            self.lang = await self.get_lang()
+            if game_end:
+                result = self.blackjack.check_winner()
+                color = (
+                    type_color["win"]
+                    if result
+                    in {
+                        BlackjackResult.PLAYER_WINS,
+                        BlackjackResult.PLAYER_BLACKJACK,
+                        BlackjackResult.DEALER_BUSTS,
+                    }
+                    else type_color["lose"]
+                )
+                await self.update_message(
+                    interaction,
+                    self.lang["blackjack_game_title"],
+                    self.lang[message_mapper[result]],
+                    color,
+                    player_total,
+                    self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+                )
+                await self.handle_bet_result(result)
+            else:
+                await self.update_message(
+                    interaction,
+                    self.lang["blackjack_game_title"],
+                    self.lang["blackjack_your_move"],
+                    type_color["game"],
+                    player_total,
+                    self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+                    self,
+                )
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=self.lang["blackjack_game_title"],
+                    description=self.lang["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
+
+    @nextcord.ui.button(label="Stand", style=nextcord.ButtonStyle.secondary)
+    async def stand_button(self, button, interaction):
+        if interaction.user.id == self.author_id:
+            """
+            Handle the "Stand" button interaction.
+
+            Args:
+                button (nextcord.ui.Button): The button that was clicked.
+                interaction (nextcord.Interaction): The interaction that triggered the button click.
+            """
+            dealer_total = self.blackjack.stand()
+            self.lang = await self.get_lang()
             result = self.blackjack.check_winner()
             color = (
                 type_color["win"]
@@ -174,52 +228,19 @@ class BlackjackView(nextcord.ui.View):
                 self.lang["blackjack_game_title"],
                 self.lang[message_mapper[result]],
                 color,
-                player_total,
-                self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+                self.blackjack.calculate_hand(self.blackjack.player_hand),
+                dealer_total,
             )
             await self.handle_bet_result(result)
         else:
-            await self.update_message(
-                interaction,
-                self.lang["blackjack_game_title"],
-                self.lang["blackjack_your_move"],
-                type_color["game"],
-                player_total,
-                self.blackjack.calculate_hand(self.blackjack.dealer_hand),
-                self,
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=self.lang["blackjack_game_title"],
+                    description=self.lang["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
             )
-
-    @nextcord.ui.button(label="Stand", style=nextcord.ButtonStyle.secondary)
-    async def stand_button(self, button, interaction):
-        """
-        Handle the "Stand" button interaction.
-
-        Args:
-            button (nextcord.ui.Button): The button that was clicked.
-            interaction (nextcord.Interaction): The interaction that triggered the button click.
-        """
-        dealer_total = self.blackjack.stand()
-        self.lang = await self.get_lang()
-        result = self.blackjack.check_winner()
-        color = (
-            type_color["win"]
-            if result
-            in {
-                BlackjackResult.PLAYER_WINS,
-                BlackjackResult.PLAYER_BLACKJACK,
-                BlackjackResult.DEALER_BUSTS,
-            }
-            else type_color["lose"]
-        )
-        await self.update_message(
-            interaction,
-            self.lang["blackjack_game_title"],
-            self.lang[message_mapper[result]],
-            color,
-            self.blackjack.calculate_hand(self.blackjack.player_hand),
-            dealer_total,
-        )
-        await self.handle_bet_result(result)
 
     async def on_timeout(self):
         """
