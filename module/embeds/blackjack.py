@@ -156,9 +156,9 @@ class BlackjackView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
+        self.lang = await self.get_lang()
         if interaction.user.id == self.author_id:
             player_total, game_end = self.blackjack.hit(self.blackjack.player_hand)
-            self.lang = await self.get_lang()
             if game_end:
                 result = self.blackjack.check_winner()
                 color = (
@@ -202,6 +202,7 @@ class BlackjackView(nextcord.ui.View):
 
     @nextcord.ui.button(label="Stand", style=nextcord.ButtonStyle.secondary)
     async def stand_button(self, button, interaction):
+        self.lang = await self.get_lang()
         if interaction.user.id == self.author_id:
             """
             Handle the "Stand" button interaction.
@@ -211,7 +212,6 @@ class BlackjackView(nextcord.ui.View):
                 interaction (nextcord.Interaction): The interaction that triggered the button click.
             """
             dealer_total = self.blackjack.stand()
-            self.lang = await self.get_lang()
             result = self.blackjack.check_winner()
             color = (
                 type_color["win"]
