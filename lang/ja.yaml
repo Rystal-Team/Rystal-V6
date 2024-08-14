@@ -151,6 +151,7 @@ missing_permission: "このアクションを実行する権限がありませ�
 author_only_interactions: "このコマンドの実行は作者のみが行えます。"
 not_implemented: "このコマンドはまだ実装されていません！"
 command_slowdown: "速度を落として後でもう一度お試しください！"
+interaction_author_only: "この操作は、インタラクションの作成者のみが利用可能です。"
 
 # queue search query
 queue_serach_query: "検索クエリ（すべてを表示するには空のままにしてください）"
