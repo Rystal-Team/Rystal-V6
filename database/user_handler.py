@@ -79,6 +79,9 @@ async def update_user_data(user_id: int, data):
         db_handler.connection.ping(reconnect=True, attempts=3)
     if not check_exists("users", "user_id", user_id):
         await register_user(user_id)
+
+    data["points"] = round(data["points"])
+
     statement = {
         "sqlite": "UPDATE users SET level = ?, xp = ?, total_xp = ?, points = ?, last_point_claimed = ? WHERE user_id = ?",
         "mysql": "UPDATE users SET level = %s, xp = %s, total_xp = %s, points = %s, last_point_claimed = %s WHERE user_id = %s",

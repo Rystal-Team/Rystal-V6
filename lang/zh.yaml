@@ -43,13 +43,13 @@ note_view_description: "📒 | 显示笔记！"
 point_class_title: "⭐️ | 积分系统"
 points_claim_description: "⭐️ | 领取积分！"
 points_give_description: "⭐️ | 给其他用户积分！"
-points_coinflip_description: "⭐️ | 玩硬币翻转游戏！"
 points_show_description: "⭐️ | 显示积分！"
 points_leaderboard_description: "⭐️ | 显示积分排行榜！"
 
 game_class_title: "🎮 | 游戏"
 game_blackjack_description: "🎮 | 玩二十一点！"
 game_dice_description: "🎮 | 投掷骰子！"
+game_coinflip_description: "🎮️ | 玩硬币翻转游戏！"
 
 bug_class_title: "🐞 | 错误报告"
 
@@ -69,8 +69,8 @@ setting_music_default_loop_mode_description: "选择默认循环模式！"
 
 game_dice_amount_description: "投掷的骰子数量。"
 game_blackjack_bet_description: "下注的积分数。"
+game_coinflip_bet_description: "下注的积分数。"
 
-points_coinflip_bet_description: "下注的积分数。"
 points_give_recipient_description: "积分的接收者。"
 points_give_amount_description: "给予的积分数。"
 points_leaderboard_include_description: "要包含在排行榜中的用户数。"
