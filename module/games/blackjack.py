@@ -128,10 +128,7 @@ class Blackjack:
         int: The final total of the dealer's hand.
         """
         self.dealer_hand[0] = self.dealer_first_card
-        while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
-            self.player_hand
-        ):
-            self.deal_card(self.dealer_hand)
+
         return self.calculate_hand(self.dealer_hand)
 
     def check_winner(self):
@@ -141,6 +138,11 @@ class Blackjack:
         Returns:
         BlackjackResult: The result of the game.
         """
+        while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
+            self.player_hand
+        ):
+            self.deal_card(self.dealer_hand)
+
         player_total = self.calculate_hand(self.player_hand)
         dealer_total = self.calculate_hand(self.dealer_hand)
         if player_total > 21:
