@@ -62,7 +62,7 @@ bot.remove_command("help")
 class_namespace = "system_class_title"
 
 logger = logging.getLogger("nextcord")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 time_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 handler = logging.FileHandler(
     filename=f"./logs/{time_str}.log", encoding="utf-8", mode="w"
