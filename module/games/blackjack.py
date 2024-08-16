@@ -138,10 +138,11 @@ class Blackjack:
         Returns:
         BlackjackResult: The result of the game.
         """
-        while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
-            self.player_hand
-        ):
-            self.deal_card(self.dealer_hand)
+        if not self.player_black_jack:
+            while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
+                self.player_hand
+            ):
+                self.deal_card(self.dealer_hand)
 
         player_total = self.calculate_hand(self.player_hand)
         dealer_total = self.calculate_hand(self.dealer_hand)
