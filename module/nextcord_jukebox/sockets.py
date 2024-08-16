@@ -23,6 +23,7 @@
 
 import asyncio
 import json
+import logging
 import os
 import threading
 from typing import Dict, Optional
@@ -34,6 +35,7 @@ from . import LogHandler, __socket_standard_version__
 from .event_manager import EventManager
 from .exceptions import NothingPlaying
 
+logging.getLogger('websockets').setLevel(logging.WARNING)
 
 class RPCHandler(EventManager):
     """
