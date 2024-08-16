@@ -127,8 +127,6 @@ class Blackjack:
         Returns:
         int: The final total of the dealer's hand.
         """
-        self.dealer_hand[0] = self.dealer_first_card
-
         return self.calculate_hand(self.dealer_hand)
 
     def check_winner(self):
@@ -138,6 +136,7 @@ class Blackjack:
         Returns:
         BlackjackResult: The result of the game.
         """
+        self.dealer_hand[0] = self.dealer_first_card
         if not self.player_black_jack:
             while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
                 self.player_hand

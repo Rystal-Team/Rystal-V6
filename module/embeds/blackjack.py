@@ -229,7 +229,7 @@ class BlackjackView(nextcord.ui.View):
                 self.lang[message_mapper[result]],
                 color,
                 self.blackjack.calculate_hand(self.blackjack.player_hand),
-                dealer_total,
+                self.blackjack.calculate_hand(self.blackjack.dealer_hand),
             )
             await self.handle_bet_result(result)
         else:
