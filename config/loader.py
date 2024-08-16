@@ -22,7 +22,7 @@
 #
 
 import os
-import logging
+
 import yaml
 from nextcord import Color
 from termcolor import colored
@@ -40,13 +40,6 @@ use_informal_lang = config["use_informal_lang"]
 use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
-
-(
-    logging.basicConfig(level=logging.CRITICAL)
-    if not DEBUG
-    else logging.basicConfig(level=logging.DEBUG)
-)
-
 
 type_color = {
     "success": Color.from_rgb(*config["type_color"]["success"]),

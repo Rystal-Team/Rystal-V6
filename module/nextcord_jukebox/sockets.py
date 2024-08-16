@@ -23,7 +23,6 @@
 
 import asyncio
 import json
-import logging
 import os
 import threading
 from typing import Dict, Optional
