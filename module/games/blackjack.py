@@ -48,6 +48,7 @@ class Blackjack:
         self.player_hand = []
         self.dealer_hand = []
         self.dealer_first_card = self.deck.pop()
+        self.player_black_jack = False
 
     def deal_card(self, hand):
         """
@@ -100,6 +101,9 @@ class Blackjack:
         self.deal_card(self.player_hand)
         self.deal_card(self.player_hand)
 
+        if self.calculate_hand(self.player_hand) == 21:
+            self.player_black_jack = True
+
         return self.calculate_hand(self.player_hand), self.dealer_hand[1]
 
     def hit(self, hand):
@@ -141,7 +145,7 @@ class Blackjack:
         dealer_total = self.calculate_hand(self.dealer_hand)
         if player_total > 21:
             return BlackjackResult.PLAYER_BUSTS
-        if player_total == 21 and not dealer_total == 21:
+        if player_total == 21 and not dealer_total == 21 and self.player_black_jack:
             return BlackjackResult.PLAYER_BLACKJACK
         if dealer_total > 21:
             return BlackjackResult.DEALER_BUSTS
