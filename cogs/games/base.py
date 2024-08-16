@@ -107,13 +107,13 @@ class GameSystem(commands.Cog):
             name=lang[await get_guild_language(interaction.guild.id)][
                 "blackjack_your_hand"
             ],
-            value=f"{blackjack.player_hand}, total: {player_total}",
+            value=f"[{blackjack.hand_str(blackjack.player_hand)}] {lang[await get_guild_language(interaction.guild.id)]['blackjack_total'].format(total=player_total)}",
         )
         embed.add_field(
             name=lang[await get_guild_language(interaction.guild.id)][
                 "blackjack_dealer_hand"
             ],
-            value=f"{blackjack.dealer_hand}, total: {dealer_total}",
+            value=f"[{blackjack.hand_str(blackjack.dealer_hand)}] {lang[await get_guild_language(interaction.guild.id)]['blackjack_total'].format(total=dealer_total)}",
         )
         view = BlackjackView(blackjack, interaction, bet)
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)

@@ -29,6 +29,7 @@
 - Music Player
     - Player works without any remote server setup such as lavalink/wavelink
     - Provides rich features compared to most discord bots out there written in Python
+    - Recap poster for the most played songs previously
 - Rank System
 - Multi-Language Support
 - Point System

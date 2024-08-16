@@ -114,11 +114,11 @@ class BlackjackView(nextcord.ui.View):
         embed = nextcord.Embed(title=title, description=description, color=color)
         embed.add_field(
             name=self.lang["blackjack_your_hand"],
-            value=f"{self.blackjack.player_hand}, {self.lang['blackjack_total'].format(total=player_total)}",
+            value=f"[{self.blackjack.hand_str(self.blackjack.player_hand)}] {self.lang['blackjack_total'].format(total=player_total)}",
         )
         embed.add_field(
             name=self.lang["blackjack_dealer_hand"],
-            value=f"{self.blackjack.dealer_hand}, {self.lang['blackjack_total'].format(total=dealer_total)}",
+            value=f"[{self.blackjack.hand_str(self.blackjack.dealer_hand)}] {self.lang['blackjack_total'].format(total=dealer_total)}",
         )
         await interaction.response.edit_message(embed=embed, view=view)
 

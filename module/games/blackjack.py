@@ -47,6 +47,7 @@ class Blackjack:
         random.shuffle(self.deck)
         self.player_hand = []
         self.dealer_hand = []
+        self.dealer_first_card = self.deck.pop()
 
     def deal_card(self, hand):
         """
@@ -68,11 +69,24 @@ class Blackjack:
         Returns:
         int: The total value of the hand.
         """
-        total = sum(hand)
+        total = sum(hand) if "?" not in hand else hand[1]
         while total > 21 and 11 in hand:
             total -= 10
             hand[hand.index(11)] = 1
         return total
+
+    @staticmethod
+    def hand_str(hand):
+        """
+        Convert a hand to a string representation.
+
+        Parameters:
+        hand (list): The hand to be converted.
+
+        Returns:
+        str: A string representation of the hand.
+        """
+        return ", ".join(str(card) for card in hand)
 
     def start_game(self):
         """
@@ -81,12 +95,12 @@ class Blackjack:
         Returns:
         tuple: The initial totals of the player's and dealer's hands.
         """
-        for _ in range(2):
-            self.deal_card(self.player_hand)
-            self.deal_card(self.dealer_hand)
-        return self.calculate_hand(self.player_hand), self.calculate_hand(
-            self.dealer_hand
-        )
+        self.dealer_hand.append("?")
+        self.deal_card(self.dealer_hand)
+        self.deal_card(self.player_hand)
+        self.deal_card(self.player_hand)
+
+        return self.calculate_hand(self.player_hand), self.dealer_hand[1]
 
     def hit(self, hand):
         """
@@ -109,7 +123,10 @@ class Blackjack:
         Returns:
         int: The final total of the dealer's hand.
         """
-        while self.calculate_hand(self.dealer_hand) < 17:
+        self.dealer_hand[0] = self.dealer_first_card
+        while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
+            self.player_hand
+        ):
             self.deal_card(self.dealer_hand)
         return self.calculate_hand(self.dealer_hand)
 
