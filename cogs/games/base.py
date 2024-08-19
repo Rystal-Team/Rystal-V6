@@ -115,7 +115,7 @@ class GameSystem(commands.Cog):
             ],
             value=f"[{blackjack.hand_str(blackjack.dealer_hand)}] {lang[await get_guild_language(interaction.guild.id)]['blackjack_total'].format(total=dealer_total)}",
         )
-        view = BlackjackView(blackjack, interaction, bet)
+        view = BlackjackView(blackjack, interaction, bet, self.bot.user.id)
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)
         view.set_follow_up(follow_up_msg)
 

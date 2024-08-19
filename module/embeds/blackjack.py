@@ -52,7 +52,7 @@ class BlackjackView(nextcord.ui.View):
         ended (bool): Flag indicating if the game has ended.
     """
 
-    def __init__(self, blackjack, interaction, bet):
+    def __init__(self, blackjack, interaction, bet, bot_id):
         """
         Initialize the BlackjackView.
 
@@ -66,6 +66,7 @@ class BlackjackView(nextcord.ui.View):
         self.interaction = interaction
         self.author_id = interaction.user.id
         self.guild_id = interaction.guild_id
+        self.bot_id = bot_id
         self.bet = bet
         self.follow_up = None
         self.ended = False
@@ -143,9 +144,12 @@ class BlackjackView(nextcord.ui.View):
         elif result == BlackjackResult.TIE:
             user_data["points"] += self.bet
             bot_data["points"] -= self.bet
+        elif result in {BlackjackResult.DEALER_WINS, BlackjackResult.PLAYER_BUSTS}:
+            bot_data["points"] += self.bet
+            user_data["points"] -= self.bet
 
         await user_handler.update_user_data(user_id, user_data)
-        await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
+        await user_handler.update_user_data(self.bot_id, bot_data)
 
     @nextcord.ui.button(label="Hit", style=nextcord.ButtonStyle.primary)
     async def hit_button(self, button, interaction):
