@@ -136,7 +136,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        if amount <= 0:
+        if amount <= 0 and not force:
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -153,7 +153,7 @@ class PointSystem(commands.Cog):
         giver_data = await user_handler.get_user_data(giver_id)
         recipient_data = await user_handler.get_user_data(recipient_id)
 
-        if giver_data["points"] < amount:
+        if giver_data["points"] < amount and not force:
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -167,7 +167,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        if giver_id != bot_owner_id:
+        if not force:
             giver_data["points"] -= amount
         recipient_data["points"] += amount
 
