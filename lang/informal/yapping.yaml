@@ -135,7 +135,7 @@ level_up: "{user} is lvl {level} i think (get a life honestly"
 level_text: "lvl"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "leaderboard - top {include}"
-leaderboard_out_of_range: "1 to 50 only mf it aint hard"
+leaderboard_out_of_range: "1 to 25 only mf it aint hard"
 leaderboard_user_row: "**Level: {level} | Total XP: {totalxp}**"
 
 # system

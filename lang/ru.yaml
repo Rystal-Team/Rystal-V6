@@ -65,7 +65,7 @@ level_up: "{user} достиг уровня {level}!!!"
 level_text: "Уровень"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "Таблица лидеров - Топ {include}"
-leaderboard_out_of_range: "Диапазон должен иметь минимальное значение 1 и максимальное значение 50!"
+leaderboard_out_of_range: "Диапазон должен иметь минимальное значение 1 и максимальное значение 25!"
 leaderboard_user_row: "**Уровень: {level} | Всего XP: {totalxp}**"
 
 # system

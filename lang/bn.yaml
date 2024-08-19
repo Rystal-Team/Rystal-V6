@@ -65,7 +65,7 @@ level_up: "{user} স্তর {level} এ পৌঁছেছে!!!"
 level_text: "স্তর"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "লিডারবোর্ড - শীর্ষ {include}"
-leaderboard_out_of_range: "পরিসরের ন্যূনতম মান 1 এবং সর্বাধিক মান 50 হতে হবে!"
+leaderboard_out_of_range: "পরিসরের ন্যূনতম মান 1 এবং সর্বাধিক মান 25 হতে হবে!"
 leaderboard_user_row: "**স্তর: {level} | মোট XP: {totalxp}**"
 
 # system

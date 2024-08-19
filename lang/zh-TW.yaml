@@ -134,7 +134,7 @@ level_up: "{user} 已升至等級 {level}！！！"
 level_text: "等級"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "排行榜 - 前 {include}"
-leaderboard_out_of_range: "範圍必須在 1 到 50 之間！"
+leaderboard_out_of_range: "範圍必須在 1 到 25 之間！"
 leaderboard_user_row: "**等級: {level} | 總經驗值: {totalxp}**"
 
 # system

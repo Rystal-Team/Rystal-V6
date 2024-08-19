@@ -181,7 +181,7 @@ class RankSystem(commands.Cog):
         if include is None:
             include = 5
 
-        if include < 1 or include > 50:
+        if include < 1 or include > 25:
             await interaction.response.send_message(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][

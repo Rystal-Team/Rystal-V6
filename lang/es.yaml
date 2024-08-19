@@ -65,7 +65,7 @@ level_up: "{user} ha alcanzado el nivel {level}!!!"
 level_text: "Nivel"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "Tabla de Clasificación - Top {include}"
-leaderboard_out_of_range: "¡El rango debe tener un valor mínimo de 1 y máximo de 50!"
+leaderboard_out_of_range: "¡El rango debe tener un valor mínimo de 1 y máximo de 25!"
 leaderboard_user_row: "**Nivel: {level} | XP Total: {totalxp}**"
 
 # system
