@@ -78,6 +78,7 @@ game_coinflip_bet_description: "賭けるポイント数。"
 
 points_give_recipient_description: "ポイントの受取人。"
 points_give_amount_description: "与えるポイント数。"
+points_give_force_description: "取引を強制する。（オーナーのみ）"
 points_leaderboard_include_description: "リーダーボードに含めるユーザー数。"
 points_show_user_description: "ポイントを表示するユーザー。"
 

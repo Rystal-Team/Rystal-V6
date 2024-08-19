@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_language, lang
+from config.loader import default_language, lang, bot_owner_id
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -112,10 +112,29 @@ class PointSystem(commands.Cog):
             description=lang[default_language]["points_give_amount_description"],
             required=True,
         ),
+        force: bool = nextcord.SlashOption(
+            name="force",
+            description=lang[default_language]["points_give_force_description"],
+            required=False,
+        ),
     ):
         await interaction.response.defer()
         giver_id = interaction.user.id
         recipient_id = recipient.id
+
+        if force and not giver_id == bot_owner_id:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "missing_permission"
+                    ],
+                    message_type="error",
+                ),
+            )
+            return
 
         if amount <= 0:
             await interaction.followup.send(
@@ -148,7 +167,8 @@ class PointSystem(commands.Cog):
             )
             return
 
-        giver_data["points"] -= amount
+        if giver_id != bot_owner_id:
+            giver_data["points"] -= amount
         recipient_data["points"] += amount
 
         await user_handler.update_user_data(giver_id, giver_data)

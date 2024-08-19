@@ -78,6 +78,7 @@ game_coinflip_bet_description: "The amount of points to bet."
 
 points_give_recipient_description: "The recipient of the points."
 points_give_amount_description: "The amount of points to give."
+points_give_force_description: "Force the transaction. (Owner only)"
 points_leaderboard_include_description: "The amount of users to include in the leaderboard."
 points_show_user_description: "The user to show the points of."
 
