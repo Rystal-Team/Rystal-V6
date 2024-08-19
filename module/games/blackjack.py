@@ -137,14 +137,14 @@ class Blackjack:
         BlackjackResult: The result of the game.
         """
         self.dealer_hand[0] = self.dealer_first_card
-        if not self.player_black_jack:
+        player_total = self.calculate_hand(self.player_hand)
+        dealer_total = self.calculate_hand(self.dealer_hand)
+        if not self.player_black_jack and not player_total > 21 and dealer_total == 21:
             while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
                 self.player_hand
             ):
                 self.deal_card(self.dealer_hand)
 
-        player_total = self.calculate_hand(self.player_hand)
-        dealer_total = self.calculate_hand(self.dealer_hand)
         if player_total > 21:
             return BlackjackResult.PLAYER_BUSTS
         if player_total == 21 and not dealer_total == 21 and self.player_black_jack:
