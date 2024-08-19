@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_language, lang, bot_owner_id
+from config.loader import default_language, lang, bot_owner_id, banland
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -39,8 +39,6 @@ class_namespace = "point_class_title"
 class PointSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        banland = []
-
     @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def points(
         self,
@@ -123,7 +121,7 @@ class PointSystem(commands.Cog):
         giver_id = interaction.user.id
         recipient_id = recipient.id
 
-        if recipient_id in PointSystem.banland:
+        if recipient_id in banland:
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
