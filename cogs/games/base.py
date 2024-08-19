@@ -88,10 +88,6 @@ class GameSystem(commands.Cog):
             )
             return
 
-        user_data["points"] -= bet
-        bot_data["points"] += bet
-        await user_handler.update_user_data(user_id, user_data)
-
         blackjack = Blackjack()
         player_total, dealer_total = blackjack.start_game()
         embed = nextcord.Embed(

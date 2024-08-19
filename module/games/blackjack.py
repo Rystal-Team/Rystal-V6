@@ -144,7 +144,9 @@ class Blackjack:
             and not player_total > 21
             and not dealer_total == 21
         ):
-            while self.calculate_hand(self.dealer_hand) < self.calculate_hand(self.player_hand):
+            while self.calculate_hand(self.dealer_hand) < self.calculate_hand(
+                self.player_hand
+            ):
                 self.deal_card(self.dealer_hand)
 
         player_total = self.calculate_hand(self.player_hand)
