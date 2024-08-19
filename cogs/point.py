@@ -39,6 +39,7 @@ class_namespace = "point_class_title"
 class PointSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        banland = []
 
     @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def points(
@@ -121,6 +122,20 @@ class PointSystem(commands.Cog):
         await interaction.response.defer()
         giver_id = interaction.user.id
         recipient_id = recipient.id
+
+        if recipient_id in PointSystem.banland:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "receive_not_allowed"
+                    ].format(option="recipient"),
+                    message_type="error",
+                )
+            )
+            return
 
         if force and not giver_id == bot_owner_id:
             await interaction.followup.send(
