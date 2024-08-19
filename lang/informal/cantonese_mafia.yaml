@@ -67,7 +67,7 @@ level_up: "{user} 有料，升你做 {level}!!!"
 level_text: "等級"
 level_xp: "{xp} / {totalxp} 經驗"
 leaderboard_header: "排行榜頭 {include} 名"
-leaderboard_out_of_range: "屌你滷味， 最細要1，最大只可以50啊，仲錯就返鄉下讀村校啦!"
+leaderboard_out_of_range: "屌你滷味， 最細要1，最大只可以25啊，仲錯就返鄉下讀村校啦!"
 leaderboard_user_row: "**等級: {level} | 總經驗: {totalxp}**"
 
 # system

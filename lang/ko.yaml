@@ -65,7 +65,7 @@ level_up: "{user}님이 레벨 {level}에 도달했습니다!!!"
 level_text: "레벨"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "리더보드 - 상위 {include}"
-leaderboard_out_of_range: "범위는 최소 1, 최대 50으로 설정해야 합니다!"
+leaderboard_out_of_range: "범위는 최소 1, 최대 25으로 설정해야 합니다!"
 leaderboard_user_row: "**레벨: {level} | 총 XP: {totalxp}**"
 
 # system

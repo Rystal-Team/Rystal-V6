@@ -142,7 +142,7 @@ level_up: "{user} がレベル {level} に到達しました！！！"
 level_text: "レベル"
 level_xp: "{xp} / {totalxp} XP"
 leaderboard_header: "🎖️ | トップ {include} リーダーボード"
-leaderboard_out_of_range: "範囲は最小1、最大50でなければなりません！"
+leaderboard_out_of_range: "範囲は最小1、最大25でなければなりません！"
 leaderboard_user_row: "**レベル: {level} | 合計XP: {totalxp}**"
 
 # system
