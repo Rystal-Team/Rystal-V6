@@ -59,24 +59,18 @@ class CountTimer:
         self.__init__(duration)
 
     def start(self) -> None:
-        """
-        Start the timer.
-        """
+        """Start the timer."""
         self._time_started = time.time()
         self.paused = False
 
     def pause(self) -> None:
-        """
-        Pause the timer.
-        """
+        """Pause the timer."""
         if not self.paused and self._time_started is not None:
             self._timepaused = time.time()
             self.paused = True
 
     def resume(self) -> None:
-        """
-        Resume the timer from a paused state.
-        """
+        """Resume the timer from a paused state."""
         if self.paused and self._time_started is not None:
             self._time_started += time.time() - (self._timepaused or 0)
             self._timepaused = None

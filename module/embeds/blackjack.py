@@ -244,9 +244,7 @@ class BlackjackView(nextcord.ui.View):
             )
 
     async def on_timeout(self):
-        """
-        Handle the timeout event for the view.
-        """
+        """Handle the timeout event for the view."""
         self.lang = await self.get_lang()
         await self.handle_bet_result(BlackjackResult.DEALER_WINS)
         player_total = self.lang["blackjack_total"].format(

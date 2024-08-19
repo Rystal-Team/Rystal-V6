@@ -35,9 +35,7 @@ class_namespace = "note_class_title"
 
 @unique
 class NoteState(Enum):
-    """
-    Enum representing the state of a note.
-    """
+    """Enum representing the state of a note."""
 
     UNBEGUN = 30
     STALLED = 31
@@ -73,9 +71,7 @@ class Note:
 
 
 class NotesEmbed:
-    """
-    A class for creating embeds for notes.
-    """
+    """A class for creating embeds for notes."""
 
     @staticmethod
     def create_embed(notes, page, total_pages, guild_lang):
@@ -131,9 +127,7 @@ class NotesPagination(nextcord.ui.View):
         self.total_pages = (len(self.notes) - 1) // self.notes_per_page + 1
 
     async def send_initial_message(self):
-        """
-        Send the initial message with the first page of notes.
-        """
+        """Send the initial message with the first page of notes."""
         self.guild_lang = await get_guild_language(self.interaction.guild.id)
         embed = self.create_embed()
         self.update_buttons()
@@ -185,24 +179,18 @@ class NotesPagination(nextcord.ui.View):
             await self.update_message()
 
     async def update_message(self):
-        """
-        Update the message with the current page of notes.
-        """
+        """Update the message with the current page of notes."""
         embed = self.create_embed()
         self.update_buttons()
         await self.message.edit(embed=embed, view=self)
 
     def update_buttons(self):
-        """
-        Update the state of the pagination buttons.
-        """
+        """Update the state of the pagination buttons."""
         self.children[0].disabled = self.index == 0
         self.children[1].disabled = self.index == self.total_pages - 1
 
     async def on_timeout(self):
-        """
-        Handle the timeout event for the view.
-        """
+        """Handle the timeout event for the view."""
         await self.message.edit(view=None)
 
 
@@ -333,7 +321,5 @@ class NoteStateView(nextcord.ui.View):
             )
 
     async def on_timeout(self):
-        """
-        Handle the timeout event for the view.
-        """
+        """Handle the timeout event for the view."""
         await self.message.edit(view=None)
