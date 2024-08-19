@@ -39,6 +39,7 @@ class_namespace = "point_class_title"
 class PointSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def points(
         self,
