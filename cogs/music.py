@@ -236,7 +236,7 @@ class Music(commands.Cog, EventManager):
             )
             await player.change_loop_mode(loop_method)
 
-            if loop_method != LOOPMODE.off and loop_method != player.loop_mode:
+            if loop_method not in (LOOPMODE.off, player.loop_mode):
                 message_key = (
                     "enabled_loop_single"
                     if loop_method == LOOPMODE.single
