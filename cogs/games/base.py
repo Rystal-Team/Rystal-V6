@@ -59,7 +59,6 @@ class GameSystem(commands.Cog):
 
         user_id = interaction.user.id
         user_data = await user_handler.get_user_data(user_id)
-        bot_data = await user_handler.get_user_data(self.bot.user.id)
 
         if bet <= 0:
             await interaction.followup.send(
