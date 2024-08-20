@@ -41,4 +41,3 @@ def change_global(name, value):
     }
     db_handler.execute(query[db_handler.db_type], (value, name))
     db_handler.connection.commit()
-    return
