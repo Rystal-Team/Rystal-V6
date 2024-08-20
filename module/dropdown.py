@@ -178,9 +178,9 @@ class LyricsSelectorView(View):
 
 class RouletteSelectorView(View):
     def __init__(
-            self,
-            options: list,
-            placeholder: str,
+        self,
+        options: list,
+        placeholder: str,
     ):
         super().__init__()
         self.options = options
@@ -190,7 +190,9 @@ class RouletteSelectorView(View):
         return interaction.user == self.author
 
     async def on_selected(self, _, bet, option):
-        result = RoutetteView.handle_bet_result(Roulette.check_winner(option[0].lower()))
+        result = RoutetteView.handle_bet_result(
+            Roulette.check_winner(option[0].lower())
+        )
         if result == RouletteResult.LOSE:
             outcome = "Lose"
         else:

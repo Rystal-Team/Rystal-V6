@@ -28,7 +28,8 @@ from database import user_handler
 from database.guild_handler import get_guild_language
 from module.games.roulette import RouletteResult, Roulette
 from modules.dropdown import DropdownSelector
-#rewrite this in dropdown.py ty
+
+# rewrite this in dropdown.py ty
 
 message_mapper = {
     RouletteResult.ZEROS: "roulette_zeros",
@@ -47,7 +48,44 @@ class RouletteView(nextcord.ui.View):
         self.guild_id = interaction.guild.id
         self.follow_up = None
         self.Wheel = [
-            "Green 0", "Black 28", "Red 9", "Black 26", "Red 30", "Black 11", "Red 7", "Black 20", "Red 32", "Black 17", "Red 5", "Black 22", "Red 34", "Black 15", "Red 3", "Black 24", "Red 36", "Black 13", "Red 1", "Green 00", "Red 27", "Black 10", "Red 25", "Black 29", "Red 12", "Black 8", "Red 19", "Black 31", "Red 18", "Black 6", "Red 21", "Black 33", "Red 16", "Black 4", "Red 23", "Black 35", "Red 14", "Black 2"
+            "Green 0",
+            "Black 28",
+            "Red 9",
+            "Black 26",
+            "Red 30",
+            "Black 11",
+            "Red 7",
+            "Black 20",
+            "Red 32",
+            "Black 17",
+            "Red 5",
+            "Black 22",
+            "Red 34",
+            "Black 15",
+            "Red 3",
+            "Black 24",
+            "Red 36",
+            "Black 13",
+            "Red 1",
+            "Green 00",
+            "Red 27",
+            "Black 10",
+            "Red 25",
+            "Black 29",
+            "Red 12",
+            "Black 8",
+            "Red 19",
+            "Black 31",
+            "Red 18",
+            "Black 6",
+            "Red 21",
+            "Black 33",
+            "Red 16",
+            "Black 4",
+            "Red 23",
+            "Black 35",
+            "Red 14",
+            "Black 2",
         ]
         self.bet_options = ["zeros", "red", "black", "odd", "even"]
 
@@ -66,15 +104,13 @@ class RouletteView(nextcord.ui.View):
         view=None,
     ):
         self.lang = await self.get_lang()
-        embed = nextcord.Embed(title=self.lang["roulette_game_title"], description=self.lang["roulette_game_description"].format(result=outcome), color=typecolor["game"])
-        embed.add_field(
-            name=self.lang["roulette_your_bet"],
-            value=option
+        embed = nextcord.Embed(
+            title=self.lang["roulette_game_title"],
+            description=self.lang["roulette_game_description"].format(result=outcome),
+            color=typecolor["game"],
         )
-        embed.add_field(
-            name=self.lang["roulette_result"],
-            value=result
-        )
+        embed.add_field(name=self.lang["roulette_your_bet"], value=option)
+        embed.add_field(name=self.lang["roulette_result"], value=result)
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def handle_bet_result(self, result):
@@ -82,7 +118,12 @@ class RouletteView(nextcord.ui.View):
         user_data = await user_handler.get_user_data(user_id)
         bot_data = await user_handler.get_user_data(self.interaction.client.user.id)
 
-        if result in {RouletteResult.RED, RouletteResult.ODD, RouletteResult.EVEN, RouletteResult.BLACK}:
+        if result in {
+            RouletteResult.RED,
+            RouletteResult.ODD,
+            RouletteResult.EVEN,
+            RouletteResult.BLACK,
+        }:
             user_data["points"] += self.bet
             bot_data["points"] -= self.bet
         elif result == RouletteResult.ZEROS:
