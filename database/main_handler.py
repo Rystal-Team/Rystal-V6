@@ -161,6 +161,8 @@ def startup():
             cursor.execute(create_statements[table_name])
 
     return
+
+
 if USE_SQLITE:
     db_handler = DatabaseHandler(
         db_type="sqlite", create_query=create_statements, db_file=SQLITE_PATH
@@ -175,6 +177,7 @@ else:
         password=os.getenv("MYSQL_PASSWORD"),
         database=os.getenv("MYSQL_DATABASE"),
     )
+
 
 def check_exists(table, key, value):
     if db_handler.db_type == "mysql":
