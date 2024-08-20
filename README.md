@@ -1,4 +1,3 @@
-<br />
 <div align="center">
   <a href="https://github.com/Rystal-Team/Rystal-V6/blob/main/assets/logo.png?raw=true">
     <img src="assets/logo.png" alt="Logo" width="80" height="80">
@@ -11,6 +10,8 @@
     <a href="https://github.com/Rystal-Team/Rystal-V6/issues">Submit Issues</a>
     · 
     <a href="https://github.com/Rystal-Team/Rystal-V6/releases">Releases</a>
+    · 
+    <a href="./README-ja.md">日本語</a>
   </p>
 </div>
 
@@ -28,9 +29,12 @@
 - Music Player
     - Player works without any remote server setup such as lavalink/wavelink
     - Provides rich features compared to most discord bots out there written in Python
+    - Recap poster for the most played songs previously
 - Rank System
-- Multi-Language Support (English, Japanese, Simplified Chinese and Traditional Chinese are included by default, you can
-  create your own translation to any desired language)
+- Multi-Language Support
+- Point System
+- Notes System
+- Mini-games
 
 ## Screenshots
 
@@ -53,7 +57,8 @@ with `pip install -r <path-to>/requirements.txt`.
 
 The main config file is `.env`, make a copy of `.env.example` and rename it into `.env` and enter the required
 tokens.<br>
-Customisations for the bot can be found in `config/config.py`.
+Customisations for the bot can be found in `config/example.config.yaml`, make a copy of it and rename it
+to `config.yaml` to continue.
 
 ## Built With
 
@@ -71,7 +76,6 @@ Check out Sparked Host! As cheap as $1 per month!<br>
 - Free SQL Database
 
 <a href="https://billing.sparkedhost.com/aff.php?aff=2435"><img src="assets/sparkedhost.png" alt="Sparked Host" style="width:373.875px;height:78px;"/></a>
-
 
 <div align="center">
   <p><small>Copyright © 2024 <a href="https://rystal.xyz">RystalTeam</a>. All rights reserved.</small></p>

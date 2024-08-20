@@ -38,6 +38,7 @@ class EventManager:
         _event_listeners (dict): A dictionary of event listeners keyed by event names.
         _cog_instances (list): A list of attached cog instances.
     """
+
     _event_listeners = {}
     _cog_instances = []
 
@@ -85,7 +86,10 @@ class EventManager:
         for instance in cls._cog_instances:
             if event_name in cls._event_listeners:
                 for listener in cls._event_listeners[event_name]:
-                    if instance.__class__.__name__ == listener.__qualname__.split('.')[0]:
+                    if (
+                        instance.__class__.__name__
+                        == listener.__qualname__.split(".")[0]
+                    ):
                         if inspect.iscoroutinefunction(listener):
                             await listener(instance, *args, **kwargs)
                         else:

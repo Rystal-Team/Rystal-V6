@@ -1,3 +1,26 @@
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
 import datetime
 import platform
 import time
@@ -8,9 +31,9 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.config import lang, status_text, use_ytdlp
+from config.loader import default_language, lang, status_text, use_ytdlp
 from database.guild_handler import get_guild_language
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
 start_time = time.time()
 class_namespace = "system_class_title"
@@ -50,11 +73,16 @@ class System(commands.Cog):
             )
 
         if use_ytdlp:
-            print(colored(text=f"Using YTDLP to extract video data", color="dark_grey"))
+            print(colored(text="Using YTDLP to extract video data", color="dark_grey"))
         else:
-            print(colored(text=f"Using Meta-YT to extract video data", color="dark_grey"))
+            print(
+                colored(text="Using Meta-YT to extract video data", color="dark_grey")
+            )
+        print(colored(text=f"Default language: {default_language}", color="dark_grey"))
 
-    @nextcord.slash_command(description="🤖 | Pong!")
+    @nextcord.slash_command(
+        description=lang[default_language]["system_ping_description"]
+    )
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -71,7 +99,9 @@ class System(commands.Cog):
             )
         )
 
-    @nextcord.slash_command(description="🤖 | Get the System info of the bot!")
+    @nextcord.slash_command(
+        description=lang[default_language]["system_info_description"]
+    )
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -84,15 +114,28 @@ class System(commands.Cog):
         os_time = datetime.datetime.now()
         os_time = os_time.strftime("%H:%M:%S %d/%m/%y")
 
-        uptime_time_str = str(datetime.timedelta(seconds=(round(time.time() - start_time))))
+        uptime_time_str = str(
+            datetime.timedelta(seconds=(round(time.time() - start_time)))
+        )
 
-        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(cpu=cpu)
-        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(ram_used=ram_used,
-                                                                                     ram_total=ram_total)
-        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(platform=os_platform)
-        version_str = lang[await get_guild_language(interaction.guild.id)]["version"].format(os_version=os_version)
-        release_str = lang[await get_guild_language(interaction.guild.id)]["release"].format(os_release=os_release)
-        uptime_str = lang[await get_guild_language(interaction.guild.id)]["uptime"].format(uptime=uptime_time_str)
+        cpu_str = lang[await get_guild_language(interaction.guild.id)]["cpu"].format(
+            cpu=cpu
+        )
+        ram_str = lang[await get_guild_language(interaction.guild.id)]["ram"].format(
+            ram_used=ram_used, ram_total=ram_total
+        )
+        os_str = lang[await get_guild_language(interaction.guild.id)]["os"].format(
+            platform=os_platform
+        )
+        version_str = lang[await get_guild_language(interaction.guild.id)][
+            "version"
+        ].format(os_version=os_version)
+        release_str = lang[await get_guild_language(interaction.guild.id)][
+            "release"
+        ].format(os_release=os_release)
+        uptime_str = lang[await get_guild_language(interaction.guild.id)][
+            "uptime"
+        ].format(uptime=uptime_time_str)
 
         message_str = f"{cpu_str}\n{ram_str}\n{os_str}\n{version_str}\n{release_str}\n{uptime_str}"
 

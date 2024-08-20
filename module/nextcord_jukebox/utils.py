@@ -21,12 +21,14 @@
 #  ------------------------------------------------------------
 #
 
+import datetime
 import random
 import re
 import string
+from typing import Optional
 
 
-async def generate_secret(length=16):
+async def generate_secret(length: int = 16) -> str:
     """
     Generate a random secret string of a specified length.
 
@@ -35,12 +37,13 @@ async def generate_secret(length=16):
 
     Returns:
         str: Randomly generated secret string consisting of alphanumeric characters.
-
     """
-    return "".join(random.choice(string.ascii_letters + string.digits) for i in range(length))
+    return "".join(
+        random.choice(string.ascii_letters + string.digits) for i in range(length)
+    )
 
 
-async def get_playlist_id(url):
+async def get_playlist_id(url: str) -> Optional[str]:
     """
     Extracts the playlist ID from a YouTube playlist URL.
 
@@ -48,13 +51,16 @@ async def get_playlist_id(url):
         url (str): YouTube playlist URL.
 
     Returns:
-        str: Playlist ID extracted from the URL, or None if no valid ID found.
-
+        Optional[str]: Playlist ID extracted from the URL, or None if no valid ID found.
     """
-    return re.search(r"list=([a-zA-Z0-9_-]+)", url).group(1) if re.search(r"list=([a-zA-Z0-9_-]+)", url) else None
+    return (
+        re.search(r"list=([a-zA-Z0-9_-]+)", url).group(1)
+        if re.search(r"list=([a-zA-Z0-9_-]+)", url)
+        else None
+    )
 
 
-async def get_video_id(url):
+async def get_video_id(url: str) -> Optional[str]:
     """
     Extracts the video ID from a YouTube video URL.
 
@@ -62,16 +68,22 @@ async def get_video_id(url):
         url (str): YouTube video URL.
 
     Returns:
-        str: Video ID extracted from the URL, or None if no valid ID found.
-
+        Optional[str]: Video ID extracted from the URL, or None if no valid ID found.
     """
-    return (match.group(1) if (match := re.search(
-        r"(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/|youtube\.com/v/)(["
-        r"a-zA-Z0-9_-]{11})",
-        url, )) else None)
+    return (
+        match.group(1)
+        if (
+            match := re.search(
+                r"(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/embed/|youtube\.com/v/)(["
+                r"a-zA-Z0-9_-]{11})",
+                url,
+            )
+        )
+        else None
+    )
 
 
-def to_timestamp(dt):
+def to_timestamp(dt: datetime.datetime) -> int:
     """
     Converts a datetime object to a Unix timestamp.
 

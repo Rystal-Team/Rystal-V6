@@ -1,0 +1,98 @@
+# Korean translations
+name: "한국어"
+
+# general
+must_be_positive: "`{option}` 값은 양수여야 합니다!"
+
+# embed titles
+music_class_title: "🎵 | 음악 모듈"
+level_class_title: "🎖️ | 레벨 모듈"
+system_class_title: "🤖 | 시스템"
+setting_class_title: "⚙️ | 설정"
+note_class_title: "📒 | 노트"
+point_class_title: "⭐️ | 포인트 시스템"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "운영 체제: {platform}"
+version: "버전: {os_version}"
+release: "출시: {os_release}"
+uptime: "가동 시간: {uptime}"
+ping: "퐁! {ping}ms"
+
+# settings
+language_changed: "언어를 {language}로 변경했습니다!"
+
+# music
+queued_playlist: "대기열에 추가된 재생목록 **{playlist}**!"
+all_songs: "모든 노래"
+queue_ended: "재생목록이 종료되었습니다!"
+loading_playlist: "재생목록을 로딩 중입니다..."
+not_in_voice: "음성 채널에 연결되어 있지 않습니다!"
+in_different_voice: "봇과 같은 음성 채널에 있지 않습니다!"
+failed_to_add_song: "노래 **{title}**을 추가하지 못했습니다!"
+invalid_playlist: "유효하지 않은 재생목록입니다!"
+playing_song: "현재 재생 중... **{title}**!"
+queued_song: "대기열에 추가된 노래 **{title}**!"
+removed_song: "제거된 노래 **{title}**!"
+nothing_is_playing: "재생 중인 것이 없습니다!"
+stopped_player: "플레이어를 멈췄습니다!"
+changed_volume: "노래 **{title}**의 볼륨을 {volume}%로 변경했습니다!"
+currently_playing: "현재 재생 중... {title}"
+shuffled_queue: "대기열을 섞었습니다!"
+invalid_index: "잘못된 인덱스입니다!"
+
+toggle_silent_mode: "무음 모드가 {toggle}입니다"
+toggle_auto_leave: "자동 음성 채널 나가기 모드가 {toggle}입니다"
+volume_out_of_range: "볼륨은 0%에서 200% 사이여야 합니다!"
+
+disabled_loop: "루프 모드를 비활성화했습니다!"
+enabled_loop_single: "단일 곡 루프 모드를 활성화했습니다! **{title}**!"
+enabled_loop_queue: "대기열 루프 모드를 활성화했습니다!"
+music_already_paused: "음악이 이미 일시 정지되었습니다! `/resume` 명령어를 사용하여 음악을 다시 재생하세요!"
+music_already_playing: "음악이 이미 재생 중입니다! `/pause` 명령어를 사용하여 음악을 일시 정지하세요!"
+paused_queue: "대기열을 일시 정지했습니다!"
+resumed_queue: "대기열을 재개했습니다!"
+skipped_from: "**{old}**에서 **{new}**으로 건너뛰었습니다!"
+skipped: "**{old}**을 건너뛰었습니다!"
+
+music_registered_secret: "비밀이 성공적으로 등록되었습니다. 추가 세부 사항은 개인 메시지에서 확인하세요. 메시지를 받지 못한 경우, 개인 정보 설정에서 '서버 구성원에게서 직접 메시지 허용'이 활성화되어 있는지 확인하세요."
+music_secret: "이것이 새로운 비밀입니다\n ```{secret}```"
+
+# level
+level_up: "{user}님이 레벨 {level}에 도달했습니다!!!"
+level_text: "레벨"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "리더보드 - 상위 {include}"
+leaderboard_out_of_range: "범위는 최소 1, 최대 25으로 설정해야 합니다!"
+leaderboard_user_row: "**레벨: {level} | 총 XP: {totalxp}**"
+
+# system
+unknown_error: "알 수 없는 오류가 발생했습니다!"
+missing_permission: "이 작업을 실행할 권한이 없습니다!"
+author_only_interactions: "명령어 작성자만 이 작업을 수행할 수 있습니다."
+not_implemented: "이 명령어는 아직 구현되지 않았습니다!"
+command_slowdown: "속도를 줄이고 나중에 다시 시도해 주세요!"
+
+# queue search query
+queue_serach_query: "검색 쿼리 (모든 항목을 보려면 비워 두세요)"
+queue_query: "쿼리"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | 쿼리: {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "이번 주 가장 많이 재생된 곡"
+most_played_month: "이번 달 가장 많이 재생된 곡"
+most_played_year: "올해 가장 많이 재생된 곡"
+played_duration: "{hour}시간 이상"
+total_played: "재생된 곡 {count}곡"
+
+# points
+points_claimed: "포인트 {points}점을 획득했습니다!"
+not_enough_points: "이 작업을 수행하기에 충분한 포인트가 없습니다."
+coinflip_win: "축하합니다! {points} 포인트를 얻었습니다!"
+coinflip_lose: "죄송합니다. {points} 포인트를 잃었습니다."
+points_given: "{recipient}에게 {amount} 포인트를 주었습니다!"

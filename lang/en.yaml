@@ -1,12 +1,93 @@
-# English
+# English translations
 name: "English"
 
-# embed titles
+# general
+must_be_positive: "`{option}` value must be positive!"
+must_be_positive_not_zero: "`{option}` value must be positive and not zero!"
+
+# title & descriptions
 music_class_title: "🎵 | Music Module"
-level_class_title: "🎖️ | Leveling Module"
+music_play_description: "🎵 | Play a song!"
+music_skip_description: "🎵 | Skip the music!"
+music_queue_description: "🎵 | Show the queue!"
+music_shuffle_description: "🎵 | Shuffle the queue!"
+music_loop_description: "🎵 | Loop the queue!"
+music_nowplaying_description: "🎵 | Show the currently playing song!"
+music_pause_description: "🎵 | Pause the music!"
+music_resume_description: "🎵 | Resume the music!"
+music_stop_description: "🎵 | Stop the music!"
+music_remove_description: "🎵 | Remove a song from the queue!"
+music_register_description: "🎵 | Register/Regenerate a secret to use our RPC client!"
+music_most_played_description: "🎵 | Show the most played songs!"
+
+rank_class_title: "🎖️ | Ranking Module"
+rank_card_description: "🎖️ | Show the rank of a user!"
+rank_leaderboard_description: "🎖️ | Show the leaderboard!"
+
 system_class_title: "🤖 | System"
+system_ping_description: "🤖 | Check the bot's ping!"
+system_info_description: "🤖 | Show the bot's information!"
+
 setting_class_title: "⚙️ | Settings"
+setting_language_description: "⚙️ | Change the bot's language!"
+setting_music_description: "⚙️ | Change the music settings!"
+setting_music_volume_description: "⚙️ | Toggle silent mode (Hide play notifications)!"
+setting_music_auto_leave_description: "⚙️ | Toggle auto leave voice channel!"
+setting_music_default_loop_description: "⚙️ | Change the default loop mode!"
+
 note_class_title: "📒 | Note"
+note_create_description: "📒 | Create a note!"
+note_list_description: "📒 | List all notes!"
+note_view_description: "📒 | View a note!"
+note_remove_description: "📒 | Remove a note!"
+
+point_class_title: "⭐️ | Points System"
+points_claim_description: "⭐️ | Claim your points!"
+points_give_description: "⭐️ | Give points to another user!"
+points_show_description: "⭐️ | Show your points!"
+points_leaderboard_description: "⭐️ | Show the points leaderboard!"
+
+game_class_title: "🎮 | Games"
+game_blackjack_description: "🎮 | Play a game of Blackjack!"
+game_dice_description: "🎮 | Roll a dice!"
+game_coinflip_description: "🎮 | Play a game of coinflip!"
+
+bug_class_title: "🐞 | Bug Report"
+
+shop_class_title: "🛒 | Shop"
+shop_buy_description: "🛒 | Buy an item from the shop!"
+shop_catalog_description: "🛒 | Show the shop catalog!"
+
+# option descriptions
+music_skip_index_description: "The index of the song to skip."
+music_most_played_period_description: "The period to show the most played songs."
+music_remove_index_description: "The index of the song to remove. -1 to remove all."
+music_loop_mode_description: "The loop mode to set."
+music_play_shuffle_description: "Shuffle the queue after song/playlist is added."
+music_play_query_description: "The query to search for a song. (Can be a playlist URL)"
+
+rank_leaderboard_include_description: "The amount of users to include in the leaderboard."
+rank_card_member_description: "The member to show the rank of."
+
+setting_language_option_description: "Select the desired language!"
+setting_music_default_loop_mode_description: "Select the default loop mode!"
+
+game_dice_amount_description: "The amount of dice to roll."
+game_blackjack_bet_description: "The amount of points to bet."
+game_coinflip_bet_description: "The amount of points to bet."
+
+points_give_recipient_description: "The recipient of the points."
+points_give_amount_description: "The amount of points to give."
+points_give_force_description: "Force the transaction. (Owner only)"
+points_leaderboard_include_description: "The amount of users to include in the leaderboard."
+points_show_user_description: "The user to show the points of."
+
+note_create_title_description: "The title of the note."
+note_create_description_description: "The description of the note."
+note_view_id_description: "The ID of the note to view."
+note_remove_id_description: "The ID of the note to remove."
+
+shop_buy_item_id_description: "The ID of the item to buy."
 
 # status
 cpu: "CPU: {cpu}%"
@@ -24,7 +105,6 @@ language_changed: "Changed language to {language}!"
 queued_playlist: "Queued Playlist **{playlist}**!"
 all_songs: "All Songs"
 queue_ended: "Queue Ended!"
-player_disconnected: "Music Player has been disconnected!"
 loading_playlist: "Loading Playlist..."
 not_in_voice: "You are not in a voice channel!"
 in_different_voice: "You are not in the same voice channel as the bot!"
@@ -42,24 +122,18 @@ invalid_index: "Invalid index!"
 
 toggle_silent_mode: "Silent mode is {toggle}"
 toggle_auto_leave: "Auto leave voice is {toggle}"
+default_loop_mode_changed: "Default loop mode changed to {mode}!"
 volume_out_of_range: "Volume must be between 0% and 200%!"
 
 disabled_loop: "Disabled loop mode!"
 enabled_loop_single: "Enabled loop mode for **{title}**!"
 enabled_loop_queue: "Enabled loop mode for this queue!"
-disabled_loop_single: "Disabled loop mode for **{title}**!"
-disabled_loop_queue: "Disabled loop mode for this queue!"
 music_already_paused: "Music already paused! use `/resume` to resume the music!"
 music_already_playing: "Music already playing! use `/pause` to pause the music!"
 paused_queue: "Paused the queue!"
 resumed_queue: "Resumed the queue!"
-
 skipped_from: "Skipped from **{old}** to **{new}**!"
 skipped: "Skipped **{old}**!"
-replayed_from: "Replayed from **{old}** to **{new}**!"
-replayed: "Replayed **{old}**!"
-jumped_from: "Jumped from **{old}** to **{new}**!"
-jumped: "Jumped **{old}**!"
 
 music_registered_secret: "You have successfully registered a secret. Please check your private messages for further details. If you haven't received anything, ensure that 'allow direct messages from server members' is enabled in your privacy settings."
 music_secret: "This is your new secret\n ```{secret}```"
@@ -68,8 +142,8 @@ music_secret: "This is your new secret\n ```{secret}```"
 level_up: "{user} has reached level {level}!!!"
 level_text: "Level"
 level_xp: "{xp} / {totalxp} XP"
-leaderboard_header: "Leaderboard - Top {range}"
-leaderboard_out_of_range: "Range must have a minimum value of 1 and maximum value of 50!"
+leaderboard_header: "🎖️ | Top {include} Leaderboard"
+leaderboard_out_of_range: "Range must have a minimum value of 1 and maximum value of 25!"
 leaderboard_user_row: "**Level: {level} | Total XP: {totalxp}**"
 
 # system
@@ -78,6 +152,7 @@ missing_permission: "You are missing permission to execute this action!"
 author_only_interactions: "Only the author of the command can perform this action."
 not_implemented: "This command is not implemented yet!"
 command_slowdown: "Please slow down and try again later!"
+interaction_author_only: "This action is only available to the author of the interaction!"
 
 # queue search query
 queue_serach_query: "Search Query (Leave empty to show all)"
@@ -86,4 +161,55 @@ queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"
 queue_footer_with_query: "{page}/{total_pages} | Query: {query}"
 
-# command description
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Most played songs this week"
+most_played_month: "Most played songs this month"
+most_played_year: "Most played songs this year"
+played_duration: "{hour}h+"
+total_played: "Played {count} songs"
+
+# points
+points_claimed: "You have claimed {points} points!"
+not_enough_points: "You do not have enough points to do this."
+coinflip_win: "Congratulations! You won {points} points!"
+coinflip_lose: "Sorry, you lost {points} points."
+cooldown_message: "You can only claim points once every 20 minutes. Please try again in {minutes} minutes, and {seconds} seconds."
+points_given: "You have given {amount} points to {recipient}!"
+points_show_user: "{user} have {points} points!"
+points_show_self: "You have {points} points!"
+points_leaderboard_header: "⭐️ | Points Leaderboard - Top {include}"
+points_leaderboard_user_row: "✨ > {points} points"
+
+# games
+blackjack_game_title: "🃏 | Blackjack"
+blackjack_your_move: "Your move!"
+blackjack_timeout_message: "Player took too long! Dealer wins by default."
+blackjack_your_hand: "Your hand"
+blackjack_dealer_hand: "Dealer's hand"
+blackjack_player_busts: "Player busts!"
+blackjack_dealer_busts: "Dealer busts!"
+blackjack_tie: "It's a tie!"
+blackjack_player_wins: "Player wins!"
+blackjack_dealer_wins: "Dealer wins!"
+blackjack_player_blackjack: "Player hits Blackjack!"
+blackjack_total: "total: {total}"
+
+dice_roll_title: "🎲 | Dice Roll"
+dice_roll_description: "You rolled {num_dices} dice and the total is {total}."
+dice_roll_results: "Individual Dice Results"
+exceeds_max_dice_limit: "You can only roll up to {limit} dice at a time."
+
+# note
+note_not_found: "Note not found!"
+note_create_success: "Note created successfully!"
+note_remove_success: "Note removed successfully!"
+note_remove_failure: "Failed to remove note!"
+note_list_title: "📒 | Notes List"
+note_list_footer: "Page {page} of {total_pages}"
+note_state_unbegun: "Unbegun"
+note_state_stalled: "Stalled"
+note_state_ongoing: "Ongoing"
+note_state_finished: "Finished"
+note_view_details: "### {title}\nDescription: {message}"
+note_state_title: "State"

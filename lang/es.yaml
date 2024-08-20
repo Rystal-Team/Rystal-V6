@@ -1,0 +1,98 @@
+# Spanish translations
+name: "Español"
+
+# general
+must_be_positive: "¡El valor de `{option}` debe ser positivo!"
+
+# embed titles
+music_class_title: "🎵 | Módulo de Música"
+level_class_title: "🎖️ | Módulo de Niveles"
+system_class_title: "🤖 | Sistema"
+setting_class_title: "⚙️ | Configuración"
+note_class_title: "📒 | Nota"
+point_class_title: "⭐️ | Sistema de Puntos"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "Sistema Operativo: {platform}"
+version: "Versión: {os_version}"
+release: "Lanzamiento: {os_release}"
+uptime: "Tiempo de actividad: {uptime}"
+ping: "¡Pong! {ping}ms"
+
+# settings
+language_changed: "¡Idioma cambiado a {language}!"
+
+# music
+queued_playlist: "¡Lista de reproducción en cola **{playlist}**!"
+all_songs: "Todas las canciones"
+queue_ended: "¡La cola ha terminado!"
+loading_playlist: "Cargando lista de reproducción..."
+not_in_voice: "¡No estás en un canal de voz!"
+in_different_voice: "¡No estás en el mismo canal de voz que el bot!"
+failed_to_add_song: "¡No se pudo agregar la canción **{title}**!"
+invalid_playlist: "¡Lista de reproducción inválida!"
+playing_song: "Reproduciendo **{title}**!"
+queued_song: "En cola **{title}**!"
+removed_song: "Eliminada **{title}**!"
+nothing_is_playing: "¡Nada está sonando!"
+stopped_player: "¡Reproductor detenido!"
+changed_volume: "¡Volumen cambiado para **{title}** a {volume}%!"
+currently_playing: "Reproduciendo actualmente... {title}"
+shuffled_queue: "¡Cola mezclada!"
+invalid_index: "¡Índice inválido!"
+
+toggle_silent_mode: "Modo silencioso está {toggle}"
+toggle_auto_leave: "Salida automática del canal de voz está {toggle}"
+volume_out_of_range: "¡El volumen debe estar entre 0% y 200%!"
+
+disabled_loop: "¡Modo de bucle desactivado!"
+enabled_loop_single: "¡Modo de bucle activado para **{title}**!"
+enabled_loop_queue: "¡Modo de bucle activado para esta cola!"
+music_already_paused: "¡La música ya está pausada! Usa `/resume` para reanudar la música."
+music_already_playing: "¡La música ya está sonando! Usa `/pause` para pausar la música."
+paused_queue: "¡Cola pausada!"
+resumed_queue: "¡Cola reanudada!"
+skipped_from: "¡Saltado de **{old}** a **{new}**!"
+skipped: "¡Saltado **{old}**!"
+
+music_registered_secret: "Has registrado un secreto con éxito. Por favor, revisa tus mensajes privados para más detalles. Si no has recibido nada, asegúrate de que 'permitir mensajes directos de miembros del servidor' esté activado en tu configuración de privacidad."
+music_secret: "Este es tu nuevo secreto\n ```{secret}```"
+
+# level
+level_up: "{user} ha alcanzado el nivel {level}!!!"
+level_text: "Nivel"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "Tabla de Clasificación - Top {include}"
+leaderboard_out_of_range: "¡El rango debe tener un valor mínimo de 1 y máximo de 25!"
+leaderboard_user_row: "**Nivel: {level} | XP Total: {totalxp}**"
+
+# system
+unknown_error: "¡Ha ocurrido un error desconocido!"
+missing_permission: "¡Te faltan permisos para ejecutar esta acción!"
+author_only_interactions: "Solo el autor del comando puede realizar esta acción."
+not_implemented: "¡Este comando aún no está implementado!"
+command_slowdown: "¡Por favor, desacelera y vuelve a intentarlo más tarde!"
+
+# queue search query
+queue_serach_query: "Consulta de búsqueda (Déjalo vacío para mostrar todo)"
+queue_query: "Consulta"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | Consulta: {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Canciones más reproducidas esta semana"
+most_played_month: "Canciones más reproducidas este mes"
+most_played_year: "Canciones más reproducidas este año"
+played_duration: "{hour}h+"
+total_played: "Reproducidas {count} canciones"
+
+# points
+points_claimed: "¡Has reclamado {points} puntos!"
+not_enough_points: "No tienes suficientes puntos para hacer esto."
+coinflip_win: "¡Felicidades! Has ganado {points} puntos!"
+coinflip_lose: "Lo siento, has perdido {points} puntos."
+points_given: "{recipient} に {amount} ポイントを送りました！"

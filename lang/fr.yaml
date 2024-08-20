@@ -1,0 +1,98 @@
+# French translations
+name: "Français"
+
+# general
+must_be_positive: "La valeur de `{option}` doit être positive !"
+
+# embed titles
+music_class_title: "🎵 | Module Musique"
+level_class_title: "🎖️ | Module de Niveau"
+system_class_title: "🤖 | Système"
+setting_class_title: "⚙️ | Paramètres"
+note_class_title: "📒 | Note"
+point_class_title: "⭐️ | Système de Points"
+
+# status
+cpu: "CPU : {cpu}%"
+ram: "RAM : {ram_used}/{ram_total} GB"
+os: "Système d'exploitation : {platform}"
+version: "Version : {os_version}"
+release: "Release : {os_release}"
+uptime: "Uptime : {uptime}"
+ping: "Ping ! {ping}ms"
+
+# settings
+language_changed: "Langue changée en {language} !"
+
+# music
+queued_playlist: "Playlist **{playlist}** en file d'attente !"
+all_songs: "Toutes les chansons"
+queue_ended: "File d'attente terminée !"
+loading_playlist: "Chargement de la playlist..."
+not_in_voice: "Vous n'êtes pas dans un canal vocal !"
+in_different_voice: "Vous n'êtes pas dans le même canal vocal que le bot !"
+failed_to_add_song: "Échec de l'ajout de la chanson **{title}** !"
+invalid_playlist: "Playlist invalide !"
+playing_song: "Lecture de **{title}** !"
+queued_song: "Chanson **{title}** en file d'attente !"
+removed_song: "Chanson **{title}** supprimée !"
+nothing_is_playing: "Rien n'est en cours de lecture !"
+stopped_player: "Le lecteur a été arrêté !"
+changed_volume: "Le volume de **{title}** a été changé à {volume}% !"
+currently_playing: "Lecture en cours... {title}"
+shuffled_queue: "File d'attente mélangée !"
+invalid_index: "Index invalide !"
+
+toggle_silent_mode: "Le mode silencieux est {toggle}"
+toggle_auto_leave: "Le départ automatique du vocal est {toggle}"
+volume_out_of_range: "Le volume doit être compris entre 0% et 200% !"
+
+disabled_loop: "Mode boucle désactivé !"
+enabled_loop_single: "Mode boucle activé pour **{title}** !"
+enabled_loop_queue: "Mode boucle activé pour cette file d'attente !"
+music_already_paused: "La musique est déjà en pause ! Utilisez `/resume` pour reprendre la musique !"
+music_already_playing: "La musique est déjà en cours de lecture ! Utilisez `/pause` pour mettre en pause la musique !"
+paused_queue: "File d'attente mise en pause !"
+resumed_queue: "File d'attente reprise !"
+skipped_from: "Passé de **{old}** à **{new}** !"
+skipped: "**{old}** passé !"
+
+music_registered_secret: "Vous avez enregistré un secret avec succès. Veuillez vérifier vos messages privés pour plus de détails. Si vous n'avez rien reçu, assurez-vous que 'autoriser les messages directs des membres du serveur' est activé dans vos paramètres de confidentialité."
+music_secret: "Voici votre nouveau secret\n ```{secret}```"
+
+# level
+level_up: "{user} a atteint le niveau {level} !!!"
+level_text: "Niveau"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "Tableau des leaders - Top {include}"
+leaderboard_out_of_range: "La plage doit avoir une valeur minimale de 1 et maximale de 25 !"
+leaderboard_user_row: "**Niveau : {level} | XP total : {totalxp}**"
+
+# system
+unknown_error: "Une erreur inconnue s'est produite !"
+missing_permission: "Vous n'avez pas l'autorisation d'exécuter cette action !"
+author_only_interactions: "Seul l'auteur de la commande peut effectuer cette action."
+not_implemented: "Cette commande n'est pas encore implémentée !"
+command_slowdown: "Veuillez ralentir et réessayer plus tard !"
+
+# queue search query
+queue_serach_query: "Requête de recherche (laisser vide pour tout afficher)"
+queue_query: "Requête"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | Requête : {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Chansons les plus jouées cette semaine"
+most_played_month: "Chansons les plus jouées ce mois-ci"
+most_played_year: "Chansons les plus jouées cette année"
+played_duration: "{hour}h+"
+total_played: "Joué {count} chansons"
+
+# points
+points_claimed: "Vous avez réclamé {points} points !"
+not_enough_points: "Vous n'avez pas assez de points pour faire cela."
+coinflip_win: "Félicitations ! Vous avez gagné {points} points !"
+coinflip_lose: "Désolé, vous avez perdu {points} points."
+points_given: "Vous avez donné {amount} points à {recipient} !"

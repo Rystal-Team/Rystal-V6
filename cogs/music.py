@@ -1,20 +1,62 @@
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
+import os
+import time
 from datetime import timedelta
+from io import BytesIO
+from typing import Optional
 
 import nextcord
-from nextcord import Interaction, SlashOption
+from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
+from termcolor import colored
 
-from config.config import lang, type_color
+from config.loader import SQLITE_PATH, USE_SQLITE, default_language, lang, type_color
 from database.guild_handler import get_guild_language, get_guild_settings
-from module.embed import Embeds, NowPlayingMenu
+from module.embeds.generic import Embeds
+from module.embeds.nowplaying import NowPlayingMenu
+from module.embeds.queue import Pagination
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
-from module.nextcord_jukebox.exceptions import *
+from module.nextcord_jukebox.exceptions import (
+    AlreadyPaused,
+    EmptyQueue,
+    InvalidPlaylist,
+    LoadingStream,
+    NoQueryResult,
+    NotConnected,
+    NotPaused,
+    NotPlaying,
+    NothingPlaying,
+    UserNotConnected,
+    VoiceChannelMismatch,
+)
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
-from module.pagination import Pagination
 from module.progressBar import progressBar
+from module.replay_card import create_top_songs_poster
 
 class_namespace = "music_class_title"
 
@@ -23,7 +65,18 @@ class Music(commands.Cog, EventManager):
     def __init__(self, bot):
         self.bot = bot
         self.now_playing_menus = []
-        self.manager = PlayerManager(bot)
+        if USE_SQLITE:
+            self.manager = PlayerManager(bot, db_type="sqlite", db_path=SQLITE_PATH)
+        else:
+            self.manager = PlayerManager(
+                bot,
+                db_type="mysql",
+                mysql_host=os.getenv("MYSQL_HOST"),
+                mysql_port=int(os.getenv("MYSQL_PORT")),
+                mysql_user=os.getenv("MYSQL_USER"),
+                mysql_password=os.getenv("MYSQL_PASSWORD"),
+                mysql_database=os.getenv("MYSQL_DATABASE"),
+            )
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -110,15 +163,25 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @nextcord.slash_command(description="🎵 | Music")
+    @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def music(self, interaction):
         return
 
-    @music.subcommand(description="🎵🎵 | Play a song!")
+    @music.subcommand(description=lang[default_language]["music_play_description"])
     async def play(
         self,
         interaction: Interaction,
-        query: str = SlashOption(name="query", description="Enter the song name!"),
+        query: str = SlashOption(
+            name="query",
+            description=lang[default_language]["music_play_query_description"],
+            required=True,
+        ),
+        shuffle_after: Optional[bool] = SlashOption(
+            name="shuffle",
+            choices=[True, False],
+            required=False,
+            description=lang[default_language]["music_play_shuffle_description"],
+        ),
     ):
         await interaction.response.defer()
         player = await self.ensure_voice_state(self.bot, interaction)
@@ -140,7 +203,7 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            feed = await player.queue(interaction, query)
+            feed = await self.bot.loop.create_task(player.queue(interaction, query))
             if playlist_id:
                 await interaction.channel.send(
                     embed=Embeds.message(
@@ -165,8 +228,66 @@ class Music(commands.Cog, EventManager):
                         message_type="success",
                     )
                 )
+
+            loop_method = LOOPMODE(
+                await get_guild_settings(
+                    interaction.guild.id, "music_default_loop_mode"
+                )
+            )
+            await player.change_loop_mode(loop_method)
+
+            if loop_method not in (LOOPMODE.off, player.loop_mode):
+                message_key = (
+                    "enabled_loop_single"
+                    if loop_method == LOOPMODE.single
+                    else (
+                        "enabled_loop_queue"
+                        if loop_method == LOOPMODE.all
+                        else "disabled_loop"
+                    )
+                )
+                message = lang[await get_guild_language(interaction.guild.id)][
+                    message_key
+                ]
+                if loop_method == LOOPMODE.single:
+                    now_playing = await player.now_playing()
+                    message = message.format(title=now_playing.name)
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=message,
+                        message_type="success",
+                    )
+                )
+
+            if shuffle_after:
+                await player.shuffle()
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "shuffled_queue"
+                        ],
+                        message_type="info",
+                    )
+                )
         except NoQueryResult:
-            pass
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "failed_to_add_song"
+                    ].format(title=query),
+                    message_type="warn",
+                ),
+            )
+            return
         except LoadingStream:
             await interaction.followup.send(
                 embed=Embeds.message(
@@ -193,14 +314,27 @@ class Music(commands.Cog, EventManager):
                 )
             )
             return
+        except InvalidPlaylist:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "invalid_playlist"
+                    ],
+                    message_type="error",
+                )
+            )
+            return
 
-    @music.subcommand(description="🎵 | Skip the music!")
+    @music.subcommand(description=lang[default_language]["music_skip_description"])
     async def skip(
         self,
         interaction: Interaction,
         index: int = nextcord.SlashOption(
             name="index",
-            description="The position of the song in the queue!",
+            description=lang[default_language]["music_skip_index_description"],
             required=False,
             default=1,
         ),
@@ -211,7 +345,7 @@ class Music(commands.Cog, EventManager):
             return
         try:
             old, new = await player.skip(index=index)
-            if not (new is None):
+            if not new is None:
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -260,7 +394,7 @@ class Music(commands.Cog, EventManager):
                 ),
             )
 
-    @music.subcommand(description="🎵 | Get the current music queue.")
+    @music.subcommand(description=lang[default_language]["music_queue_description"])
     async def queue(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -291,18 +425,18 @@ class Music(commands.Cog, EventManager):
                     [
                         song
                         for song, _ in SongMatcher.match(
-                        await music_player.current_queue(),
-                        query,
-                        case_sens=False,
-                        threshold=0.8,
-                    )
+                            await music_player.current_queue(),
+                            query,
+                            case_sens=False,
+                            threshold=0.8,
+                        )
                     ]
                     if query.replace(" ", "") != ""
                     else await music_player.current_queue()
                 )
 
                 for i, song in enumerate(
-                    subset[(page - 1) * 10: page * 10], start=(page - 1) * 10
+                    subset[(page - 1) * 10 : page * 10], start=(page - 1) * 10
                 ):
                     if song == now_playing and i == 0:
                         continue
@@ -352,7 +486,7 @@ class Music(commands.Cog, EventManager):
         await Pagination(interaction, get_page).navegate()
         Pagination.compute_total_pages(len(await player.current_queue()), 10)
 
-    @music.subcommand(description="🎵 |Shuffles the queue.")
+    @music.subcommand(description=lang[default_language]["music_shuffle_description"])
     async def shuffle(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         player = await self.ensure_voice_state(self.bot, interaction)
@@ -385,12 +519,15 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description="🎵 | Loop the current queue.")
+    @music.subcommand(description=lang[default_language]["music_loop_description"])
     async def loop(
         self,
         interaction: Interaction,
         loop_method: str = SlashOption(
-            name="mode", choices=["Off", "Single", "All"], required=True
+            name="mode",
+            choices=["Off", "Single", "All"],
+            required=True,
+            description=lang[default_language]["music_loop_mode_description"],
         ),
     ):
         await interaction.response.defer(with_message=True)
@@ -439,7 +576,9 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description="🎵 | Now playing...")
+    @music.subcommand(
+        description=lang[default_language]["music_nowplaying_description"]
+    )
     async def nowplaying(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -476,7 +615,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description="🎵 | Stop the music!")
+    @music.subcommand(description=lang[default_language]["music_stop_description"])
     async def stop(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -499,7 +638,7 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @music.subcommand(description="🎵 | Pause the music!")
+    @music.subcommand(description=lang[default_language]["music_pause_description"])
     async def pause(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -545,7 +684,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description="🎵 | Resume the music!")
+    @music.subcommand(description=lang[default_language]["music_resume_description"])
     async def resume(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -591,13 +730,13 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(description="🎵 | Remove from queue!")
+    @music.subcommand(description=lang[default_language]["music_remove_description"])
     async def remove(
         self,
         interaction: Interaction,
         index: int = nextcord.SlashOption(
             name="index",
-            description="The position of the song in the queue! -1 for All.",
+            description=lang[default_language]["music_remove_index_description"],
             required=True,
         ),
     ):
@@ -621,28 +760,27 @@ class Music(commands.Cog, EventManager):
                     )
                 )
                 return
-            else:
-                song = await player.remove(index)
+            song = await player.remove(index)
 
-                await interaction.followup.send(
-                    embed=Embeds.message(
-                        title=lang[await get_guild_language(interaction.guild.id)][
-                            class_namespace
-                        ],
-                        message=lang[await get_guild_language(interaction.guild.id)][
-                            "removed_song"
-                        ].format(
-                            title=(
-                                song.name
-                                if song
-                                else lang[
-                                    await get_guild_language(interaction.guild.id)
-                                ]["all_songs"]
-                            )
-                        ),
-                        message_type="success",
-                    )
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "removed_song"
+                    ].format(
+                        title=(
+                            song.name
+                            if song
+                            else lang[await get_guild_language(interaction.guild.id)][
+                                "all_songs"
+                            ]
+                        )
+                    ),
+                    message_type="success",
                 )
+            )
 
         except (NotPlaying, EmptyQueue):
             await interaction.followup.send(
@@ -669,9 +807,7 @@ class Music(commands.Cog, EventManager):
                 )
             )
 
-    @music.subcommand(
-        description="🎵 | Register/Regenerate a secret to use our RPC client!"
-    )
+    @music.subcommand(description=lang[default_language]["music_register_description"])
     async def register(
         self,
         interaction: Interaction,
@@ -702,6 +838,144 @@ class Music(commands.Cog, EventManager):
                 message_type="success",
             )
         )
+
+    @staticmethod
+    def generate_canvas(
+        interaction: Interaction, period: str, guild_language: str, result_list
+    ):
+        period_description = {
+            "Week": "most_played_week",
+            "Month": "most_played_month",
+            "Year": "most_played_year",
+        }
+
+        canvas = create_top_songs_poster(
+            result_list["replays"],
+            lang[guild_language]["music_poster_title"],
+            lang[guild_language][period_description.get(period, "????")],
+            detail_texts=[
+                lang[guild_language]["played_duration"].format(
+                    hour=str(int(result_list["total_time"] / 3600))
+                ),
+                lang[guild_language]["total_played"].format(
+                    count=str(result_list["total_replayed"])
+                ),
+                f"{result_list['top_artist']['percentage']}% {result_list['top_artist']['name']}",
+            ],
+        )
+
+        return canvas
+
+    @music.subcommand(
+        description=lang[default_language]["music_most_played_description"]
+    )
+    async def most_played(
+        self,
+        interaction: Interaction,
+        period: str = SlashOption(
+            name="period",
+            choices=["Week", "Month", "Year"],
+            description=lang[default_language]["music_most_played_period_description"],
+            required=False,
+            default="Month",
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        timer = time.time()
+        print(colored("Obtaining Entries...", "dark_grey"))
+        guild_language = await get_guild_language(interaction.guild.id)
+        period_dict = {"Week": 7, "Month": 30, "Year": 365}
+        cutoff_days = period_dict.get(period, 30)
+
+        replay_history = await self.manager.database.get_replay_history(
+            str(interaction.user.id), cutoff_days
+        )
+
+        replay_aggregate = {}
+        artist_counts = {}
+        total_replays = 0
+
+        for replay in replay_history:
+            video_id = replay["song"]
+            replay_aggregate[video_id] = replay_aggregate.get(video_id, 0) + 1
+            total_replays += 1
+
+        video_metadata = self.manager.database.get_bulk_video_metadata(
+            list(replay_aggregate.keys())
+        )
+
+        for video_id, replay_count in replay_aggregate.items():
+            metadata = video_metadata.get(video_id, {})
+            if metadata:
+                artist = metadata.get("channel", "Unknown")
+                artist_counts[artist] = artist_counts.get(artist, 0) + replay_count
+
+        top_artist = max(artist_counts, key=artist_counts.get, default="Unknown")
+        top_artist_percentage = (
+            round(artist_counts.get(top_artist, 0) / total_replays * 100)
+            if total_replays
+            else 0
+        )
+
+        result_list = {
+            "total_replayed": len(replay_history),
+            "total_time": 0,
+            "replays": [],
+            "top_artist": {"name": top_artist, "percentage": top_artist_percentage},
+        }
+
+        top_replays = sorted(
+            (
+                (video_id, replay_count)
+                for video_id, replay_count in replay_aggregate.items()
+            ),
+            key=lambda item: item[1],
+            reverse=True,
+        )[:10]
+
+        for video_id, replay_count in top_replays:
+            metadata = video_metadata.get(video_id, {})
+            result_list["replays"].append(
+                {
+                    "title": metadata.get("title", ""),
+                    "artist": metadata.get("channel", ""),
+                    "thumbnails": metadata.get("thumbnails", ""),
+                    "replays": replay_count,
+                }
+            )
+            result_list["total_time"] += metadata.get("duration", 0) * replay_count
+
+        result_list["replays"].extend(
+            {"title": "", "artist": "", "thumbnail": "", "replays": ""}
+            for _ in range(10 - len(result_list["replays"]))
+        )
+
+        print(
+            colored(
+                f"Entries obtained and sorted, Time Taken: {time.time() - timer}",
+                "dark_grey",
+            )
+        )
+
+        timer = time.time()
+        print(colored("Generating Canvas...", "dark_grey"))
+        canvas = await self.bot.loop.run_in_executor(
+            None,
+            lambda: self.generate_canvas(
+                interaction, period, guild_language, result_list
+            ),
+        )
+
+        with BytesIO() as image_binary:
+            canvas.save(image_binary, "PNG")
+            image_binary.seek(0)
+            poster = File(filename="most_played.png", fp=image_binary)
+            await interaction.followup.send(files=[poster])
+            print(
+                colored(
+                    f"Canvas Generated, Time Taken: {time.time() - timer}", "dark_grey"
+                )
+            )
 
 
 async def setup(bot):
