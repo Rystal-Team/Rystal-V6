@@ -20,25 +20,3 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-
-
-class Jackpot:
-    def __init__(self):
-        self.jackpot = 0
-
-    def invest(self, amount):
-        self.jackpot += amount
-
-    def reset_jackpot(self):
-        self.jackpot = 0
-
-    def get_jackpot(self):
-        return self.jackpot
-
-    def jackpot_win(self, amount):
-        self.jackpot -= amount
-        return amount
-
-    def jackpot_loss(self):
-        self.jackpot = 0
-        return 0

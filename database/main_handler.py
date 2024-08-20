@@ -50,7 +50,9 @@ create_statements = {
                     language TEXT,
                     music_silent_mode BOOLEAN,
                     music_auto_leave BOOLEAN,
-                    music_default_loop_mode INTEGER
+                    music_default_loop_mode INTEGER,
+                    jackpot_total INTEGER,
+                    jackpot_announce_channel INTEGER
                 )
             """,
             "columns": {
@@ -59,6 +61,8 @@ create_statements = {
                 "music_silent_mode": "BOOLEAN",
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INTEGER",
+                "jackpot_total": "INTEGER",
+                "jackpot_announce_channel": "INTEGER",
             },
         },
         "game_sessions": {
@@ -68,6 +72,18 @@ create_statements = {
                 "game": "TEXT",
                 "data": "TEXT",
                 "players": "TEXT",
+            },
+        },
+        "global": {
+            "create": """
+                CREATE TABLE IF NOT EXISTS global (
+                    jackpot_total INTEGER,
+                    jackpot_next_invest TEXT
+                )
+            """,
+            "columns": {
+                "jackpot_total": "INTEGER",
+                "jackpot_next_invest": "TEXT",
             },
         },
     },
@@ -94,7 +110,9 @@ create_statements = {
                     language TEXT,
                     music_silent_mode BOOLEAN,
                     music_auto_leave BOOLEAN,
-                    music_default_loop_mode INT
+                    music_default_loop_mode INT,
+                    jackpot_total INT,
+                    jackpot_announce_channel INT
                 )
             """,
             "columns": {
@@ -103,6 +121,8 @@ create_statements = {
                 "music_silent_mode": "BOOLEAN",
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INT",
+                "jackpot_total": "INT",
+                "jackpot_announce_channel": "INT",
             },
         },
         "game_sessions": {
@@ -114,8 +134,34 @@ create_statements = {
                 "players": "TEXT",
             },
         },
+        "global": {
+            "create": "CREATE TABLE IF NOT EXISTS global (jackpot_total INT, jackpot_next_invest TEXT)",
+            "columns": {
+                "jackpot_total": "INT",
+                "jackpot_next_invest": "TEXT",
+            },
+        },
     },
 }
+existing_tables = []
+
+cursor = database.cursor(buffered=True)
+
+
+def startup():
+    database.ping(reconnect=True, attempts=3)
+
+    cursor.execute("SHOW TABLES")
+
+    for (x,) in cursor:
+        existing_tables.append(x)
+
+    for table_name in database_tables:
+        if not table_name in existing_tables:
+            cursor.execute(create_statements[table_name])
+
+    return
+
 
 if USE_SQLITE:
     db_handler = DatabaseHandler(

@@ -22,23 +22,23 @@
 #
 
 
-class Jackpot:
-    def __init__(self):
-        self.jackpot = 0
+from .main_handler import db_handler
 
-    def invest(self, amount):
-        self.jackpot += amount
 
-    def reset_jackpot(self):
-        self.jackpot = 0
+def get_global(name):
+    query = {
+        "sqlite": "SELECT value FROM global_settings WHERE name = ?",
+        "mysql": "SELECT value FROM global_settings WHERE name = %s",
+    }
+    db_handler.execute(query[db_handler.db_type], (name,))
+    return db_handler.fetchone()
 
-    def get_jackpot(self):
-        return self.jackpot
 
-    def jackpot_win(self, amount):
-        self.jackpot -= amount
-        return amount
-
-    def jackpot_loss(self):
-        self.jackpot = 0
-        return 0
+def change_global(name, value):
+    query = {
+        "sqlite": "UPDATE global_settings SET value = ? WHERE name = ?",
+        "mysql": "UPDATE global_settings SET value = %s WHERE name = %s",
+    }
+    db_handler.execute(query[db_handler.db_type], (value, name))
+    db_handler.connection.commit()
+    return

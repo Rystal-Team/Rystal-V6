@@ -1,7 +1,7 @@
 # General Bot Configuration
-default_language: "en"
+default_language: "ja"
 multi_lang: true
-use_informal_lang: false
+use_informal_lang: true
 theme_color: "#2b67ab"
 max_note: 500
 
@@ -25,16 +25,16 @@ type_color:
   list: [ 157, 200, 255 ]
   win: [ 255, 194, 125 ]
   lose: [ 52, 55, 74 ]
-  game: [ 97, 113, 255 ]
+  game: [ 143, 255, 221 ]
 
 # Error and Bug Reporting
-error_log_channel_id: 000000000000000000
-bug_report_channel_id: 000000000000000000
+error_log_channel_id: 1249810745735118889
+bug_report_channel_id: 1265273795544088727
 
 # Owner and Logging Configuration
-bot_owner_id: 000000000000000000
+bot_owner_id: 699452241312219147
 enable_activity_logging: false
-logging_channel_id: 000000000000000000
+logging_channel_id: 1203866958487879680
 
 # Game Configuration
 jackpot_base_amount: 100000
