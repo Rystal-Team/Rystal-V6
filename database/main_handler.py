@@ -145,24 +145,6 @@ create_statements = {
 }
 existing_tables = []
 
-cursor = database.cursor(buffered=True)
-
-
-def startup():
-    database.ping(reconnect=True, attempts=3)
-
-    cursor.execute("SHOW TABLES")
-
-    for (x,) in cursor:
-        existing_tables.append(x)
-
-    for table_name in database_tables:
-        if not table_name in existing_tables:
-            cursor.execute(create_statements[table_name])
-
-    return
-
-
 if USE_SQLITE:
     db_handler = DatabaseHandler(
         db_type="sqlite", create_query=create_statements, db_file=SQLITE_PATH
