@@ -201,6 +201,11 @@ dice_roll_description: "You rolled {num_dices} dice and the total is {total}."
 dice_roll_results: "Individual Dice Results"
 exceeds_max_dice_limit: "You can only roll up to {limit} dice at a time."
 
+roulette_game_title: "🈹 | Roulette"
+roulette_your_bet: "Your bet"
+roulette_result: "Result"
+roulette_description: "Result: {result}"
+
 # note
 note_not_found: "Note not found!"
 note_create_success: "Note created successfully!"
