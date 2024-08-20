@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import bot_owner_id, default_language, lang
+from config.loader import default_language, lang, bot_owner_id, banland
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -121,6 +121,20 @@ class PointSystem(commands.Cog):
         await interaction.response.defer()
         giver_id = interaction.user.id
         recipient_id = recipient.id
+
+        if recipient_id in banland:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "receive_not_allowed"
+                    ].format(option="recipient"),
+                    message_type="error",
+                )
+            )
+            return
 
         if force and not giver_id == bot_owner_id:
             await interaction.followup.send(

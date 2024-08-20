@@ -91,3 +91,7 @@ for lang_dir in lang_dirs:
 for language in lang:
     lang_list.append(lang[language]["name"])
     lang_mapping[lang[language]["name"]] = language
+
+
+with open("config/banland.yaml", "r", encoding="utf8") as file:
+    banland = yaml.safe_load(file)
