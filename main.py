@@ -155,8 +155,10 @@ Follow Up Sent: {follow_up_sent}
 async def setup():
     cogs = 0
     for root, dirs, files in os.walk("./cogs"):
-        dirs[:] = [d for d in dirs if "disabled" not in d]
-        files = [f for f in files if f.endswith(".py") and "disabled" not in f]
+        dirs[:] = [d for d in dirs if "disabled" and "__init__" not in d]
+        files = [
+            f for f in files if f.endswith(".py") and "disabled" and "__init__" not in f
+        ]
 
         for filename in files:
             if (
@@ -191,8 +193,10 @@ async def setup():
 async def reloadSetup():
     cogs = 0
     for root, dirs, files in os.walk("./cogs"):
-        dirs[:] = [d for d in dirs if "disabled" not in d]
-        files = [f for f in files if f.endswith(".py") and "disabled" not in f]
+        dirs[:] = [d for d in dirs if "disabled" and "__init__" not in d]
+        files = [
+            f for f in files if f.endswith(".py") and "disabled" and "__init__" not in f
+        ]
 
         for filename in files:
             if (
