@@ -57,7 +57,7 @@ bug_report_channel_id = config["bug_report_channel_id"]
 bot_owner_id = config["bot_owner_id"]
 
 enable_activity_logging = config["enable_activity_logging"]
-logging_channe_id = config["logging_channe_id"]
+logging_channel_id = config["logging_channel_id"]
 
 lang = {}
 lang_mapping = {}
