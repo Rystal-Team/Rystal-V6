@@ -35,10 +35,14 @@ jobs:
           version=${{ env.version }}
           IFS='.' read -ra version_parts <<< "$version"
 
-          alpha_number=$(echo ${version_parts[2]} | grep -oP '(?<=-alpha\.)\d+')
-          alpha_number=$((alpha_number + 1))
+          if [[ "${version_parts[2]}" == *"-alpha."* ]]; then
+            alpha_number=$(echo ${version_parts[2]} | grep -oP '(?<=-alpha\.)\d+')
+            alpha_number=$((alpha_number + 1))
+          else
+            alpha_number=1
+          fi
 
-          new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
+          new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]%-alpha.*}-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
 
@@ -48,7 +52,7 @@ jobs:
           cat version.py
           echo "Setting new version to ${{ env.new_version }}"
           # Update the version.py file with the new version
-          echo "__version__ = \"${{ env.new_version }}\"" > version.py
+          sed -i 's/__version__ = ".*"/__version__ = "${{ env.new_version }}"/' version.py
           echo "New content of version.py after update:"
           cat version.py
 
@@ -65,7 +69,7 @@ jobs:
         id: generate_changelog
         run: |
           changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
-          echo "$changelog" > changelog.txt
+          printf "%s\n" "$changelog" > changelog.txt
           echo "Changelog generated and saved to changelog.txt"
 
       - name: Create Alpha Release
