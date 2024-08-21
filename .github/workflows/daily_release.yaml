@@ -34,8 +34,10 @@ jobs:
         run: |
           version=${{ env.version }}
           IFS='.' read -ra version_parts <<< "$version"
-          alpha_number=${version_parts[2]#*-alpha.}
+          
+          alpha_number=$(echo ${version_parts[2]} | sed 's/.*-alpha\.\([0-9]*\)/\1/')
           alpha_number=$((alpha_number + 1))
+          
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
@@ -45,6 +47,7 @@ jobs:
           echo "Current content of version.py before update:"
           cat version.py
           echo "Setting new version to ${{ env.new_version }}"
+          # Update the version.py file with the new version
           echo "__version__ = \"${{ env.new_version }}\"" > version.py
           echo "New content of version.py after update:"
           cat version.py
