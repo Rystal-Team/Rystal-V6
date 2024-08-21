@@ -25,7 +25,7 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          version=$(cat version.py | grep '__version__' | cut -d '"' -f 2)
+          version=$(grep '__version__' version.py | cut -d '"' -f 2)
           echo "Current Version: $version"
           echo "::set-output name=version::$version"
 
