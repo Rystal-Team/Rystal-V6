@@ -1,5 +1,5 @@
 # General Bot Configuration
-default_language: "ja"
+default_language: "en"
 multi_lang: true
 use_informal_lang: true
 theme_color: "#2b67ab"

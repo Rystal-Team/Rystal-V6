@@ -31,7 +31,9 @@ from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
+from module.embeds.roulette import RouletteView
 from module.games.blackjack import Blackjack
+from module.drowpdown import RouletteSelectorView
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10
@@ -249,6 +251,65 @@ class GameSystem(commands.Cog):
                 message_type="win" if outcome == guess else "lose",
             ),
         )
+
+    @game.subcommand(
+        description=lang[default_language]["game_roulette_description"],
+    )
+    async def roulette(
+            self,
+            interaction: nextcord.Interaction,
+            bet: int = nextcord.SlashOption(
+                name="bet",
+                description=lang[default_language]["game_roulette_bet_description"],
+                required=True,
+            ),
+    ):
+        await interaction.response.defer()
+        user_id = interaction.user.id
+
+        data = await user_handler.get_user_data(user_id)
+        if bet < 0:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "must_be_positive"
+                    ].format(option="bet"),
+                    message_type="error",
+                ),
+            )
+            return
+        if data["points"] < bet:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "not_enough_points"
+                    ],
+                    message_type="error",
+                ),
+            )
+            return
+
+        embed = nextcord.Embed(
+            title=lang[await get_guild_language(interaction.guild.id)]["roulette_game_title"],
+            description=lang[await get_guild_language(interaction.guild.id)]["roulette_bet_description"]
+        )
+
+        roulette = RouletteSelectorView(
+            RouletteView.bet_options,
+            await get_guild_language(interaction.guild.id)["roulette_description"],
+        )
+
+
+
+
+
+
 
 
 def setup(bot):
