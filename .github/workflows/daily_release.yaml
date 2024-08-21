@@ -80,6 +80,6 @@ jobs:
         id: create_alpha_release
         run: |
           changelog=$(cat changelog.txt)
-          gh release create "v${{ env.new_version }}" --title "v${{ env.new_version }} - Alpha" --notes "$changelog" --prerelease
+          gh release create "v${{ env.new_version }}" --title "v${{ env.new_version }}" --notes "$changelog" --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
