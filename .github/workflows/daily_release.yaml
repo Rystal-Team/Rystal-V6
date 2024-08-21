@@ -40,20 +40,22 @@ jobs:
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
 
-      - name: Debug current version file
+      - name: Debug version update
         run: |
+          echo "Current content of version.py before update:"
+          cat version.py
+          echo "Setting new version to ${{ env.new_version }}"
+          echo "__version__ = \"${{ env.new_version }}\"" > version.py
+          echo "New content of version.py after update:"
           cat version.py
 
-      - name: Update version file
+      - name: Commit version update
         run: |
-          new_version=${{ env.new_version }}
-          echo "__version__ = \"$new_version\"" > version.py
-          cat version.py  # Debugging to check the content
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add version.py
-          git status  # Debugging to check the status of the working directory
-          git commit -m "Bump version to $new_version" || echo "No changes to commit"
+          git status  # Check if version.py is staged for commit
+          git commit -m "Bump version to ${{ env.new_version }}" || echo "No changes to commit"
           git push
 
       - name: Generate Changelog
@@ -62,7 +64,6 @@ jobs:
           changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
           encoded_changelog=$(echo "$changelog" | base64)
           echo "Changelog: $changelog"
-          printf "%s" "$encoded_changelog" >> $GITHUB_ENV
           echo "changelog=$encoded_changelog" >> $GITHUB_ENV
 
       - name: Decode Changelog
@@ -71,7 +72,6 @@ jobs:
           echo "${{ env.changelog }}" | base64 --decode > decoded_changelog.txt
           cat decoded_changelog.txt  # Print to verify
           changelog_body=$(cat decoded_changelog.txt | sed 's/[&]/\\&/g')
-          printf "%s" "$changelog_body" >> $GITHUB_ENV
           echo "changelog_body=$changelog_body" >> $GITHUB_ENV
 
       - name: Create Alpha Release
