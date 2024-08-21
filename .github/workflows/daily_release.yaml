@@ -53,9 +53,10 @@ jobs:
       - name: Generate Changelog
         id: generate_changelog
         run: |
-          changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago" | sed ':a;N;$!ba;s/\n/\\n/g')
+          changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
+          encoded_changelog=$(echo "$changelog" | base64)
           echo "Changelog: $changelog"
-          echo "changelog=$changelog" >> $GITHUB_ENV
+          echo "changelog=$encoded_changelog" >> $GITHUB_ENV
 
       - name: Create Alpha Release
         uses: softprops/action-gh-release@v1
@@ -64,9 +65,8 @@ jobs:
           name: "v${{ env.new_version }} - Alpha"
           body: |
             ## Changelog
-            ${{ env.changelog }}
+            ${{ steps.generate_changelog.outputs.changelog | fromBase64 }}
           draft: false
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
