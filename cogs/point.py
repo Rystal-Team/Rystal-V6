@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_language, lang, bot_owner_id, banland
+from config.loader import banland, bot_owner_id, default_language, lang
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds

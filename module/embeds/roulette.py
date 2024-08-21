@@ -23,11 +23,10 @@
 
 import nextcord
 
-from config.loader import lang, type_color
+from config.loader import lang
 from database import user_handler
 from database.guild_handler import get_guild_language
-from module.games.roulette import RouletteResult, Roulette
-from modules.dropdown import DropdownSelector
+from module.games.roulette import RouletteResult
 
 # rewrite this in dropdown.py ty
 
