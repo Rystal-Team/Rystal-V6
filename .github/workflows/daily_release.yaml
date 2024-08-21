@@ -39,7 +39,7 @@ jobs:
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
- 
+
       - name: Update version file
         run: |
           new_version=${{ env.new_version }}
@@ -53,7 +53,7 @@ jobs:
       - name: Generate Changelog
         id: generate_changelog
         run: |
-          changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
+          changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago" | sed ':a;N;$!ba;s/\n/\\n/g')
           echo "Changelog: $changelog"
           echo "changelog=$changelog" >> $GITHUB_ENV
 
@@ -69,3 +69,4 @@ jobs:
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
