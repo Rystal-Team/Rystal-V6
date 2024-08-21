@@ -34,10 +34,10 @@ jobs:
         run: |
           version=${{ env.version }}
           IFS='.' read -ra version_parts <<< "$version"
-          
-          alpha_number=$(echo ${version_parts[2]} | sed 's/.*-alpha\.\([0-9]*\)/\1/')
+
+          alpha_number=$(echo ${version_parts[2]} | grep -oP '(?<=-alpha\.)\d+')
           alpha_number=$((alpha_number + 1))
-          
+
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
