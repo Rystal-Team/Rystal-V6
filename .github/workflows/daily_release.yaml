@@ -1,0 +1,71 @@
+name: Daily Alpha Release
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Get current version
+        id: get_version
+        run: |
+          version=$(grep '__version__' version.py | cut -d '"' -f 2)
+          echo "Current Version: $version"
+          echo "::set-output name=version::$version"
+
+      - name: Increment version
+        id: increment_version
+        run: |
+          version="${{ steps.get_version.outputs.version }}"
+          IFS='.' read -ra version_parts <<< "$version"
+          alpha_number=${version_parts[2]#*-alpha.}
+          alpha_number=$((alpha_number + 1))
+          new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
+          echo "New Version: $new_version"
+          echo "::set-output name=new_version::$new_version"
+      
+      - name: Update version file
+        run: |
+          new_version="${{ steps.increment_version.outputs.new_version }}"
+          echo "__version__ = \"$new_version\"" > version.py
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.py
+          git commit -m "Bump version to $new_version"
+          git push
+
+      - name: Generate Changelog
+        id: generate_changelog
+        run: |
+          changelog=$(git log --pretty=format:"%h %s" --since=24.hours)
+          echo "Changelog: $changelog"
+          echo "::set-output name=changelog::$changelog"
+
+      - name: Create Alpha Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ steps.increment_version.outputs.new_version }}"
+          name: "v${{ steps.increment_version.outputs.new_version }} - Alpha"
+          body: |
+            ## Changelog
+            ${{ steps.generate_changelog.outputs.changelog }}
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
