@@ -33,6 +33,7 @@ from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
 from module.embeds.roulette import RouletteView
 from module.games.blackjack import Blackjack
+from module.games.roulette import Roulette
 from module.dropdown import RouletteSelectorView
 
 class_namespace = "game_class_title"
@@ -300,11 +301,15 @@ class GameSystem(commands.Cog):
             description=lang[await get_guild_language(interaction.guild.id)]["roulette_bet_description"]
         )
 
-        roulette = RouletteSelectorView(
-            RouletteView.bet_options,
-            await get_guild_language(interaction.guild.id)["roulette_description"],
+        embed = nextcord.Embed(
+            title=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_game_title"
+            ],
+            description=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_select_description"
+            ],
+            color=type_color["game"],
         )
-
 
 
 
