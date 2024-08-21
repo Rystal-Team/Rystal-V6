@@ -5,9 +5,8 @@ use_informal_lang: false
 theme_color: "#2b67ab"
 max_note: 500
 
-# Status and Version Information
+# Status
 status_text: "🌟 v6.5.2a"
-DEBUG: false
 
 # SQLite Database Configuration
 USE_SQLITE: true
