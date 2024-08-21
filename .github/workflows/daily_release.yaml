@@ -58,6 +58,12 @@ jobs:
           echo "Changelog: $changelog"
           echo "changelog=$encoded_changelog" >> $GITHUB_ENV
 
+      - name: Decode Changelog
+        id: decode_changelog
+        run: |
+          echo "${{ env.changelog }}" | base64 --decode > decoded_changelog.txt
+          echo "changelog_body=$(cat decoded_changelog.txt)" >> $GITHUB_ENV
+
       - name: Create Alpha Release
         uses: softprops/action-gh-release@v1
         with:
@@ -65,7 +71,7 @@ jobs:
           name: "v${{ env.new_version }} - Alpha"
           body: |
             ## Changelog
-            ${{ steps.generate_changelog.outputs.changelog | fromBase64 }}
+            ${{ env.changelog_body }}
           draft: false
           prerelease: true
         env:
