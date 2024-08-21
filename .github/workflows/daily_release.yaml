@@ -62,16 +62,16 @@ jobs:
           changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
           encoded_changelog=$(echo "$changelog" | base64)
           echo "Changelog: $changelog"
+          printf "%s" "$encoded_changelog" >> $GITHUB_ENV
           echo "changelog=$encoded_changelog" >> $GITHUB_ENV
 
       - name: Decode Changelog
         id: decode_changelog
         run: |
           echo "${{ env.changelog }}" | base64 --decode > decoded_changelog.txt
-          # Print out the decoded changelog to verify
-          cat decoded_changelog.txt
-          # Safely update the environment variable, ensuring no special characters break the format
+          cat decoded_changelog.txt  # Print to verify
           changelog_body=$(cat decoded_changelog.txt | sed 's/[&]/\\&/g')
+          printf "%s" "$changelog_body" >> $GITHUB_ENV
           echo "changelog_body=$changelog_body" >> $GITHUB_ENV
 
       - name: Create Alpha Release
