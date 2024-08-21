@@ -108,8 +108,14 @@ class RouletteView(nextcord.ui.View):
             description=self.lang["roulette_game_description"].format(result=outcome),
             color=typecolor["game"],
         )
-        embed.add_field(name=self.lang["roulette_your_bet"], value=option)
-        embed.add_field(name=self.lang["roulette_result"], value=result)
+        embed.add_field(
+            name=self.lang["roulette_your_bet"],
+            value=option
+        )
+        embed.add_field(
+            name=self.lang["roulette_result"],
+            value=result
+        )
         await interaction.response.edit_message(embed=embed, view=view)
 
     async def handle_bet_result(self, result):
@@ -134,3 +140,7 @@ class RouletteView(nextcord.ui.View):
 
         await user_handler.update_user_data(user_id, user_data)
         await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
+
+    async def on_timeout(self):
+        self.lang = await self.get_lang()
+        await self.handle_bet_result(RouletteResult.LOST)
