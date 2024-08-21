@@ -176,6 +176,7 @@ coinflip_win: "おめでとうございます！ {points} ポイントを獲得�
 coinflip_lose: "残念！ {points} ポイントを失いました。"
 cooldown_message: "ポイントは20分ごとに1回しか請求できません。{minutes}分{seconds}秒後に再度お試しください。"
 points_given: "{recipient} に {amount} ポイントを渡しました！"
+receive_not_allowed: "{recipient} はポイントを受け取ることができません"
 points_show_user: "{user} には {points} ポイントがあります！"
 points_show_self: "あなたには {points} ポイントがあります！"
 points_leaderboard_header: "⭐️ | ポイントリーダーボード - トップ {include}"
