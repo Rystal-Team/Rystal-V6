@@ -38,11 +38,12 @@ jobs:
           if [[ "${version_parts[2]}" == *"-alpha."* ]]; then
             alpha_number=$(echo ${version_parts[2]} | grep -oP '(?<=-alpha\.)\d+')
             alpha_number=$((alpha_number + 1))
+            new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]%-alpha.*}-alpha.${alpha_number}"
           else
             alpha_number=1
+            new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}-alpha.${alpha_number}"
           fi
 
-          new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]%-alpha.*}-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
 
