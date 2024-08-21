@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -39,13 +39,14 @@ jobs:
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "::set-output name=new_version::$new_version"
-      
+
       - name: Update version file
         run: |
           new_version="${{ steps.increment_version.outputs.new_version }}"
           echo "__version__ = \"$new_version\"" > version.py
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase
           git add version.py
           git commit -m "Bump version to $new_version"
           git push
