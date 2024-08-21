@@ -32,7 +32,7 @@ jobs:
           else
             echo "version.py not found"
             exit 1
-        shell: /usr/bin/bash -e
+        shell: bash
 
       - name: Increment version
         id: increment_version
@@ -44,7 +44,7 @@ jobs:
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e
+        shell: bash
 
       - name: Update version file and push changes
         run: |
@@ -63,7 +63,7 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: /usr/bin/bash -e
+        shell: bash
 
       - name: Generate Changelog
         id: generate_changelog
@@ -71,7 +71,7 @@ jobs:
           changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
           echo "Changelog: $changelog"
           echo "changelog=$changelog" >> $GITHUB_ENV
-        shell: /usr/bin/bash -e
+        shell: bash
 
       - name: Create Alpha Release
         uses: softprops/action-gh-release@v1
