@@ -68,7 +68,11 @@ jobs:
         id: decode_changelog
         run: |
           echo "${{ env.changelog }}" | base64 --decode > decoded_changelog.txt
-          echo "changelog_body=$(cat decoded_changelog.txt)" >> $GITHUB_ENV
+          # Print out the decoded changelog to verify
+          cat decoded_changelog.txt
+          # Safely update the environment variable, ensuring no special characters break the format
+          changelog_body=$(cat decoded_changelog.txt | sed 's/[&]/\\&/g')
+          echo "changelog_body=$changelog_body" >> $GITHUB_ENV
 
       - name: Create Alpha Release
         uses: softprops/action-gh-release@v1
