@@ -73,14 +73,9 @@ jobs:
           echo "Changelog generated and saved to changelog.txt"
 
       - name: Create Alpha Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "v${{ env.new_version }}"
-          name: "v${{ env.new_version }} - Alpha"
-          body: |
-            ## Changelog
-            $(cat changelog.txt)
-          draft: false
-          prerelease: true
+        id: create_alpha_release
+        run: |
+          changelog=$(cat changelog.txt)
+          gh release create "v${{ env.new_version }}" --title "v${{ env.new_version }} - Alpha" --notes "$changelog" --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
