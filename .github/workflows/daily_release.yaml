@@ -3,7 +3,7 @@ name: Daily Alpha Release
 on:
   schedule:
     - cron: '0 0 * * *'
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   release:
@@ -27,51 +27,59 @@ jobs:
         run: |
           version=$(grep '__version__' version.py | cut -d '"' -f 2)
           echo "Current Version: $version"
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_ENV
 
       - name: Increment version
         id: increment_version
         run: |
-          version="${{ steps.get_version.outputs.version }}"
-          IFS='.' read -ra version_parts <<< "$version"
-          alpha_number=${version_parts[2]#*-alpha.}
-          alpha_number=$((alpha_number + 1))
-          new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
+          version=${{ env.version }}
+          echo "Current Version: $version"
+          IFS='-' read -r base_version alpha_suffix <<< "$version"
+          if [[ $alpha_suffix == alpha* ]]; then
+            alpha_number=$(echo "$alpha_suffix" | grep -oP '(?<=alpha\.)\d+')
+            if [ -z "$alpha_number" ]; then
+              new_alpha_number=1
+            else
+              new_alpha_number=$((alpha_number + 1))
+            fi
+            new_version="${base_version}-alpha.${new_alpha_number}"
+          else
+            new_version="${version}-alpha.1"
+          fi
+          
           echo "New Version: $new_version"
-          echo "::set-output name=new_version::$new_version"
+          echo "new_version=$new_version" >> $GITHUB_ENV
 
-      - name: Update version file and handle push
+      - name: Debug version update
         run: |
-          new_version="${{ steps.increment_version.outputs.new_version }}"
-          echo "__version__ = \"$new_version\"" > version.py
+          echo "Current content of version.py before update:"
+          cat version.py
+          echo "Setting new version to ${{ env.new_version }}"
+          # Update the version.py file with the new version
+          sed -i 's/__version__ = ".*"/__version__ = "${{ env.new_version }}"/' version.py
+          echo "New content of version.py after update:"
+          cat version.py
+
+      - name: Commit version update
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git fetch origin
-          git rebase origin/main || { echo 'Rebase failed; please resolve conflicts manually.'; exit 1; }
-
           git add version.py
-          git commit -m "Bump version to $new_version"
-          git push || { echo 'Push failed; please resolve conflicts manually.'; exit 1; }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git status  # Check if version.py is staged for commit
+          git commit -m "Bump version to ${{ env.new_version }}" || echo "No changes to commit"
+          git push
 
       - name: Generate Changelog
         id: generate_changelog
         run: |
-          changelog=$(git log --pretty=format:"%h %s" --since=24.hours)
-          echo "Changelog: $changelog"
-          echo "::set-output name=changelog::$changelog"
+          changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
+          printf "%s\n" "$changelog" > changelog.txt
+          echo "Changelog generated and saved to changelog.txt"
 
       - name: Create Alpha Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: "v${{ steps.increment_version.outputs.new_version }}"
-          name: "v${{ steps.increment_version.outputs.new_version }} - Alpha"
-          body: |
-            ## Changelog
-            ${{ steps.generate_changelog.outputs.changelog }}
-          draft: false
-          prerelease: true
+        id: create_alpha_release
+        run: |
+          changelog=$(cat changelog.txt)
+          gh release create "v${{ env.new_version }}" --title "v${{ env.new_version }}" --notes "$changelog" --prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
