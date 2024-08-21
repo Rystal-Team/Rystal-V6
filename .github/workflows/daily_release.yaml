@@ -40,16 +40,21 @@ jobs:
           echo "New Version: $new_version"
           echo "::set-output name=new_version::$new_version"
 
-      - name: Update version file
+      - name: Update version file and push changes
         run: |
           new_version="${{ steps.increment_version.outputs.new_version }}"
           echo "__version__ = \"$new_version\"" > version.py
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
+          
+          git fetch origin
+          git rebase origin/main
+          
           git add version.py
           git commit -m "Bump version to $new_version"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Changelog
         id: generate_changelog
