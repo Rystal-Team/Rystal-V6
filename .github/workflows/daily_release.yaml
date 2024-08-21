@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-      
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
@@ -48,8 +48,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           git fetch origin
-          git rebase origin/main
-          
+
+          git rebase origin/main || { echo 'Rebase failed; please resolve conflicts manually.'; exit 1; }
+
           git add version.py
           git commit -m "Bump version to $new_version"
           git push
