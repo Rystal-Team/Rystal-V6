@@ -124,6 +124,8 @@ class DatabaseHandler:
             if self.cursor:
                 self.cursor.execute(query, params or ())
                 self.connection.commit()
+            else:
+                print("No database connection.")
         except (sqlite3.Error, Error) as e:
             print(f"Database error: {e}")
 
