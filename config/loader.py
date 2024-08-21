@@ -32,7 +32,6 @@ with open("config/config.yaml", "r", encoding="utf8") as file:
 
 USE_SQLITE = config["USE_SQLITE"]
 SQLITE_PATH = config["SQLITE_PATH"]
-DEBUG = config["DEBUG"]
 status_text = config["status_text"]
 default_language = config["default_language"]
 multi_lang = config["multi_lang"]

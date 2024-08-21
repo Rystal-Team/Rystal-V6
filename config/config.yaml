@@ -5,9 +5,8 @@ use_informal_lang: true
 theme_color: "#2b67ab"
 max_note: 500
 
-# Status and Version Information
+# Status
 status_text: "🌟 v6.5.2a"
-DEBUG: false
 
 # SQLite Database Configuration
 USE_SQLITE: true
@@ -37,8 +36,8 @@ enable_activity_logging: false
 logging_channel_id: 1203866958487879680
 
 # Game Configuration
-jackpot_base_amount: 100000
-jackpot_daily_invest: 1000
+jackpot_base_amount: 35000
+jackpot_daily_invest: 0
 jackpot_tax_rate: 0.25
 jackpot_win_global_announcement: true
 handle_jackpot_bet_per_guild: true
