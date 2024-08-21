@@ -33,18 +33,20 @@ jobs:
         id: increment_version
         run: |
           version=${{ env.version }}
-          IFS='.' read -ra version_parts <<< "$version"
-      
-          if [[ "${version_parts[2]}" == *"-alpha."* ]]; then
-            alpha_number=$(echo ${version_parts[2]} | grep -oP '(?<=-alpha\.)\d+')
-            alpha_number=$((alpha_number + 1))
-            new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]%-alpha.*}-alpha.${alpha_number}"
-          elif [[ "${version_parts[2]}" == *"-alpha"* ]]; then
-            new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]%-alpha*}-alpha.1"
+          echo "Current Version: $version"
+          IFS='-' read -r base_version alpha_suffix <<< "$version"
+          if [[ $alpha_suffix == alpha* ]]; then
+            alpha_number=$(echo "$alpha_suffix" | grep -oP '(?<=alpha\.)\d+')
+            if [ -z "$alpha_number" ]; then
+              new_alpha_number=1
+            else
+              new_alpha_number=$((alpha_number + 1))
+            fi
+            new_version="${base_version}-alpha.${new_alpha_number}"
           else
-            new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}-alpha.1"
+            new_version="${version}-alpha.1"
           fi
-      
+          
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
 
