@@ -141,6 +141,11 @@ class RouletteView(nextcord.ui.View):
         await user_handler.update_user_data(user_id, user_data)
         await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
 
-    async def on_timeout(self):
+    """async def on_timeout(self):
         self.lang = await self.get_lang()
         await self.handle_bet_result(RouletteResult.LOST)
+
+        update_message(
+            self.interaction,
+        )
+    """

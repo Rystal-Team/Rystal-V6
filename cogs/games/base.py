@@ -33,7 +33,7 @@ from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
 from module.embeds.roulette import RouletteView
 from module.games.blackjack import Blackjack
-from module.drowpdown import RouletteSelectorView
+from module.dropdown import RouletteSelectorView
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10

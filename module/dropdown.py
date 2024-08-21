@@ -29,7 +29,7 @@ Might not be implemented as a feature
 from typing import Callable
 
 import nextcord
-from module.embed.roulette import RouletteView
+from module.embeds.roulette import RouletteView
 from module.embeds.generic import Embeds
 from module.games.roulette import Roulette
 from module.split_str import split_string
