@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
@@ -25,45 +25,30 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
-          if [ -f version.py ]; then
-            version=$(grep '__version__' version.py | cut -d '"' -f 2)
-            echo "Current Version: $version"
-            echo "version=$version" >> $GITHUB_ENV
-          else
-            echo "version.py not found"
-            exit 1
-        shell: bash
+          version=$(grep '__version__' version.py | cut -d '"' -f 2)
+          echo "Current Version: $version"
+          echo "version=$version" >> $GITHUB_ENV
 
       - name: Increment version
         id: increment_version
         run: |
-          version="${{ env.version }}"
+          version=${{ env.version }}
           IFS='.' read -ra version_parts <<< "$version"
           alpha_number=${version_parts[2]#*-alpha.}
           alpha_number=$((alpha_number + 1))
           new_version="${version_parts[0]}.${version_parts[1]}.0-alpha.${alpha_number}"
           echo "New Version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_ENV
-        shell: bash
-
-      - name: Update version file and push changes
+ 
+      - name: Update version file
         run: |
-          new_version="${{ env.new_version }}"
+          new_version=${{ env.new_version }}
           echo "__version__ = \"$new_version\"" > version.py
-
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git fetch origin
-          git checkout main
-          git pull origin main --rebase
-
           git add version.py
           git commit -m "Bump version to $new_version"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
+          git push
 
       - name: Generate Changelog
         id: generate_changelog
@@ -71,7 +56,6 @@ jobs:
           changelog=$(git log --pretty=format:"%h %s" --since="24 hours ago")
           echo "Changelog: $changelog"
           echo "changelog=$changelog" >> $GITHUB_ENV
-        shell: bash
 
       - name: Create Alpha Release
         uses: softprops/action-gh-release@v1
