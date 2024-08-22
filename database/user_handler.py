@@ -97,6 +97,7 @@ async def update_user_data(user_id: int, data):
             str(user_id),
         ),
     )
+    print(colored(f"[USERS DATABASE] Updated User: {user_id} - {data}", "light_yellow"))
 
 
 async def get_user_data(user_id: int):
