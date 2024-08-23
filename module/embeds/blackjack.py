@@ -243,29 +243,30 @@ class BlackjackView(nextcord.ui.View):
 
     async def on_timeout(self):
         """Handle the timeout event for the view."""
-        self.lang = await self.get_lang()
-        await self.handle_bet_result(BlackjackResult.DEALER_WINS)
-        player_total = self.lang["blackjack_total"].format(
-            total=self.blackjack.calculate_hand(self.blackjack.player_hand)
-        )
-        dealer_total = self.lang["blackjack_total"].format(
-            total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
-        )
         if not self.ended:
-            await self.interaction.followup.edit_message(
-                message_id=self.follow_up.id,
-                embed=nextcord.Embed(
-                    title=self.lang["blackjack_game_title"],
-                    description=self.lang["blackjack_timeout_message"],
-                    color=type_color["lose"],
-                )
-                .add_field(
-                    name=self.lang["blackjack_your_hand"],
-                    value=f"{self.blackjack.player_hand}, {player_total}",
-                )
-                .add_field(
-                    name=self.lang["blackjack_dealer_hand"],
-                    value=f"{self.blackjack.dealer_hand}, {dealer_total}",
-                ),
-                view=None,
+            self.lang = await self.get_lang()
+            await self.handle_bet_result(BlackjackResult.DEALER_WINS)
+            player_total = self.lang["blackjack_total"].format(
+                total=self.blackjack.calculate_hand(self.blackjack.player_hand)
             )
+            dealer_total = self.lang["blackjack_total"].format(
+                total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
+            )
+            if not self.ended:
+                await self.interaction.followup.edit_message(
+                    message_id=self.follow_up.id,
+                    embed=nextcord.Embed(
+                        title=self.lang["blackjack_game_title"],
+                        description=self.lang["blackjack_timeout_message"],
+                        color=type_color["lose"],
+                    )
+                    .add_field(
+                        name=self.lang["blackjack_your_hand"],
+                        value=f"{self.blackjack.player_hand}, {player_total}",
+                    )
+                    .add_field(
+                        name=self.lang["blackjack_dealer_hand"],
+                        value=f"{self.blackjack.dealer_hand}, {dealer_total}",
+                    ),
+                    view=None,
+                )
