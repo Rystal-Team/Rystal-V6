@@ -136,17 +136,15 @@ class BlackjackView(nextcord.ui.View):
         bot_data = await user_handler.get_user_data(self.interaction.client.user.id)
 
         if result in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}:
-            user_data["points"] += self.bet
-            bot_data["points"] -= self.bet
+            user_data["points"] += self.bet * 2
         elif result == BlackjackResult.PLAYER_BLACKJACK:
-            user_data["points"] += self.bet * 1.5
-            bot_data["points"] -= self.bet * 1.5
+            user_data["points"] += self.bet * 2.5
+            bot_data["points"] -= self.bet * 0.5
         elif result in {BlackjackResult.DEALER_WINS, BlackjackResult.PLAYER_BUSTS}:
-            bot_data["points"] += self.bet
-            user_data["points"] -= self.bet
+            bot_data["points"] += self.bet * 2
 
         await user_handler.update_user_data(user_id, user_data)
-        await user_handler.update_user_data(self.bot_id, bot_data)
+        await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
 
     @nextcord.ui.button(label="Hit", style=nextcord.ButtonStyle.primary)
     async def hit_button(self, button, interaction):
