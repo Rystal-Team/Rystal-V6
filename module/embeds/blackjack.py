@@ -142,6 +142,9 @@ class BlackjackView(nextcord.ui.View):
             bot_data["points"] -= self.bet * 0.5
         elif result in {BlackjackResult.DEALER_WINS, BlackjackResult.PLAYER_BUSTS}:
             bot_data["points"] += self.bet * 2
+        else:
+            user_data["points"] += self.bet
+            bot_data["points"] += self.bet
 
         await user_handler.update_user_data(user_id, user_data)
         await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
