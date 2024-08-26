@@ -136,17 +136,18 @@ class BlackjackView(nextcord.ui.View):
         bot_data = await user_handler.get_user_data(self.interaction.client.user.id)
 
         if result in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}:
-            user_data["points"] += self.bet
-            bot_data["points"] -= self.bet
+            user_data["points"] += self.bet * 2
         elif result == BlackjackResult.PLAYER_BLACKJACK:
-            user_data["points"] += self.bet * 1.5
-            bot_data["points"] -= self.bet * 1.5
+            user_data["points"] += self.bet * 2.5
+            bot_data["points"] -= self.bet * 0.5
         elif result in {BlackjackResult.DEALER_WINS, BlackjackResult.PLAYER_BUSTS}:
+            bot_data["points"] += self.bet * 2
+        else:
+            user_data["points"] += self.bet
             bot_data["points"] += self.bet
-            user_data["points"] -= self.bet
 
         await user_handler.update_user_data(user_id, user_data)
-        await user_handler.update_user_data(self.bot_id, bot_data)
+        await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
 
     @nextcord.ui.button(label="Hit", style=nextcord.ButtonStyle.primary)
     async def hit_button(self, button, interaction):
@@ -245,29 +246,30 @@ class BlackjackView(nextcord.ui.View):
 
     async def on_timeout(self):
         """Handle the timeout event for the view."""
-        self.lang = await self.get_lang()
-        await self.handle_bet_result(BlackjackResult.DEALER_WINS)
-        player_total = self.lang["blackjack_total"].format(
-            total=self.blackjack.calculate_hand(self.blackjack.player_hand)
-        )
-        dealer_total = self.lang["blackjack_total"].format(
-            total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
-        )
         if not self.ended:
-            await self.interaction.followup.edit_message(
-                message_id=self.follow_up.id,
-                embed=nextcord.Embed(
-                    title=self.lang["blackjack_game_title"],
-                    description=self.lang["blackjack_timeout_message"],
-                    color=type_color["lose"],
-                )
-                .add_field(
-                    name=self.lang["blackjack_your_hand"],
-                    value=f"{self.blackjack.player_hand}, {player_total}",
-                )
-                .add_field(
-                    name=self.lang["blackjack_dealer_hand"],
-                    value=f"{self.blackjack.dealer_hand}, {dealer_total}",
-                ),
-                view=None,
+            self.lang = await self.get_lang()
+            await self.handle_bet_result(BlackjackResult.DEALER_WINS)
+            player_total = self.lang["blackjack_total"].format(
+                total=self.blackjack.calculate_hand(self.blackjack.player_hand)
             )
+            dealer_total = self.lang["blackjack_total"].format(
+                total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
+            )
+            if not self.ended:
+                await self.interaction.followup.edit_message(
+                    message_id=self.follow_up.id,
+                    embed=nextcord.Embed(
+                        title=self.lang["blackjack_game_title"],
+                        description=self.lang["blackjack_timeout_message"],
+                        color=type_color["lose"],
+                    )
+                    .add_field(
+                        name=self.lang["blackjack_your_hand"],
+                        value=f"{self.blackjack.player_hand}, {player_total}",
+                    )
+                    .add_field(
+                        name=self.lang["blackjack_dealer_hand"],
+                        value=f"{self.blackjack.dealer_hand}, {dealer_total}",
+                    ),
+                    view=None,
+                )
