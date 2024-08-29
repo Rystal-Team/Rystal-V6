@@ -99,7 +99,7 @@ class Spinner:
         mega_score = False
 
         if col1 == col2 == col3:
-            if col1 == "⚪" or col1 == "⚫":
+            if col1 in ("⚪", "⚫"):
                 mega_score = True
             return True, mega_score
 
