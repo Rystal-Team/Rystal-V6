@@ -81,12 +81,12 @@ class Roulette:
         return random.choice(self.Wheel)
 
     @staticmethod
-    def check_winner(option):
+    def check_winner(result, option):
         # result = self.spin_wheel()
-        if outcome[0].lower() and option[0].lower() == "g":
+        if result[0].lower() and option[0].lower() == "g":
             return RouletteResult.ZEROS
-        if outcome[0].lower() and option[0].lower() == "r":
+        if result[0].lower() and option[0].lower() == "r":
             return RouletteResult.RED
-        if outcome[0].lower() and option[0].lower() == "b":
+        if result[0].lower() and option[0].lower() == "b":
             return RouletteResult.BLACK
         return RouletteResult.LOST, result

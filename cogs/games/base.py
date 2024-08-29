@@ -304,7 +304,7 @@ class GameSystem(commands.Cog):
             )
             return
 
-        roulette = Roulette().spin_wheel()
+        outcome = Roulette().spin_wheel()
         embed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
                 "roulette_game_title"
@@ -315,7 +315,7 @@ class GameSystem(commands.Cog):
             color=type_color["game"],
         )
 
-        view = RouletteView(interaction, bet)
+        view = RouletteView(interaction, bet, outcome)
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)
         view.set_follow_up(follow_up_msg)
 

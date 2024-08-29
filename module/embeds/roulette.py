@@ -41,7 +41,7 @@ message_mapper = {
 
 
 class RouletteView(nextcord.ui.View):
-    def __init__(self, interaction, bet):
+    def __init__(self, interaction, bet, outcome):
         super().__init__(timeout=120)
         self.interaction = interaction
         self.bet = bet
@@ -79,12 +79,13 @@ class RouletteView(nextcord.ui.View):
         )
         await interaction.response.edit_message(embed=embed, view=view)
 
-    async def handle_bet_result(self, result):
+    async def handle_bet_result(self, roulette):
         user_id = self.interaction.user.id
         user_data = await user_handler.get_user_data(user_id)
         bot_data = await user_handler.get_user_data(self.interaction.client.user.id)
 
-        if result in {
+        outcome, result = Roulette.check_winner(roulette)
+        if outcome in {
             RouletteResult.RED,
             RouletteResult.ODD,
             RouletteResult.EVEN,
@@ -92,10 +93,10 @@ class RouletteView(nextcord.ui.View):
         }:
             user_data["points"] += self.bet
             bot_data["points"] -= self.bet
-        elif result == RouletteResult.ZEROS:
+        elif outcome == RouletteResult.ZEROS:
             user_data["points"] += self.bet * 10
             bot_data["points"] -= self.bet * 10
-        elif result == RouletteResult.LOST:
+        elif outcome == RouletteResult.LOST:
             user_data["points"] -= self.bet
             bot_data["points"] += self.bet
 
@@ -123,6 +124,7 @@ class RouletteView(nextcord.ui.View):
         )
 
     async def start(self, interaction: nextcord.Interaction):
+        print("dropdown")
         self.author = interaction.user
         self.channel = interaction.channel
         self.interaction = interaction
@@ -138,10 +140,23 @@ class RouletteView(nextcord.ui.View):
         self.lang = await self.get_lang()
         outcome = await self.handle_bet_result(RouletteResult.LOST)
 
-        self.update_message(
+        await self.update_message(
             self.interaction,
             "None",
             "None",
             outcome
         )
 
+    @nextcord.ui.select(placeholder="Select a bet")
+    async def bet_select(self, interaction: nextcord.ui.Select):
+        print("dropdown")
+        self.author = interaction.user
+        self.channel = interaction.channel
+        self.interaction = interaction
+        dropdown = DropdownSelector(
+            options=self.bet_options,
+            placeholder=self.placeholder,
+            async_callback=self.on_selected,
+        )
+        self.add_item(dropdown)
+        await interaction.followup.send("Selector", view=self)
