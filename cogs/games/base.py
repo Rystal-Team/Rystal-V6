@@ -34,7 +34,6 @@ from module.embeds.generic import Embeds
 from module.embeds.roulette import RouletteView
 from module.games.blackjack import Blackjack
 from module.games.roulette import Roulette
-from module.dropdown import RouletteSelectorView
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10
@@ -305,11 +304,7 @@ class GameSystem(commands.Cog):
             )
             return
 
-        embed = nextcord.Embed(
-            title=lang[await get_guild_language(interaction.guild.id)]["roulette_game_title"],
-            description=lang[await get_guild_language(interaction.guild.id)]["roulette_bet_description"]
-        )
-
+        roulette = Roulette().spin_wheel()
         embed = nextcord.Embed(
             title=lang[await get_guild_language(interaction.guild.id)][
                 "roulette_game_title"
@@ -320,10 +315,9 @@ class GameSystem(commands.Cog):
             color=type_color["game"],
         )
 
-
-
-
-
+        view = RouletteView(interaction, bet)
+        follow_up_msg = await interaction.followup.send(embed=embed, view=view)
+        view.set_follow_up(follow_up_msg)
 
 
 def setup(bot):

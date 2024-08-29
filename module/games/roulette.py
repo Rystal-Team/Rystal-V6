@@ -80,16 +80,13 @@ class Roulette:
     def spin_wheel(self):
         return random.choice(self.Wheel)
 
-    def check_winner(self, bet):
-        outcome = self.spin_wheel()
-        if outcome[0].lower() == "g" and bet[0].lower() == "g":
+    @staticmethod
+    def check_winner(option):
+        # result = self.spin_wheel()
+        if outcome[0].lower() and option[0].lower() == "g":
             return RouletteResult.ZEROS
-        if outcome[0].lower() == "r" and bet[0].lower() == "r":
+        if outcome[0].lower() and option[0].lower() == "r":
             return RouletteResult.RED
-        if outcome[0].lower() == "b" and bet[0].lower() == "b":
+        if outcome[0].lower() and option[0].lower() == "b":
             return RouletteResult.BLACK
-        if int(outcome[1:]) % 2 == 0:
-            return RouletteResult.ODD
-        if int(outcome[1:]) % 2 != 0:
-            return RouletteResult.EVEN
-        return RouletteResult.LOST
+        return RouletteResult.LOST, result
