@@ -26,12 +26,23 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import default_language, lang, type_color
+from config.loader import (
+    default_language,
+    lang,
+    type_color,
+    handle_jackpot_bet_per_guild,
+    jackpot_win_global_announcement,
+    jackpot_tax_rate,
+    jackpot_base_amount,
+)
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
 from module.games.blackjack import Blackjack
+from module.games.spinner import Spinner
+from database.global_handler import get_global, change_global
+from module.embeds.jackpot import create_jackpot_embed
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10
@@ -40,10 +51,32 @@ MAX_DICE_LIMIT = 10
 class GameSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.jackpot_spinner = Spinner()
 
     @nextcord.slash_command(description=lang[default_language][class_namespace])
     async def game(self, interaction: nextcord.Interaction):
         return
+
+    @game.subcommand(description=lang[default_language][class_namespace])
+    async def rules(self, interaction: nextcord.Interaction):
+        return
+
+    @rules.subcommand(
+        name="jackpot",
+        description=lang[default_language]["game_jackpot_rules_description"],
+    )
+    async def jackpot_rule(self, interaction: nextcord.Interaction):
+        await interaction.response.send_message(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    "jackpot_game_title"
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "game_jackpot_rules"
+                ],
+                message_type="info",
+            )
+        )
 
     @game.subcommand(description=lang[default_language]["game_blackjack_description"])
     async def blackjack(
@@ -258,6 +291,73 @@ class GameSystem(commands.Cog):
                 message_type="win" if outcome == guess else "lose",
             ),
         )
+
+    @game.subcommand(
+        description=lang[default_language]["game_jackpot_description"],
+    )
+    async def jackpot(
+        self,
+        interaction: nextcord.Interaction,
+    ):
+        await interaction.response.defer()
+        jackpot_total = await get_global("jackpot_total")
+        if jackpot_total is None or jackpot_total < jackpot_base_amount:
+            await change_global("jackpot_total", jackpot_base_amount)
+            jackpot_total = jackpot_base_amount
+
+        user_data = await user_handler.get_user_data(interaction.user.id)
+        if user_data["points"] < 1000:
+            return await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "not_enough_points"
+                    ],
+                    message_type="error",
+                ),
+            )
+
+        user_data["points"] -= 1000
+        await user_handler.update_user_data(interaction.user.id, user_data)
+        await change_global("jackpot_total", jackpot_total + 1000)
+
+        won, result, mega_score = self.jackpot_spinner.play()
+
+        if won:
+            # chunky code here, but it's just a simple jackpot result calculation lmao
+            # if you want to make it more readable, help yourself
+            if mega_score:
+                jackpot_total = round(jackpot_total * 1.5)
+                bot_tax = round(jackpot_tax_rate * jackpot_total)
+                user_data["points"] += jackpot_total - bot_tax
+                await change_global("jackpot_total", jackpot_base_amount)
+                bot_data = await user_handler.get_user_data(self.bot.user.id)
+                bot_data["points"] += (
+                    round(jackpot_total * 0.5) - bot_tax - jackpot_base_amount
+                )
+            else:
+                bot_tax = round(jackpot_tax_rate * jackpot_total)
+                user_data["points"] += jackpot_total - bot_tax
+                await change_global("jackpot_total", jackpot_base_amount)
+                bot_data = await user_handler.get_user_data(self.bot.user.id)
+                bot_data["points"] += bot_tax - jackpot_base_amount
+            await user_handler.update_user_data(self.bot.user.id, bot_data)
+            await user_handler.update_user_data(interaction.user.id, user_data)
+
+        await interaction.followup.send(
+            embed=create_jackpot_embed(
+                won,
+                result,
+                jackpot_total,
+                user_data["points"],
+                mega_score,
+                await get_guild_language(interaction.guild.id),
+            ),
+        )
+
+        return
 
 
 def setup(bot):

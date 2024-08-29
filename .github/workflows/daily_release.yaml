@@ -76,7 +76,7 @@ jobs:
           changelog=$(git log --pretty=format:"%h %s" $last_tag..HEAD)
           printf "%s\n" "$changelog" > changelog.txt
           echo "Changelog generated and saved to changelog.txt"
-      
+
       - name: Create Alpha Release
         id: create_alpha_release
         run: |

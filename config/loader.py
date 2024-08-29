@@ -46,6 +46,7 @@ type_color = {
     "warn": Color.from_rgb(*config["type_color"]["warn"]),
     "info": Color.from_rgb(*config["type_color"]["info"]),
     "list": Color.from_rgb(*config["type_color"]["list"]),
+    "big_win": Color.from_rgb(*config["type_color"]["big_win"]),
     "win": Color.from_rgb(*config["type_color"]["win"]),
     "lose": Color.from_rgb(*config["type_color"]["lose"]),
     "game": Color.from_rgb(*config["type_color"]["game"]),
@@ -57,6 +58,13 @@ bot_owner_id = config["bot_owner_id"]
 
 enable_activity_logging = config["enable_activity_logging"]
 logging_channel_id = config["logging_channel_id"]
+
+jackpot_base_amount = config["jackpot_base_amount"]
+jackpot_daily_invest = config["jackpot_daily_invest"]
+jackpot_tax_rate = config["jackpot_tax_rate"]
+jackpot_win_global_announcement = config["jackpot_win_global_announcement"]
+handle_jackpot_bet_per_guild = config["handle_jackpot_bet_per_guild"]
+jackpot_mega_score_multiplier = config["jackpot_mega_score_multiplier"]
 
 lang = {}
 lang_mapping = {}

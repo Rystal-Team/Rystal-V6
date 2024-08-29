@@ -48,6 +48,21 @@ async def append_guild(guild_id: int):
         print(colored(f"Failed to Register Guild: {guild_id}", "red"))
 
 
+async def get_jackpot_announcement_channel():
+    """
+    Retrieves all channel IDs where jackpot announcements are made.
+
+    Returns:
+        list: A list of channel IDs.
+    """
+    statement = {
+        "sqlite": "SELECT jackpot_announce_channel FROM guild WHERE jackpot_announce_channel IS NOT NULL",
+        "mysql": "SELECT jackpot_announce_channel FROM guild WHERE jackpot_announce_channel IS NOT NULL",
+    }
+    db_handler.execute(statement)
+    return [row[0] for row in db_handler.fetchall()]
+
+
 async def change_guild_language(guild_id: int, language: str):
     """
     Updates the language setting for a specific guild.
@@ -92,7 +107,7 @@ async def get_guild_language(guild_id: int):
     return db_handler.fetchall()[0][0]
 
 
-async def change_guild_settings(guild_id: int, key, value):
+async def change_guild_settings(guild_id: int | str, key, value):
     """
     Updates a specific setting for a guild.
 
@@ -117,7 +132,7 @@ async def change_guild_settings(guild_id: int, key, value):
     )
 
 
-async def get_guild_settings(guild_id: int, key):
+async def get_guild_settings(guild_id: int | str, key):
     """
     Retrieves a specific setting for a guild.
 

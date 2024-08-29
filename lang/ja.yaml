@@ -51,6 +51,8 @@ game_class_title: "🎮 | ゲーム"
 game_blackjack_description: "🎮 | ブラックジャックをプレイ！"
 game_dice_description: "🎮 | サイコロを振る！"
 game_coinflip_description: "🎮 | コインフリップゲームをプレイ！"
+game_jackpot_description: "🎮 | ジャックポットをプレイしよう！ (1000 ポイント必要)"
+game_jackpot_rules_description: "🎮 | ジャックポットのルールを表示！"
 
 bug_class_title: "🐞 | バグ報告"
 
@@ -200,6 +202,23 @@ dice_roll_title: "🎲 | サイコロを振る"
 dice_roll_description: "{num_dices} 個のサイコロを振って、合計は {total} です。"
 dice_roll_results: "個々のサイコロの結果"
 exceeds_max_dice_limit: "一度に振ることができるサイコロは最大 {limit} 個までです。"
+
+jackpot_game_title: "🎰 | ジャックポット"
+game_jackpot_rules: "### ゲームに勝つには、スピナーのすべての3つの列に同じ形と色が表示されなければなりません。\n\n
+スピナーには以下の形と色が表示されます: 🟥 🟧 🟨 🟩 🟦 🟪 ❤️ 🧡 💛 💚 💙 💜 🔴 🟠 🟡 🟢 🔵 🟣 ⚫ ⚪\n\n
+- **黒い円 (⚫)** は、どの色や形でも表すことができ、黒い円 (⚫) 自体も含まれますが、白い円 (⚪) にはなれません。\n\n
+- **白い円 (⚪)** は、どの色や形でも表すことができ、白い円 (⚪) 自体も含まれますが、黒い円 (⚫) にはなれません。\n\n
+勝った場合、ジャックポットから25%の税金が差し引かれます。\n\n
+失ったポイントはジャックポット賞に追加されます。\n\n
+**注意:** ゲームをプレイするには1,000ポイントが必要です。"
+jackpot_won: "おめでとうございます！ジャックポットに当たりました！"
+jackpot_lost: "残念ながらジャックポットには当たりませんでした。またの挑戦をお待ちしています！"
+jackpot_mega_score: "メガスコア！ジャックポットの1.5倍！"
+jackpot_point_won: "獲得ポイント:"
+jackpot_point_lost: "失ったポイント:"
+jackpot_your_points: "あなたのポイント:"
+jackpot_total_points: "合計ポイント:"
+jackpot_result: "結果:"
 
 # note
 note_not_found: "ノートが見つかりません！"
