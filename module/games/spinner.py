@@ -28,9 +28,7 @@ from typing import Any, List, Tuple
 
 class Spinner:
     def __init__(self):
-        """
-        Initializes the Spinner with a list of emoji options.
-        """
+        """Initializes the Spinner with a list of emoji options."""
         self.options: List[str] = [
             "🟥",
             "🟧",
