@@ -26,7 +26,13 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import (default_language, jackpot_base_amount, jackpot_tax_rate, lang, type_color)
+from config.loader import (
+    default_language,
+    jackpot_base_amount,
+    jackpot_tax_rate,
+    lang,
+    type_color,
+)
 from database import user_handler
 from database.global_handler import change_global, get_global
 from database.guild_handler import get_guild_language
