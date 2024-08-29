@@ -6,7 +6,7 @@ theme_color: "#2b67ab"
 max_note: 500
 
 # Status
-status_text: "🌟 v6.5.2a"
+status_text: "🌟 v6.5.3"
 
 # SQLite Database Configuration
 USE_SQLITE: true

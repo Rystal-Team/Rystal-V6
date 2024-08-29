@@ -26,23 +26,15 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import (
-    default_language,
-    lang,
-    type_color,
-    handle_jackpot_bet_per_guild,
-    jackpot_win_global_announcement,
-    jackpot_tax_rate,
-    jackpot_base_amount,
-)
+from config.loader import (default_language, jackpot_base_amount, jackpot_tax_rate, lang, type_color)
 from database import user_handler
+from database.global_handler import change_global, get_global
 from database.guild_handler import get_guild_language
 from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
+from module.embeds.jackpot import create_jackpot_embed
 from module.games.blackjack import Blackjack
 from module.games.spinner import Spinner
-from database.global_handler import get_global, change_global
-from module.embeds.jackpot import create_jackpot_embed
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10

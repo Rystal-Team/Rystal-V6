@@ -22,7 +22,8 @@
 #
 
 import nextcord
-from config.loader import type_color, lang
+
+from config.loader import lang, type_color
 
 
 def create_jackpot_embed(

@@ -21,7 +21,6 @@
 #  ------------------------------------------------------------
 #
 from .guild_handler import change_guild_settings, get_guild_settings
-from .main_handler import db_handler
 
 
 async def get_global(name):
