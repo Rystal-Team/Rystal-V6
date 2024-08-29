@@ -53,6 +53,7 @@ game_dice_description: "🎮 | サイコロを振る！"
 game_coinflip_description: "🎮 | コインフリップゲームをプレイ！"
 game_jackpot_description: "🎮 | ジャックポットをプレイしよう！ (1000 ポイント必要)"
 game_jackpot_rules_description: "🎮 | ジャックポットのルールを表示！"
+game_showjackpot_description: "🎮 | ジャックポット賞金を表示！"
 
 bug_class_title: "🐞 | バグ報告"
 
@@ -219,6 +220,7 @@ jackpot_point_lost: "失ったポイント:"
 jackpot_your_points: "あなたのポイント:"
 jackpot_total_points: "合計ポイント:"
 jackpot_result: "結果:"
+jackpot_show_total: "合計ポイント: {points}"
 
 # note
 note_not_found: "ノートが見つかりません！"

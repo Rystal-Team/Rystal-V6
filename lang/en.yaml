@@ -53,6 +53,7 @@ game_dice_description: "🎮 | Roll a dice!"
 game_coinflip_description: "🎮 | Play a game of coinflip!"
 game_jackpot_description: "🎮 | Play the jackpot! (Requires 1000 points)"
 game_jackpot_rules_description: "🎮 | Show the jackpot rules!"
+game_showjackpot_description: "🎮 | Show the jackpot prize!"
 
 bug_class_title: "🐞 | Bug Report"
 
@@ -224,6 +225,7 @@ jackpot_point_lost: "Points slipped away:"
 jackpot_your_points: "Your Points:"
 jackpot_total_points: "Total Points:"
 jackpot_result: "Result:"
+jackpot_show_total: "Total Points: {points}"
 
 # note
 note_not_found: "Note not found!"

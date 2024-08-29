@@ -26,7 +26,13 @@ import random
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import (default_language, jackpot_base_amount, jackpot_tax_rate, lang, type_color)
+from config.loader import (
+    default_language,
+    jackpot_base_amount,
+    jackpot_tax_rate,
+    lang,
+    type_color,
+)
 from database import user_handler
 from database.global_handler import change_global, get_global
 from database.guild_handler import get_guild_language
@@ -314,6 +320,7 @@ class GameSystem(commands.Cog):
         user_data["points"] -= 1000
         await user_handler.update_user_data(interaction.user.id, user_data)
         await change_global("jackpot_total", jackpot_total + 1000)
+        jackpot_total = await get_global("jackpot_total")
 
         won, result, mega_score = self.jackpot_spinner.play()
 
@@ -350,6 +357,27 @@ class GameSystem(commands.Cog):
         )
 
         return
+
+    @game.subcommand(
+        description=lang[default_language]["game_showjackpot_description"],
+    )
+    async def showjackpot(self, interaction: nextcord.Interaction):
+        await interaction.response.defer()
+        jackpot_total = await get_global("jackpot_total")
+        if jackpot_total is None:
+            jackpot_total = jackpot_base_amount
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    "jackpot_game_title"
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "jackpot_show_total"
+                ].format(points=jackpot_total),
+                message_type="info",
+            )
+        )
+        return jackpot_total
 
 
 def setup(bot):
