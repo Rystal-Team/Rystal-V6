@@ -207,8 +207,6 @@ roulette_game_title: "🈹 | Roulette"
 roulette_your_bet: "Your bet"
 roulette_result: "Result"
 roulette_result_description: "Result: {result}"
-roulette_dropdown_placeholder: "Bet"
-roulette_select_description: "Choose your bets"
 
 # note
 note_not_found: "Note not found!"

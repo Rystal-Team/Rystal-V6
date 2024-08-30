@@ -29,9 +29,7 @@ class RouletteResult(Enum):
     ZEROS = 1
     RED = 2
     BLACK = 3
-    ODD = 4
-    EVEN = 5
-    LOST = 6
+    LOST = 4
 
 
 class Roulette:
@@ -82,11 +80,10 @@ class Roulette:
 
     @staticmethod
     def check_winner(result, option):
-        # result = self.spin_wheel()
-        if result[0].lower() and option[0].lower() == "g":
-            return RouletteResult.ZEROS
-        if result[0].lower() and option[0].lower() == "r":
-            return RouletteResult.RED
-        if result[0].lower() and option[0].lower() == "b":
-            return RouletteResult.BLACK
+        if result[0].lower() == option[0].lower() and result[0].lower() == "g":
+            return RouletteResult.ZEROS, result
+        if result[0].lower() == option[0].lower() and result[0].lower() == "r":
+            return RouletteResult.RED, result
+        if result[0].lower() == option[0].lower() and result[0].lower() == "b":
+            return RouletteResult.BLACK, result
         return RouletteResult.LOST, result
