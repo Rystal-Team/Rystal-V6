@@ -20,24 +20,12 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
+from .guild_handler import change_guild_settings, get_guild_settings
 
 
-from .main_handler import db_handler
+async def get_global(name):
+    return await get_guild_settings("global", name)
 
 
-def get_global(name):
-    query = {
-        "sqlite": "SELECT value FROM global_settings WHERE name = ?",
-        "mysql": "SELECT value FROM global_settings WHERE name = %s",
-    }
-    db_handler.execute(query[db_handler.db_type], (name,))
-    return db_handler.fetchone()
-
-
-def change_global(name, value):
-    query = {
-        "sqlite": "UPDATE global_settings SET value = ? WHERE name = ?",
-        "mysql": "UPDATE global_settings SET value = %s WHERE name = %s",
-    }
-    db_handler.execute(query[db_handler.db_type], (value, name))
-    db_handler.connection.commit()
+async def change_global(name, value):
+    return await change_guild_settings("global", name, value)

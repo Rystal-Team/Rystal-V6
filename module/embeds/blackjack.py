@@ -166,12 +166,12 @@ class BlackjackView(nextcord.ui.View):
                 color = (
                     type_color["win"]
                     if result
-                    in {
-                        BlackjackResult.PLAYER_WINS,
-                        BlackjackResult.PLAYER_BLACKJACK,
-                        BlackjackResult.DEALER_BUSTS,
-                    }
-                    else type_color["lose"]
+                    in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}
+                    else (
+                        type_color["big_win"]
+                        if result == BlackjackResult.PLAYER_BLACKJACK
+                        else type_color["lose"]
+                    )
                 )
                 await self.update_message(
                     interaction,

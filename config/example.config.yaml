@@ -6,7 +6,7 @@ theme_color: "#2b67ab"
 max_note: 500
 
 # Status
-status_text: "🌟 v6.5.2a"
+status_text: "🌟 v6.5.3"
 
 # SQLite Database Configuration
 USE_SQLITE: true
@@ -22,6 +22,7 @@ type_color:
   warn: [ 255, 206, 157 ]
   info: [ 219, 157, 255 ]
   list: [ 157, 200, 255 ]
+  big_win: [ 212, 255, 203 ]
   win: [ 255, 194, 125 ]
   lose: [ 52, 55, 74 ]
   game: [ 97, 113, 255 ]
@@ -37,7 +38,8 @@ logging_channel_id: 000000000000000000
 
 # Game Configuration
 jackpot_base_amount: 35000
-jackpot_daily_invest: 0
+jackpot_daily_invest: 0 # this feature is not implemented yet, configuration is added for future use
 jackpot_tax_rate: 0.25
 jackpot_win_global_announcement: true
-handle_jackpot_bet_per_guild: true
+handle_jackpot_bet_per_guild: true # this feature is not implemented yet, configuration is added for future use
+jackpot_mega_score_multiplier: 1.5
