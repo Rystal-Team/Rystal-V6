@@ -40,6 +40,7 @@ from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
 from module.embeds.jackpot import create_jackpot_embed
 from module.games.blackjack import Blackjack
+from module.games.roulette import Roulette, RouletteResult
 from module.games.spinner import Spinner
 
 class_namespace = "game_class_title"
@@ -291,6 +292,108 @@ class GameSystem(commands.Cog):
         )
 
     @game.subcommand(
+        description=lang[default_language]["game_roulette_description"],
+    )
+    async def roulette(
+            self,
+            interaction: nextcord.Interaction,
+            bet: int = nextcord.SlashOption(
+                name="amount",
+                description=lang[default_language]["game_roulette_bet_description"],
+                required=True,
+            ),
+            guess=nextcord.SlashOption(
+                name="bet",
+                choices=["Green", "Red", "Black"],
+                required=True
+            ),
+
+    ):
+        message_mapper = {
+            RouletteResult.ZEROS: "Win",
+            RouletteResult.RED: "Win",
+            RouletteResult.BLACK: "Win",
+            RouletteResult.LOST: "Lost"
+        }
+
+        await interaction.response.defer()
+        user_id = interaction.user.id
+
+        user_data = await user_handler.get_user_data(user_id)
+        if bet < 0:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "must_be_positive"
+                    ].format(option="bet"),
+                    message_type="error",
+                ),
+            )
+            return
+        if user_data["points"] < bet:
+            await interaction.followup.send(
+
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "not_enough_points"
+                    ],
+                    message_type="error",
+                ),
+            )
+            return
+
+        roulette = Roulette().spin_wheel()
+        bot_data = await user_handler.get_user_data(self.bot.user.id)
+
+        outcome, result = Roulette.check_winner(roulette, guess)
+        print(outcome, result)
+        if outcome in {
+            RouletteResult.RED,
+            RouletteResult.BLACK,
+        }:
+            user_data["points"] += bet * 2
+            bot_data["points"] -= bet * 2
+        elif outcome == RouletteResult.ZEROS:
+            user_data["points"] += bet * 5
+            bot_data["points"] -= bet * 5
+        elif outcome == RouletteResult.LOST:
+            user_data["points"] -= bet
+            bot_data["points"] += bet
+
+        await user_handler.update_user_data(user_id, user_data)
+        await user_handler.update_user_data(self.bot.user.id, bot_data)
+
+        embed = nextcord.Embed(
+            title=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_game_title"
+            ],
+            description=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_result_description"
+            ].format(result=message_mapper[outcome]),
+            color=type_color["win"] if not outcome == RouletteResult.LOST else type_color["lose"],
+        )
+        embed.add_field(
+            name=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_your_bet"
+            ],
+            value=guess
+        )
+        embed.add_field(
+            name=lang[await get_guild_language(interaction.guild.id)][
+                "roulette_result"
+            ],
+            value=result
+        )
+
+        await interaction.followup.send(embed=embed)
+
+    @game.subcommand(
         description=lang[default_language]["game_jackpot_description"],
     )
     async def jackpot(
@@ -306,17 +409,6 @@ class GameSystem(commands.Cog):
         user_data = await user_handler.get_user_data(interaction.user.id)
         if user_data["points"] < 1000:
             return await interaction.followup.send(
-                embed=Embeds.message(
-                    title=lang[await get_guild_language(interaction.guild.id)][
-                        class_namespace
-                    ],
-                    message=lang[await get_guild_language(interaction.guild.id)][
-                        "not_enough_points"
-                    ],
-                    message_type="error",
-                ),
-            )
-
         user_data["points"] -= 1000
         await user_handler.update_user_data(interaction.user.id, user_data)
         await change_global("jackpot_total", jackpot_total + 1000)

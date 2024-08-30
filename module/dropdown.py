@@ -29,7 +29,6 @@ Might not be implemented as a feature
 from typing import Callable
 
 import nextcord
-from module.embed.roulette import RouletteView
 from module.embeds.generic import Embeds
 from module.games.roulette import Roulette
 from module.split_str import split_string
@@ -173,38 +172,3 @@ class LyricsSelectorView(View):
         )
         self.add_item(dropdown)
         await interaction.followup.send("Selector", view=self)
-
-
-class RouletteSelectorView(View):
-    def __init__(
-        self,
-        options: list,
-        placeholder: str,
-    ):
-        super().__init__()
-        self.options = options
-        self.placeholder = placeholder
-
-    async def interaction_check(self, interaction: nextcord.Interaction) -> bool:
-        return interaction.user == self.author
-
-    async def on_selected(self, _, bet, option):
-        result = RoutetteView.handle_bet_result(
-            Roulette.check_winner(option[0].lower())
-        )
-        if result == RouletteResult.LOSE:
-            outcome = "Lose"
-        else:
-            outcome = "Win"
-
-        RouletteView.update_message(
-            self,
-            bet,
-            result,
-            outcome,
-        )
-
-    async def start(self, interaction: nextcord.Interaction):
-        self.author = interaction.user
-        self.channel = interaction.channel
-        self.interaction = interaction
