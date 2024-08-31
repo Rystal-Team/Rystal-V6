@@ -77,6 +77,7 @@ if use_informal_lang:
 
 if included_unmaintained_lang:
     lang_dirs.append("./lang/unmaintained")
+
 with open("./lang/en.yaml", "r", encoding="utf8") as stream:
     base_lang = yaml.safe_load(stream)
 
