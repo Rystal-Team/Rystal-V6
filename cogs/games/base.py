@@ -306,15 +306,15 @@ class GameSystem(commands.Cog):
             name="bet", choices=["Green", "Red", "Black"], required=True
         ),
     ):
-        message_mapper = {
-            RouletteResult.ZEROS: "Win",
-            RouletteResult.RED: "Win",
-            RouletteResult.BLACK: "Win",
-            RouletteResult.LOST: "Lost",
-        }
-
         await interaction.response.defer()
         user_id = interaction.user.id
+
+        message_mapper = {
+            RouletteResult.ZEROS: "roulette_won_zeros",
+            RouletteResult.RED: "roulette_won",
+            RouletteResult.BLACK: "roulette_won",
+            RouletteResult.LOST: "roulette_lost",
+        }
 
         user_data = await user_handler.get_user_data(user_id)
         if bet < 0:
@@ -348,13 +348,12 @@ class GameSystem(commands.Cog):
         bot_data = await user_handler.get_user_data(self.bot.user.id)
 
         outcome, result = Roulette.check_winner(roulette, guess)
-        print(outcome, result)
         if outcome in {
             RouletteResult.RED,
             RouletteResult.BLACK,
         }:
-            user_data["points"] += bet * 2
-            bot_data["points"] -= bet * 2
+            user_data["points"] += bet
+            bot_data["points"] -= bet
         elif outcome == RouletteResult.ZEROS:
             user_data["points"] += bet * 5
             bot_data["points"] -= bet * 5
@@ -370,8 +369,15 @@ class GameSystem(commands.Cog):
                 "roulette_game_title"
             ],
             description=lang[await get_guild_language(interaction.guild.id)][
-                "roulette_result_description"
-            ].format(result=message_mapper[outcome]),
+                message_mapper[outcome]
+            ].format(
+                points=(
+                    bet
+                    if outcome
+                    in {RouletteResult.RED, RouletteResult.BLACK, RouletteResult.LOST}
+                    else bet * 5
+                )
+            ),
             color=(
                 type_color["win"]
                 if not outcome == RouletteResult.LOST

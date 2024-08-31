@@ -73,7 +73,7 @@ lang_list = []
 lang_dirs = ["./lang"]
 if use_informal_lang:
     lang_dirs.append("./lang/informal")
-
+9
 with open("./lang/en.yaml", "r", encoding="utf8") as stream:
     base_lang = yaml.safe_load(stream)
 

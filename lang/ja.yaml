@@ -48,12 +48,13 @@ points_show_description: "⭐️ | ポイントを表示！"
 points_leaderboard_description: "⭐️ | ポイントリーダーボードを表示！"
 
 game_class_title: "🎮 | ゲーム"
-game_blackjack_description: "🎮 | ブラックジャックをプレイ！"
+game_blackjack_description: "🎮 | ブラックジャックをプレイする！"
 game_dice_description: "🎮 | サイコロを振る！"
-game_coinflip_description: "🎮 | コインフリップゲームをプレイ！"
-game_jackpot_description: "🎮 | ジャックポットをプレイしよう！ (1000 ポイント必要)"
+game_coinflip_description: "🎮 | コインフリップゲームをプレイする！"
+game_jackpot_description: "🎮 | ジャックポットをプレイする！ (1000 ポイント必要)"
 game_jackpot_rules_description: "🎮 | ジャックポットのルールを表示！"
 game_showjackpot_description: "🎮 | ジャックポット賞金を表示！"
+game_roulette_description: "🎮 | ルーレットをプレイする！"
 
 bug_class_title: "🐞 | バグ報告"
 
@@ -78,6 +79,7 @@ setting_music_default_loop_mode_description: "デフォルトのループモー�
 game_dice_amount_description: "振るサイコロの数。"
 game_blackjack_bet_description: "賭けるポイント数。"
 game_coinflip_bet_description: "賭けるポイント数。"
+game_roulette_bet_description: "賭けるポイントの数。"
 
 points_give_recipient_description: "ポイントの受取人。"
 points_give_amount_description: "与えるポイント数。"
@@ -203,6 +205,13 @@ dice_roll_title: "🎲 | サイコロを振る"
 dice_roll_description: "{num_dices} 個のサイコロを振って、合計は {total} です。"
 dice_roll_results: "個々のサイコロの結果"
 exceeds_max_dice_limit: "一度に振ることができるサイコロは最大 {limit} 個までです。"
+
+roulette_game_title: "💸 | ルーレット"
+roulette_your_bet: "あなたの賭け:"
+roulette_result: "結果:"
+roulette_won_zeros: "おめでとうございます！ 緑で{points}ポイントを獲得しました！ 支払いは5倍です！"
+roulette_won: "おめでとうございます！ {points}ポイントを獲得しました！"
+roulette_lost: "残念ですが、{points}ポイントを失いました。"
 
 jackpot_game_title: "🎰 | ジャックポット"
 game_jackpot_rules: "### ゲームに勝つには、スピナーのすべての3つの列に同じ形と色が表示されなければなりません。\n\n
