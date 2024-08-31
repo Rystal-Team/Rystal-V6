@@ -2,6 +2,7 @@
 default_language: "en"
 multi_lang: true
 use_informal_lang: false
+included_unmaintained_lang: false
 theme_color: "#2b67ab"
 max_note: 500
 

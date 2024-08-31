@@ -36,6 +36,7 @@ status_text = config["status_text"]
 default_language = config["default_language"]
 multi_lang = config["multi_lang"]
 use_informal_lang = config["use_informal_lang"]
+included_unmaintained_lang = config["included_unmaintained_lang"]
 use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
@@ -73,6 +74,9 @@ lang_list = []
 lang_dirs = ["./lang"]
 if use_informal_lang:
     lang_dirs.append("./lang/informal")
+
+if included_unmaintained_lang:
+    lang_dirs.append("./lang/unmaintained")
 9
 with open("./lang/en.yaml", "r", encoding="utf8") as stream:
     base_lang = yaml.safe_load(stream)
