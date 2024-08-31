@@ -23,7 +23,7 @@
 
 from termcolor import colored
 
-from config.loader import default_language
+from config.loader import default_language, lang, default_language
 from .main_handler import check_exists, db_handler
 
 
@@ -104,7 +104,10 @@ async def get_guild_language(guild_id: int):
         "mysql": "SELECT language FROM guild WHERE guild_id = %s",
     }
     db_handler.execute(statement, (guild_id,))
-    return db_handler.fetchall()[0][0]
+    guild_language = db_handler.fetchall()[0][0]
+    if not guild_language:
+        return default_language
+    return default_language if guild_language not in lang else guild_language
 
 
 async def change_guild_settings(guild_id: int | str, key, value):
