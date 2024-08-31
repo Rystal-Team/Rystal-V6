@@ -23,7 +23,7 @@
 
 from termcolor import colored
 
-from config.loader import lang, default_language
+from config.loader import default_language, lang
 from .main_handler import check_exists, db_handler
 
 

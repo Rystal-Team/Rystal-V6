@@ -24,6 +24,7 @@
 import nextcord
 
 from config.loader import lang, type_color
+from module.utils import format_number
 
 
 def create_jackpot_embed(
@@ -60,21 +61,25 @@ def create_jackpot_embed(
     )
     if won:
         embed.add_field(
-            name=lang[guild_lang]["jackpot_won"], value=str(jackpot_total), inline=False
+            name=lang[guild_lang]["jackpot_won"],
+            value=format_number(jackpot_total),
+            inline=False,
         )
     else:
         embed.add_field(
-            name=lang[guild_lang]["jackpot_point_lost"], value="1000", inline=False
+            name=lang[guild_lang]["jackpot_point_lost"],
+            value=format_number(1000),
+            inline=False,
         )
     embed.add_field(
         name=lang[guild_lang]["jackpot_your_points"],
-        value=str(user_points),
+        value=format_number(user_points),
         inline=False,
     )
     if not won:
         embed.add_field(
             name=lang[guild_lang]["jackpot_total_points"],
-            value=str(jackpot_total),
+            value=format_number(jackpot_total),
             inline=False,
         )
 

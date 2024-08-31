@@ -33,6 +33,7 @@ from config.loader import default_language, lang, theme_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
+from module.utils import format_number
 
 class_namespace = "rank_class_title"
 
@@ -154,7 +155,7 @@ class RankSystem(commands.Cog):
         draw.text(
             (560, 160),
             lang[await get_guild_language(interaction.guild.id)]["level_xp"].format(
-                xp=xp, totalxp=(lvl + 1) * 100
+                xp=format_number(xp), totalxp=format_number((lvl + 1) * 100)
             ),
             font=description_font,
             fill="#fff",
@@ -212,7 +213,10 @@ class RankSystem(commands.Cog):
                 name=member.display_name,
                 value=lang[await get_guild_language(interaction.guild.id)][
                     "leaderboard_user_row"
-                ].format(level=data["level"], totalxp=data["totalxp"]),
+                ].format(
+                    level=format_number(data["level"]),
+                    totalxp=format_number(data["totalxp"]),
+                ),
                 inline=False,
             )
 

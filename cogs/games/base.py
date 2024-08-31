@@ -42,6 +42,7 @@ from module.embeds.jackpot import create_jackpot_embed
 from module.games.blackjack import Blackjack
 from module.games.roulette import Roulette, RouletteResult
 from module.games.spinner import Spinner
+from module.utils import format_number
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10
@@ -270,13 +271,13 @@ class GameSystem(commands.Cog):
             bot_data["points"] -= bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_win"
-            ].format(points=bet)
+            ].format(points=format_number(bet))
         else:
             data["points"] -= bet
             bot_data["points"] += bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_lose"
-            ].format(points=bet)
+            ].format(points=format_number(bet))
 
         await user_handler.update_user_data(self.bot.user.id, bot_data)
         await user_handler.update_user_data(user_id, data)
@@ -371,7 +372,7 @@ class GameSystem(commands.Cog):
             description=lang[await get_guild_language(interaction.guild.id)][
                 message_mapper[outcome]
             ].format(
-                points=(
+                points=format_number(
                     bet
                     if outcome
                     in {RouletteResult.RED, RouletteResult.BLACK, RouletteResult.LOST}
@@ -482,7 +483,7 @@ class GameSystem(commands.Cog):
                 ],
                 message=lang[await get_guild_language(interaction.guild.id)][
                     "jackpot_show_total"
-                ].format(points=jackpot_total),
+                ].format(points=format_number(jackpot_total)),
                 message_type="info",
             )
         )

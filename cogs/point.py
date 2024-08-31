@@ -32,6 +32,7 @@ from config.loader import banland, bot_owner_id, default_language, lang
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
+from module.utils import format_number
 
 class_namespace = "point_class_title"
 
@@ -195,7 +196,9 @@ class PointSystem(commands.Cog):
                 ],
                 message=lang[await get_guild_language(interaction.guild.id)][
                     "points_given"
-                ].format(amount=amount, recipient=recipient.display_name),
+                ].format(
+                    amount=format_number(amount), recipient=recipient.display_name
+                ),
                 message_type="success",
             ),
         )
@@ -224,7 +227,7 @@ class PointSystem(commands.Cog):
         else:
             message = lang[await get_guild_language(interaction.guild.id)][
                 "points_show_self"
-            ].format(points=points)
+            ].format(points=format_number(points))
 
         await interaction.followup.send(
             embed=Embeds.message(
@@ -284,7 +287,7 @@ class PointSystem(commands.Cog):
                 name=member.display_name,
                 value=lang[await get_guild_language(interaction.guild.id)][
                     "points_leaderboard_user_row"
-                ].format(points=data["points"]),
+                ].format(points=format_number(data["points"])),
                 inline=False,
             )
 
