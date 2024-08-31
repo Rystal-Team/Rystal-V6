@@ -3,14 +3,38 @@ EXPERIMENTS
 Might not be implemented as a feature
 """
 
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
 from typing import Callable
 
 import nextcord
+from module.embed.roulette import RouletteView
+from module.embeds.generic import Embeds
+from module.games.roulette import Roulette
+from module.split_str import split_string
 from nextcord import SelectOption
 from nextcord.ui import Select, View
-
-from module.embed import Embeds
-from module.split_str import split_string
 
 
 class DropdownSelector(Select):
@@ -79,7 +103,7 @@ class LyricsSelectorView(View):
         self,
         options: list,
         placeholder: str,
-        captions: dict = {},
+        captions: dict = None,
     ):
         """
         Initialize the lyrics selector view.
@@ -89,6 +113,8 @@ class LyricsSelectorView(View):
             placeholder (str): Placeholder text displayed in the dropdown selector.
             captions (dict, optional): Dictionary mapping languages to their captions/transcripts.
         """
+        if captions is None:
+            captions = {}
         super().__init__()
         self.options = options
         self.placeholder = placeholder
@@ -147,3 +173,38 @@ class LyricsSelectorView(View):
         )
         self.add_item(dropdown)
         await interaction.followup.send("Selector", view=self)
+
+
+class RouletteSelectorView(View):
+    def __init__(
+        self,
+        options: list,
+        placeholder: str,
+    ):
+        super().__init__()
+        self.options = options
+        self.placeholder = placeholder
+
+    async def interaction_check(self, interaction: nextcord.Interaction) -> bool:
+        return interaction.user == self.author
+
+    async def on_selected(self, _, bet, option):
+        result = RoutetteView.handle_bet_result(
+            Roulette.check_winner(option[0].lower())
+        )
+        if result == RouletteResult.LOSE:
+            outcome = "Lose"
+        else:
+            outcome = "Win"
+
+        RouletteView.update_message(
+            self,
+            bet,
+            result,
+            outcome,
+        )
+
+    async def start(self, interaction: nextcord.Interaction):
+        self.author = interaction.user
+        self.channel = interaction.channel
+        self.interaction = interaction

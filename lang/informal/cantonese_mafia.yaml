@@ -1,0 +1,124 @@
+# Hong Kong Mafia translations
+# Author: https://github.com/Chan4444mc
+name: "黑幫"
+
+# general
+must_be_positive: "`大佬，{option}` 數目一定要係正數呀！"
+must_be_positive_not_zero: "`{大佬，{option}` 數目一定要唔係零嘅正數！"
+
+# embed titles
+music_class_title: "🎵 | 音樂模塊"
+level_class_title: "🎖️ | 等級模塊"
+system_class_title: "🤖 | 系統"
+setting_class_title: "⚙️ | 設定"
+note_class_title: "📒 | 筆記"
+point_class_title: "⭐️ | 籌碼系統"
+game_class_title: "🎮 | 機舖"
+
+# status
+cpu: "處理器: {cpu}%"
+ram: "記憶體: {ram_used}/{ram_total} GB"
+os: "作業系統: {platform}"
+version: "版本: {os_version}"
+release: "發佈: {os_release}"
+uptime: "上線時間: {uptime}"
+ping: "唔好撚煩我！ {ping}毫秒"
+
+# settings
+language_changed: "已經將語言改成 {language}啦，咁而家點？"
+
+# music
+queued_playlist: "攝咗入你份播放清單**{playlist}** 啦，兩嚿tips唔該"
+all_songs: "所有歌曲"
+queue_ended: "播放清單收咗皮！"
+loading_playlist: "執緊你份播放清單"
+not_in_voice: "頂你！你都唔喺語音頻道入面，點撚樣播呀大佬！"
+in_different_voice: "頂你！你同我都唔喺同一個語音頻道入面，鬼播到呀！"
+failed_to_add_song: "哎喲，你首歌 **{title}** 太柒，加唔到添!"
+invalid_playlist: "你老味畀個壞嘅播放清單我，都唔撚得!"
+playing_song: "而家播緊 **{title}** 囉！"
+queued_song: "塞咗入你份播放清單呀 **{title}** 啦!"
+removed_song: "幫你吞咗 **{title}** 啦!"
+nothing_is_playing: "而家乜撚都冇播!"
+stopped_player: "叫緊個播放器收皮!"
+changed_volume: "將 **{title}** 嘅音量改至 {volume}%!"
+currently_playing: "而家咪幫你播緊... {title} 囉"
+shuffled_queue: "幫你洗最後一次! 牌都唔識洗有冇搞錯啊！"
+invalid_index: "你畀份壞嘅標籤我，係咪玩嘢？"
+
+toggle_silent_mode: "收爹模式已經 {toggle} 啦"
+toggle_auto_leave: "自動語音走佬已經 {toggle} 啦"
+volume_out_of_range: "音量只可以喺0%至200%之間！你識唔識數學㗎！"
+disabled_loop: "循環播放嗰條友已經炒咗魷魚！"
+enabled_loop_single: "已經為 **{title}** 請咗條友返嚟循環播放！"
+enabled_loop_queue: "已經為嗰播放清單請咗條友返嚟循環播放！"
+music_already_paused: "都話首歌已經停咗！ 要用 `/resume` 先可以繼續播！"
+music_already_playing: "都話首歌仲未收爹！ 要用 `/pause` 先可以令佢收爹！"
+paused_queue: "播放清單收咗爹啦!"
+resumed_queue: "播放清單又返嚟柒啦!"
+skipped_from: "已經由 **{old}** 大躍進到 **{new}**!"
+skipped: "司機以經飛咗 **{old}** 站!"
+
+music_registered_secret: "你註冊咗個秘密，唔該睇吓私人訊息。冇嘅你抵死。"
+music_secret: "呢個係你啲秘密(暫時未收齊賄款唔公開住)\n ```{secret}```"
+
+# level
+level_up: "{user} 有料，升你做 {level}!!!"
+level_text: "等級"
+level_xp: "{xp} / {totalxp} 經驗"
+leaderboard_header: "排行榜頭 {include} 名"
+leaderboard_out_of_range: "屌你滷味， 最細要1，最大只可以25啊，仲錯就返鄉下讀村校啦!"
+leaderboard_user_row: "**等級: {level} | 總經驗: {totalxp}**"
+
+# system
+unknown_error: "哎呀，個系統唔知點解炒撚咗添!"
+missing_permission: "屌你都冇權咁做，行撚開啦!"
+author_only_interactions: "呢個指令唔撚關你事，作者先用得啊!"
+not_implemented: "呢個指令未整好，做乜鳩闖入地盤？"
+command_slowdown: "你可唔可以唔好咁撚快啊，慢慢嚟!"
+
+# queue search query
+queue_serach_query: "搵索引 (留空出全部)"
+queue_query: "索引"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | 索引 {query}"
+
+# music poster
+music_poster_title: "Rystal 音樂"
+most_played_week: "今個星期播放得最多嘅閪歌"
+most_played_month: "今個月播放得最多嘅閪歌"
+most_played_year: "今年播放得最多嘅閪歌"
+played_duration: "{hour}小時+"
+total_played: "播撚咗 {count} 首歌"
+
+# points
+points_claimed: "你攞咗 {points} 籌碼!"
+not_enough_points: "你都唔夠籌碼，行開啦窮撚！"
+coinflip_win: "屌你滷味死老千，你贏咗 {points} 籌碼🤬"
+coinflip_lose: "抵撚你死，輸咗 {points} 籌碼！😂."
+cooldown_message: "大佬呢度唔係善堂，唔係任你咁攞。你等多 {minutes} 分鐘{seconds} 秒先啦"
+points_given: "你畀咗 {amount} 籌碼畀 {recipient}!"
+points_show_user: "{user} 有 {points} 籌碼，你想打劫佢？"
+points_show_self: "你有 {points} 籌碼!"
+points_leaderboard_header: "⭐️ | 籌碼排行榜 - 頭 {include} 名"
+points_leaderboard_user_row: "✨ > {points} 籌碼"
+
+# games
+blackjack_game_title: "🃏 | 二十一點"
+blackjack_your_move: "到你啦!"
+blackjack_timeout_message: "等你決定阻住地球轉啦，莊家贏咗！"
+blackjack_your_hand: "你手上"
+blackjack_dealer_hand: "莊家手上"
+blackjack_player_busts: "你爆撚咗煲!"
+blackjack_dealer_busts: "莊家爆撚咗煲!"
+blackjack_tie: "平局!"
+blackjack_player_wins: "你竟然贏咗🤬死老千"
+blackjack_dealer_wins: "莊家贏咗，哈哈！😝"
+blackjack_player_blackjack: "你達到廿一點!"
+blackjack_total: "總計: {total}"
+
+dice_roll_title: "🎲 | 擲骰子"
+dice_roll_description: "你擲咗 {num_dices} 粒骰子，總計喺 {total}."
+dice_roll_results: "單次擲骰結果"
+exceeds_max_dice_limit: "你每次只可以擲 {limit} 粒骰啊屌你！"

@@ -28,14 +28,14 @@ from termcolor import colored
 
 class Logger:
     LOG_LEVELS = {
-        'DEBUG'   : logging.DEBUG,
-        'INFO'    : logging.INFO,
-        'WARNING' : logging.WARNING,
-        'ERROR'   : logging.ERROR,
-        'CRITICAL': logging.CRITICAL
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL,
     }
 
-    def __init__(self, level='DEBUG'):
+    def __init__(self, level="DEBUG"):
         """
         Initializes the Logger instance by setting up a logger with a specific name and configuring the console handler.
 
@@ -62,7 +62,9 @@ class Logger:
         Returns:
             int: Corresponding logging level constant.
         """
-        return self.LOG_LEVELS.get(level_str, logging.DEBUG)  # Default to DEBUG if level_str is not found
+        return self.LOG_LEVELS.get(
+            level_str, logging.DEBUG
+        )  # Default to DEBUG if level_str is not found
 
     def _configure_console_handler(self):
         """
@@ -76,7 +78,8 @@ class Logger:
 
         self.logger.addHandler(console_handler)
 
-    def _color_message(self, level, message):
+    @staticmethod
+    def _color_message(level, message):
         """
         Colors the log message based on the log level.
 
@@ -88,13 +91,13 @@ class Logger:
             str: The colored message.
         """
         colors = {
-            'DEBUG'   : 'blue',
-            'INFO'    : 'green',
-            'WARNING' : 'yellow',
-            'ERROR'   : 'red',
-            'CRITICAL': 'magenta'
+            "DEBUG": "blue",
+            "INFO": "green",
+            "WARNING": "yellow",
+            "ERROR": "red",
+            "CRITICAL": "magenta",
         }
-        return colored(message, colors.get(level, 'white'))
+        return colored(message, colors.get(level, "white"))
 
     def set_level(self, level):
         """
@@ -114,7 +117,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.debug(self._color_message('DEBUG', message))
+        self.logger.debug(self._color_message("DEBUG", message))
 
     def info(self, message):
         """
@@ -123,7 +126,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.info(self._color_message('INFO', message))
+        self.logger.info(self._color_message("INFO", message))
 
     def warning(self, message):
         """
@@ -132,7 +135,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.warning(self._color_message('WARNING', message))
+        self.logger.warning(self._color_message("WARNING", message))
 
     def error(self, message):
         """
@@ -141,7 +144,7 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.error(self._color_message('ERROR', message))
+        self.logger.error(self._color_message("ERROR", message))
 
     def critical(self, message):
         """
@@ -150,4 +153,4 @@ class Logger:
         Args:
             message (str): The message to log.
         """
-        self.logger.critical(self._color_message('CRITICAL', message))
+        self.logger.critical(self._color_message("CRITICAL", message))

@@ -19,6 +19,29 @@ Methods:
         Handles voice state updates for the bot and other members, performing necessary actions such as removing the player if the bot leaves a voice channel.
 """
 
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
 from nextcord import BotIntegration, Interaction, Member
 from nextcord.utils import get
 
@@ -29,9 +52,20 @@ from .replay_handler import attach as attach_replay
 from .sockets import attach as attach_sockets
 
 
-class PlayerManager(object):
-    def __init__(self, bot, db_path: str = "./sqlite/jukebox.sqlite", enable_rpc: bool = True,
-                 enable_replay: bool = True):
+class PlayerManager:
+    def __init__(
+        self,
+        bot,
+        db_type: str = "sqlite",
+        db_path: str = "./sqlite/jukebox.sqlite",
+        mysql_host: str = "localhost",
+        mysql_port: int = 3306,
+        mysql_user: str = "root",
+        mysql_password: str = "password",
+        mysql_database: str = "jukebox",
+        enable_rpc: bool = True,
+        enable_replay: bool = True,
+    ):
         """
         Initializes the PlayerManager with the given bot instance.
 
@@ -40,9 +74,21 @@ class PlayerManager(object):
         """
         self.players = {}
         self.bot = bot
-        self.database: Database = Database(db_path=db_path)
-        self.database.connect()
 
+        # Initialize database
+        if db_type == "mysql":
+            self.database = Database(
+                "mysql",
+                host=mysql_host,
+                user=mysql_user,
+                password=mysql_password,
+                database=mysql_database,
+                port=mysql_port,
+            )
+        else:
+            self.database = Database("sqlite", db_file=db_path)
+
+        # Optional features
         if enable_rpc:
             attach_sockets(self)
         if enable_replay:
@@ -106,9 +152,12 @@ class PlayerManager(object):
             before (VoiceState): The previous voice state of the member.
             after (VoiceState): The new voice state of the member.
         """
-        if member.id == self.bot.user.id:
-            if before.channel is not None and after.channel is None:
-                await self.remove_player(member)
+        if (
+            member.id == self.bot.user.id
+            and before.channel is not None
+            and after.channel is None
+        ):
+            await self.remove_player(member)
         if member.guild.id in self.players:
             await self.players[member.guild.id]._on_voice_state_update(
                 member, before, after

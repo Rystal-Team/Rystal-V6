@@ -1,0 +1,98 @@
+# German translations
+name: "Deutsch"
+
+# general
+must_be_positive: "Der Wert von `{option}` muss positiv sein!"
+
+# embed titles
+music_class_title: "🎵 | Musikmodul"
+level_class_title: "🎖️ | Levelmodul"
+system_class_title: "🤖 | System"
+setting_class_title: "⚙️ | Einstellungen"
+note_class_title: "📒 | Notiz"
+point_class_title: "⭐️ | Punktesystem"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "Betriebssystem: {platform}"
+version: "Version: {os_version}"
+release: "Release: {os_release}"
+uptime: "Uptime: {uptime}"
+ping: "Pong! {ping}ms"
+
+# settings
+language_changed: "Sprache auf {language} geändert!"
+
+# music
+queued_playlist: "Playlist **{playlist}** zur Warteschlange hinzugefügt!"
+all_songs: "Alle Lieder"
+queue_ended: "Warteschlange beendet!"
+loading_playlist: "Playlist wird geladen..."
+not_in_voice: "Du bist nicht in einem Sprachkanal!"
+in_different_voice: "Du bist nicht im gleichen Sprachkanal wie der Bot!"
+failed_to_add_song: "Fehler beim Hinzufügen des Liedes **{title}**!"
+invalid_playlist: "Ungültige Playlist!"
+playing_song: "Spielt **{title}**!"
+queued_song: "Lied **{title}** zur Warteschlange hinzugefügt!"
+removed_song: "Lied **{title}** entfernt!"
+nothing_is_playing: "Nichts wird abgespielt!"
+stopped_player: "Player gestoppt!"
+changed_volume: "Lautstärke von **{title}** auf {volume}% geändert!"
+currently_playing: "Momentan wird abgespielt... {title}"
+shuffled_queue: "Warteschlange gemischt!"
+invalid_index: "Ungültiger Index!"
+
+toggle_silent_mode: "Stummmodus ist {toggle}"
+toggle_auto_leave: "Automatisches Verlassen des Sprachkanals ist {toggle}"
+volume_out_of_range: "Die Lautstärke muss zwischen 0% und 200% liegen!"
+
+disabled_loop: "Wiedergabeschleifenmodus deaktiviert!"
+enabled_loop_single: "Wiedergabeschleifenmodus für **{title}** aktiviert!"
+enabled_loop_queue: "Wiedergabeschleifenmodus für diese Warteschlange aktiviert!"
+music_already_paused: "Musik ist bereits pausiert! Verwende `/resume`, um die Musik fortzusetzen!"
+music_already_playing: "Musik wird bereits abgespielt! Verwende `/pause`, um die Musik zu pausieren!"
+paused_queue: "Warteschlange pausiert!"
+resumed_queue: "Warteschlange fortgesetzt!"
+skipped_from: "Von **{old}** auf **{new}** übersprungen!"
+skipped: "**{old}** übersprungen!"
+
+music_registered_secret: "Du hast ein Geheimnis erfolgreich registriert. Bitte überprüfe deine privaten Nachrichten für weitere Details. Falls du nichts erhalten hast, stelle sicher, dass 'Direktnachrichten von Servermitgliedern erlauben' in deinen Datenschutzeinstellungen aktiviert ist."
+music_secret: "Dies ist dein neues Geheimnis\n ```{secret}```"
+
+# level
+level_up: "{user} hat Level {level} erreicht!!!"
+level_text: "Level"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "Rangliste - Top {include}"
+leaderboard_out_of_range: "Der Bereich muss einen Mindestwert von 1 und einen Höchstwert von 25 haben!"
+leaderboard_user_row: "**Level: {level} | Gesamt XP: {totalxp}**"
+
+# system
+unknown_error: "Ein unbekannter Fehler ist aufgetreten!"
+missing_permission: "Du hast keine Berechtigung, diese Aktion auszuführen!"
+author_only_interactions: "Nur der Autor des Befehls kann diese Aktion ausführen."
+not_implemented: "Dieser Befehl ist noch nicht implementiert!"
+command_slowdown: "Bitte langsamer machen und später erneut versuchen!"
+
+# queue search query
+queue_serach_query: "Suchanfrage (leer lassen, um alles anzuzeigen)"
+queue_query: "Abfrage"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | Abfrage: {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Meistgespielte Lieder diese Woche"
+most_played_month: "Meistgespielte Lieder diesen Monat"
+most_played_year: "Meistgespielte Lieder dieses Jahr"
+played_duration: "{hour}h+"
+total_played: "Abgespielt {count} Lieder"
+
+# points
+points_claimed: "Du hast {points} Punkte beansprucht!"
+not_enough_points: "Du hast nicht genug Punkte, um das zu tun."
+coinflip_win: "Glückwunsch! Du hast {points} Punkte gewonnen!"
+coinflip_lose: "Leider hast du {points} Punkte verloren."
+points_given: "Du hast {amount} Punkte an {recipient} gegeben!"

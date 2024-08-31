@@ -1,3 +1,26 @@
+#  ------------------------------------------------------------
+#  Copyright (c) 2024 Rystal-Team
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+#  ------------------------------------------------------------
+#
+
 import sys
 
 sys.dont_write_bytecode = True
@@ -18,15 +41,14 @@ load_dotenv()
 from nextcord.ext import commands
 from termcolor import colored
 
-from config.config import bot_owner_id, error_log_channel_id, lang
+from config.loader import bot_owner_id, error_log_channel_id, lang
 from database.guild_handler import get_guild_language
-from database.main_handler import startup
-from module.embed import Embeds
+from module.embeds.generic import Embeds
 
-startup()
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents.default()
 intents.members = True
+intents.message_content = True
 
 if not os.path.exists("./logs"):
     os.makedirs("./logs")
@@ -39,7 +61,7 @@ bot.remove_command("help")
 class_namespace = "system_class_title"
 
 logger = logging.getLogger("nextcord")
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 time_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 handler = logging.FileHandler(
     filename=f"./logs/{time_str}.log", encoding="utf-8", mode="w"
@@ -131,12 +153,25 @@ Follow Up Sent: {follow_up_sent}
 
 async def setup():
     cogs = 0
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not "old" in filename:
-            try:
-                bot.load_extension(f"cogs.{filename[:-3]}")
-                print(colored(text=f"Cogs: {filename[:-3]} is ready!", color="green"))
+    for root, dirs, files in os.walk("./cogs"):
+        dirs[:] = [d for d in dirs if "disabled" and "__init__" not in d]
+        files = [
+            f for f in files if f.endswith(".py") and "disabled" and "__init__" not in f
+        ]
 
+        for filename in files:
+            if (
+                os.path.normpath(root) == os.path.normpath("./cogs/games")
+                and filename != "base.py"
+            ):
+                continue
+            cog_path = os.path.join(root, filename)
+            relative_path = os.path.relpath(cog_path, "./cogs")
+            module_name = relative_path.replace(os.sep, ".")[:-3]
+
+            try:
+                bot.load_extension(f"cogs.{module_name}")
+                print(colored(text=f"Cogs: {module_name} is ready!", color="green"))
                 cogs += 1
             except Exception as exception:
                 full_error = traceback.format_exception(
@@ -144,35 +179,46 @@ async def setup():
                 )
                 print(
                     colored(
-                        text=f"Unable to load {filename[:-3]} Error: {full_error}",
+                        text=f"Unable to load {module_name} Error: {full_error}",
                         color="red",
                     )
                 )
-
-        else:
-            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
+        for d in dirs:
+            print(colored(text=f"Passed directory {d}", color="yellow"))
 
     return cogs
 
 
 async def reloadSetup():
     cogs = 0
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py") and not "old" in filename:
+    for root, dirs, files in os.walk("./cogs"):
+        dirs[:] = [d for d in dirs if "disabled" and "__init__" not in d]
+        files = [
+            f for f in files if f.endswith(".py") and "disabled" and "__init__" not in f
+        ]
+
+        for filename in files:
+            if (
+                os.path.normpath(root) == os.path.normpath("./cogs/games")
+                and filename != "base.py"
+            ):
+                continue
+            cog_path = os.path.join(root, filename)
+            relative_path = os.path.relpath(cog_path, "./cogs")
+            module_name = relative_path.replace(os.sep, ".")[:-3]
+
             try:
-                bot.reload_extension(f"cogs.{filename[:-3]}")
-                print(
-                    colored(text=f"Cogs: {filename[:-3]} is reloaded!", color="green")
-                )
+                bot.reload_extension(f"cogs.{module_name}")
+                print(colored(text=f"Cogs: {module_name} is reloaded!", color="green"))
                 cogs += 1
             except Exception as e:
                 print(
                     colored(
-                        text=f"Unable to reload {filename[:-3]} Error: {e}", color="red"
+                        text=f"Unable to reload {module_name} Error: {e}", color="red"
                     )
                 )
-        else:
-            print(colored(text=f"Passed file/folder {filename}", color="yellow"))
+        for d in dirs:
+            print(colored(text=f"Passed directory {d}", color="yellow"))
 
     return cogs
 
@@ -227,7 +273,6 @@ async def list(
             ),
             ephemeral=True,
         )
-
 
 asyncio.run(setup())
 bot.run(TOKEN)

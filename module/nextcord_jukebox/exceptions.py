@@ -1,8 +1,3 @@
-"""
-Custom exceptions for the Nextcord Jukebox application.
-"""
-
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -26,99 +21,62 @@ Custom exceptions for the Nextcord Jukebox application.
 #  ------------------------------------------------------------
 #
 
+
 class NextcordJukeBoxError(Exception):
     """Base Nextcord Jukebox Exception."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class QueueError(NextcordJukeBoxError):
     """Queue related function error."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class PlayError(NextcordJukeBoxError):
     """Play related function errored."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class FailedConnection(NextcordJukeBoxError):
     """Failed to connect to a voice channel."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class UserNotConnected(PlayError):
     """The user is not connected to a voice channel."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class VoiceChannelMismatch(PlayError):
     """The user is connected to a different voice channel as the bot."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class NotConnected(PlayError):
     """The bot is not connected to a voice channel."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class LoadingStream(PlayError):
     """The player is loading stream already, please slow down."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class NotPlaying(PlayError):
     """Not playing music."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class NothingPlaying(PlayError):
     """Nothing is playing."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class AlreadyPaused(PlayError):
     """The music is already paused."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class NotPaused(PlayError):
     """The music is not paused."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class NoQueryResult(PlayError):
     """Query has no results returned."""
-
-    def __str__(self):
-        return self.__doc__
 
 
 class EmptyQueue(QueueError):
     """There is nothing in the queue."""
 
-    def __str__(self):
-        return self.__doc__
+
+class InvalidPlaylist(QueueError):
+    """The playlist is invalid."""

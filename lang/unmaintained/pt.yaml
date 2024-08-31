@@ -1,0 +1,98 @@
+# Portuguese translations
+name: "Português"
+
+# general
+must_be_positive: "O valor de `{option}` deve ser positivo!"
+
+# embed titles
+music_class_title: "🎵 | Módulo de Música"
+level_class_title: "🎖️ | Módulo de Nível"
+system_class_title: "🤖 | Sistema"
+setting_class_title: "⚙️ | Configurações"
+note_class_title: "📒 | Nota"
+point_class_title: "⭐️ | Sistema de Pontos"
+
+# status
+cpu: "CPU: {cpu}%"
+ram: "RAM: {ram_used}/{ram_total} GB"
+os: "Sistema Operacional: {platform}"
+version: "Versão: {os_version}"
+release: "Lançamento: {os_release}"
+uptime: "Tempo de Atividade: {uptime}"
+ping: "Pong! {ping}ms"
+
+# settings
+language_changed: "Idioma alterado para {language}!"
+
+# music
+queued_playlist: "Playlist **{playlist}** adicionada à fila!"
+all_songs: "Todas as Músicas"
+queue_ended: "Fila Terminada!"
+loading_playlist: "Carregando Playlist..."
+not_in_voice: "Você não está em um canal de voz!"
+in_different_voice: "Você não está no mesmo canal de voz que o bot!"
+failed_to_add_song: "Falha ao adicionar a música **{title}**!"
+invalid_playlist: "Playlist inválida!"
+playing_song: "Tocando **{title}**!"
+queued_song: "Música **{title}** adicionada à fila!"
+removed_song: "Música **{title}** removida!"
+nothing_is_playing: "Nada está tocando!"
+stopped_player: "Reprodutor parado!"
+changed_volume: "Volume de **{title}** alterado para {volume}%!"
+currently_playing: "Tocando atualmente... {title}"
+shuffled_queue: "Fila embaralhada!"
+invalid_index: "Índice inválido!"
+
+toggle_silent_mode: "Modo silencioso está {toggle}"
+toggle_auto_leave: "Saída automática do canal de voz está {toggle}"
+volume_out_of_range: "O volume deve estar entre 0% e 200%!"
+
+disabled_loop: "Modo de repetição desativado!"
+enabled_loop_single: "Modo de repetição ativado para **{title}**!"
+enabled_loop_queue: "Modo de repetição ativado para esta fila!"
+music_already_paused: "A música já está pausada! Use `/resume` para retomar a música!"
+music_already_playing: "A música já está tocando! Use `/pause` para pausar a música!"
+paused_queue: "Fila pausada!"
+resumed_queue: "Fila retomada!"
+skipped_from: "Pulou de **{old}** para **{new}**!"
+skipped: "Pulou **{old}**!"
+
+music_registered_secret: "Você registrou um segredo com sucesso. Verifique suas mensagens privadas para mais detalhes. Se não receber nada, certifique-se de que 'permitir mensagens diretas de membros do servidor' está ativado nas suas configurações de privacidade."
+music_secret: "Este é o seu novo segredo\n ```{secret}```"
+
+# level
+level_up: "{user} alcançou o nível {level}!!!"
+level_text: "Nível"
+level_xp: "{xp} / {totalxp} XP"
+leaderboard_header: "Ranking - Top {include}"
+leaderboard_out_of_range: "O intervalo deve ter um valor mínimo de 1 e um valor máximo de 25!"
+leaderboard_user_row: "**Nível: {level} | XP Total: {totalxp}**"
+
+# system
+unknown_error: "Ocorreu um erro desconhecido!"
+missing_permission: "Você não tem permissão para executar esta ação!"
+author_only_interactions: "Apenas o autor do comando pode realizar esta ação."
+not_implemented: "Este comando ainda não está implementado!"
+command_slowdown: "Por favor, desacelere e tente novamente mais tarde!"
+
+# queue search query
+queue_serach_query: "Consulta de Pesquisa (deixe em branco para mostrar tudo)"
+queue_query: "Consulta"
+queue_search: "🔎"
+queue_footer: "{page}/{total_pages}"
+queue_footer_with_query: "{page}/{total_pages} | Consulta: {query}"
+
+# music poster
+music_poster_title: "Rystal Music"
+most_played_week: "Músicas mais tocadas esta semana"
+most_played_month: "Músicas mais tocadas este mês"
+most_played_year: "Músicas mais tocadas este ano"
+played_duration: "{hour}h+"
+total_played: "Tocadas {count} músicas"
+
+# points
+points_claimed: "Você reivindicou {points} pontos!"
+not_enough_points: "Você não tem pontos suficientes para fazer isso."
+coinflip_win: "Parabéns! Você ganhou {points} pontos!"
+coinflip_lose: "Desculpe, você perdeu {points} pontos."
+points_given: "Você deu {amount} pontos para {recipient}!"

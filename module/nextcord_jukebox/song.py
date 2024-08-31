@@ -21,41 +21,79 @@
 #  ------------------------------------------------------------
 #
 
+from typing import List, Optional
+
 from .timer import CountTimer
 
 
 class Song:
+    """
+    A class to represent a song with various attributes and a timer.
+
+    Attributes:
+        url (str): The URL of the song.
+        title (Optional[str]): The title of the song.
+        views (Optional[int]): The number of views of the song.
+        duration (Optional[int]): The duration of the song in seconds.
+        thumbnail (Optional[str]): The URL of the song's thumbnail.
+        channel (Optional[str]): The name of the channel that uploaded the song.
+        channel_url (Optional[str]): The URL of the channel that uploaded the song.
+        thumbnails (Optional[List[str]]): A list of thumbnail URLs for the song.
+        timer (CountTimer): An instance of CountTimer to track the song's playback time.
+        source_url (Optional[str]): The source URL of the song.
+        extracted_metadata (bool): A flag indicating whether metadata has been extracted.
+    """
+
     def __init__(
         self,
-        url,
-        title=None,
-        views=None,
-        duration=None,
-        thumbnail=None,
-        channel=None,
-        channel_url=None,
-    ):
-        self.url = url
-        self.title = title
-        self.name = title
-        self.views = views
-        self.duration = duration
-        self.thumbnail = thumbnail
-        self.channel = channel
-        self.channel_url = channel_url
+        url: str,
+        title: Optional[str] = None,
+        views: Optional[int] = None,
+        duration: Optional[int] = None,
+        thumbnail: Optional[str] = None,
+        channel: Optional[str] = None,
+        channel_url: Optional[str] = None,
+        thumbnails: Optional[List[str]] = None,
+    ) -> None:
+        """
+        Initializes a Song instance with the given attributes.
 
-        self.timer = CountTimer()
-        self.source_url = None
-        self.extracted_metadata = False  # attribute to track metadata extraction
+        Args:
+            url (str): The URL of the song.
+            title (Optional[str]): The title of the song.
+            views (Optional[int]): The number of views of the song.
+            duration (Optional[int]): The duration of the song in seconds.
+            thumbnail (Optional[str]): The URL of the song's thumbnail.
+            channel (Optional[str]): The name of the channel that uploaded the song.
+            channel_url (Optional[str]): The URL of the channel that uploaded the song.
+            thumbnails (Optional[List[str]]): A list of thumbnail URLs for the song.
+        """
+        self.url: str = url
+        self.title: Optional[str] = title
+        self.name: Optional[str] = title
+        self.views: Optional[int] = views
+        self.duration: Optional[int] = duration
+        self.thumbnail: Optional[str] = thumbnail
+        self.channel: Optional[str] = channel
+        self.channel_url: Optional[str] = channel_url
+        self.thumbnails: Optional[List[str]] = thumbnails
 
-    async def reset(self):
+        self.timer: CountTimer = CountTimer()
+        self.source_url: Optional[str] = None
+        self.extracted_metadata: bool = False
+
+    async def reset(self) -> None:
+        """Resets the song's timer."""
         self.timer.reset()
 
-    async def resume(self):
+    async def resume(self) -> None:
+        """Resumes the song's timer."""
         self.timer.resume()
 
-    async def pause(self):
+    async def pause(self) -> None:
+        """Pauses the song's timer."""
         self.timer.pause()
 
-    async def start(self):
+    async def start(self) -> None:
+        """Starts the song's timer."""
         self.timer.start()
