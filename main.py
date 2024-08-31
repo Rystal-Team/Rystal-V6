@@ -274,5 +274,6 @@ async def list(
             ephemeral=True,
         )
 
+
 asyncio.run(setup())
 bot.run(TOKEN)
