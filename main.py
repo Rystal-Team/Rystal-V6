@@ -34,7 +34,6 @@ import traceback
 import nest_asyncio
 import nextcord
 from dotenv import load_dotenv
-from mem_top import mem_top
 
 nest_asyncio.apply()
 load_dotenv()
@@ -274,23 +273,6 @@ async def list(
             ),
             ephemeral=True,
         )
-
-
-@bot.command()
-async def memtop(ctx):
-    print(
-        mem_top(
-            limit=10,
-            width=1000,
-            sep="\n",
-            refs_format="{num}\t{type} {obj}",
-            bytes_format="{num}\t {obj}",
-            types_format="{num}\t {obj}",
-            verbose_types=None,
-            verbose_file_name="/tmp/mem_top",
-        )
-    )
-
 
 asyncio.run(setup())
 bot.run(TOKEN)
