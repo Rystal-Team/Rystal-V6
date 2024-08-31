@@ -40,19 +40,28 @@ note_class_title: "📒 | it notes but i dont see u have any plans so"
 note_create_description: "📒 | Create a note!"
 note_list_description: "📒 | List all notes!"
 note_view_description: "📒 | View a note!"
+note_remove_description: "📒 | Remove a note!"
 
 point_class_title: "⭐️ | gambling 🤑🤑🤑"
 points_claim_description: "⭐️ | Claim your points!"
 points_give_description: "⭐️ | Give points to another user!"
-points_coinflip_description: "⭐️ | Play a game of coinflip!"
 points_show_description: "⭐️ | Show your points!"
 points_leaderboard_description: "⭐️ | Show the points leaderboard!"
 
 game_class_title: "🎮 | games but u can gamble ur life savings 🤑🤑🤑"
 game_blackjack_description: "🎮 | Play a game of Blackjack!"
 game_dice_description: "🎮 | Roll a dice!"
+game_coinflip_description: "🎮 | Play a game of coinflip!"
+game_jackpot_description: "🎮 | Play the jackpot! (Requires 1000 points)"
+game_jackpot_rules_description: "🎮 | Show the jackpot rules!"
+game_showjackpot_description: "🎮 | Show the jackpot prize!"
+game_roulette_description: "🎮 | Play a game of Roulette!"
 
 bug_class_title: "🐞 | bug report!?11!1!1!?"
+
+shop_class_title: "🛒 | place where u buy things i think"
+shop_buy_description: "🛒 | Buy an item from the shop!"
+shop_catalog_description: "🛒 | Show the shop catalog!"
 
 # option descriptions
 music_skip_index_description: "The index of the song to skip."
@@ -70,6 +79,8 @@ setting_music_default_loop_mode_description: "Select the default loop mode!"
 
 game_dice_amount_description: "The amount of dice to roll."
 game_blackjack_bet_description: "The amount of points to bet."
+game_coinflip_bet_description: "The amount of points to bet."
+game_roulette_bet_description: "The amount of points to bet."
 
 points_coinflip_bet_description: "The amount of points to bet."
 points_give_recipient_description: "The recipient of the points."
@@ -80,6 +91,9 @@ points_show_user_description: "The user to show the points of."
 note_create_title_description: "The title of the note."
 note_create_description_description: "The description of the note."
 note_view_id_description: "The ID of the note to view."
+note_remove_id_description: "The ID of the note to remove."
+
+shop_buy_item_id_description: "The ID of the item to buy."
 
 # status
 cpu: "**CP**U: {cpu}%"
@@ -144,6 +158,7 @@ missing_permission: "no perms lmao"
 author_only_interactions: "only author of this thing can use it i think(idk i just do shit"
 not_implemented: "this thing not done yet bruh calm ur ass down"
 command_slowdown: "slow tf down who tf u think u are"
+interaction_author_only: "u no owner so piss off"
 
 # queue search query
 queue_serach_query: "search query (leave empty to show all)"
@@ -167,6 +182,7 @@ coinflip_win: "won {points} points? whatever you'll lose it all in 30 seconds ei
 coinflip_lose: "lost {points} points (L tbh"
 cooldown_message: "just wait 20 mins u impatient fuck, cum back in {minutes} mins {seconds} secs"
 points_given: "gave {amount} points to {recipient} i think, just a theory not confirmed yet"
+receive_not_allowed: "{recipient} banned from receiving points lmao"
 points_show_user: "{user} have {points} points? idk this might be wrong i forgor"
 points_show_self: "u have {points} points? idk this might be wrong i forgor"
 points_leaderboard_header: "top {include} gamblers 🤑🤑🤑"
@@ -190,3 +206,44 @@ dice_roll_title: "gambling but with dice but u cant actually gamble 📉📉📉
 dice_roll_description: "u rolled {num_dices} dice and only got {total} i think"
 dice_roll_results: "results i think"
 exceeds_max_dice_limit: "i cba to roll more than {limit} so shame on u"
+
+roulette_game_title: "💸 | roulette"
+roulette_your_bet: "Your bet:"
+roulette_result: "Result:"
+roulette_won_zeros: "won {points} points cuz green i think (still not as green as ur head"
+roulette_won: "idk u won {points} points!"
+roulette_lost: "lost {points} points lmao"
+
+
+jackpot_game_title: "🎰 | sakpot?"
+game_jackpot_rules: "### To win the game, all three columns on the spinner must display the same shape and color.\n
+The spinner can show these shapes and colors: 🟥 🟧 🟨 🟩 🟦 🟪 ❤️ 🧡 💛 💚 💙 💜 🔴 🟠 🟡 🟢 🔵 🟣 ⚫ ⚪\n\n
+- Black Circles (⚫) can represent any color or shape, including itself (⚫), but not a White Circle.\n\n
+- White Circles (⚪) can represent any color or shape, including itself (⚪), but not a Black Circle.\n\n
+A 25% tax will be deducted from the jackpot if you win.\n\n
+Lost points will be added to the jackpot prize.\n\n
+If all three columns show either Black Circles (⚫) or White Circles (⚪), you will win the Mega Score, which grants a 1.5x multiplier to your prize.\n\n
+Note: You need 1,000 points to play the game."
+jackpot_won: "u won jackpot i think"
+jackpot_lost: "lost lmao"
+jackpot_mega_score: "idk this thing called mega score i think 1.5x the money apparently"
+jackpot_point_won: "won:"
+jackpot_point_lost: "lost:"
+jackpot_your_points: "ur points:"
+jackpot_total_points: "total points:"
+jackpot_result: "result:"
+jackpot_show_total: "total points: {points}"
+
+# note
+note_not_found: "idk cant find that bro idk wat u searching for"
+note_create_success: "note created"
+note_remove_success: "note removed"
+note_remove_failure: "failed to remove i think"
+note_list_title: "📒 | note list i think"
+note_list_footer: "page {page} of {total_pages}"
+note_state_unbegun: "unbegun"
+note_state_stalled: "stalled"
+note_state_ongoing: "ongoing"
+note_state_finished: "finished"
+note_view_details: "### {title}\n\ndescription: {message}"
+note_state_title: "state"
