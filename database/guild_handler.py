@@ -60,7 +60,7 @@ async def get_jackpot_announcement_channel():
         "mysql": "SELECT jackpot_announce_channel FROM guild WHERE jackpot_announce_channel IS NOT NULL",
     }
     db_handler.execute(statement)
-    return [row[0] for row in db_handler.fetchall()]
+    return [row[0] for row in (db_handler.fetchall() or [])]
 
 
 async def change_guild_language(guild_id: int, language: str):

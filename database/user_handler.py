@@ -152,6 +152,11 @@ async def get_leaderboard(limit, order_by):
     )
     result = db_handler.fetchall()
 
+    if not isinstance(result, (list, tuple)) or not all(
+        isinstance(user, (list, tuple)) for user in result
+    ):
+        return []
+
     leaderboard = {
         user[0]: {
             "level": user[1],
