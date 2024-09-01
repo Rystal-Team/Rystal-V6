@@ -23,7 +23,5 @@
 
 
 def format_number(number: int) -> str:
-    """
-    Formats a number.
-    """
+    """Formats a number."""
     return "{:,}".format(number)
