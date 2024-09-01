@@ -216,7 +216,7 @@ roulette_lost: "Sorry, you lost {points} points."
 
 jackpot_game_title: "🎰 | Jackpot"
 game_jackpot_rules: "### To win the game, all three columns on the spinner must display the same shape and color.\n
-The spinner can show these shapes and colors: 🟥 🟧 🟨 🟩 🟦 🟪 ❤️ 🧡 💛 💚 💙 💜 🔴 🟠 🟡 🟢 🔵 🟣 ⚫ ⚪\n\n
+The spinner can show these shapes and colors: 🟥 🟧 🟨 🟩 🟦 🟪 🟫❤️ 🧡 💛 💚 💙 💜🤎 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪\n\n
 - Black Circles (⚫) can represent any color or shape, including itself (⚫), but not a White Circle.\n\n
 - White Circles (⚪) can represent any color or shape, including itself (⚪), but not a Black Circle.\n\n
 A 25% tax will be deducted from the jackpot if you win.\n\n

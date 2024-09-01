@@ -36,18 +36,21 @@ class Spinner:
             "🟩",
             "🟦",
             "🟪",
+            "🟫",
             "❤️",
             "🧡",
             "💛",
             "💚",
             "💙",
             "💜",
+            "🤎",
             "🔴",
             "🟠",
             "🟡",
             "🟢",
             "🔵",
             "🟣",
+            "🟤",
             "⚫",
             "⚪",
         ]
@@ -160,4 +163,4 @@ class Spinner:
 
 if __name__ == "__main__":
     spinner = Spinner()
-    spinner.run_simulation(10000000, print_results=True)
+    spinner.run_simulation(10000, print_results=True)
