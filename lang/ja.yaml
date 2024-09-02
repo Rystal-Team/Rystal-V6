@@ -30,10 +30,14 @@ system_info_description: "🤖 | ボットの情報を表示！"
 
 setting_class_title: "⚙️ | 設定"
 setting_language_description: "⚙️ | ボットの言語を変更！"
+
 setting_music_description: "⚙️ | 音楽設定を変更！"
 setting_music_volume_description: "⚙️ | サイレントモードを切り替え（再生通知を非表示）！"
 setting_music_auto_leave_description: "⚙️ | 自動退室を切り替え！"
 setting_music_default_loop_description: "⚙️ | デフォルトのループモードを変更！"
+
+setting_game_description: "⚙️ | ゲームの設定を変更します！"
+setting_game_announce_channel_description: "⚙️ | ゲームのお知らせチャンネルを変更します！"
 
 note_class_title: "📒 | ノート"
 note_create_description: "📒 | ノートを作成！"
@@ -75,6 +79,7 @@ rank_card_member_description: "ランクを表示するメンバー。"
 
 setting_language_option_description: "希望の言語を選択！"
 setting_music_default_loop_mode_description: "デフォルトのループモードを選択！"
+setting_game_announce_channel_option_description: "ゲームのお知らせチャンネルを選択してください！"
 
 game_dice_amount_description: "振るサイコロの数。"
 game_blackjack_bet_description: "賭けるポイント数。"
@@ -188,6 +193,8 @@ points_leaderboard_header: "⭐️ | ポイントリーダーボード - トッ�
 points_leaderboard_user_row: "✨ > {points} ポイント"
 
 # games
+game_announce_channel_changed: "ゲームのお知らせチャンネルが{channel}に変更されました！"
+
 blackjack_game_title: "🃏 | ブラックジャック"
 blackjack_your_move: "あなたの手番です！"
 blackjack_timeout_message: "プレイヤーが時間切れになりました！ ディーラーの勝ちです。"
@@ -234,6 +241,9 @@ jackpot_your_points: "あなたのポイント:"
 jackpot_total_points: "合計ポイント:"
 jackpot_result: "結果:"
 jackpot_show_total: "合計ポイント: {points}"
+jackpot_announce_jackpot: "{user}がジャックポットで{points}ポイントを獲得しました！"
+jackpot_announce_mega_score: "{user}がメガスコアで{points}ポイントを獲得しました！ジャックポットの1.5倍です！"
+jackpot_announce_deficient_score: "{user}がジャックポットで{points}ポイントを獲得しました！しかし、不足スコア（0.8倍）です。"
 
 # note
 note_not_found: "ノートが見つかりません！"

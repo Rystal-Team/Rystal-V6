@@ -30,10 +30,14 @@ system_info_description: "🤖 | Show the bot's information!"
 
 setting_class_title: "⚙️ | Settings"
 setting_language_description: "⚙️ | Change the bot's language!"
+
 setting_music_description: "⚙️ | Change the music settings!"
 setting_music_volume_description: "⚙️ | Toggle silent mode (Hide play notifications)!"
 setting_music_auto_leave_description: "⚙️ | Toggle auto leave voice channel!"
 setting_music_default_loop_description: "⚙️ | Change the default loop mode!"
+
+setting_game_description: "⚙️ | Change the game settings!"
+setting_game_announce_channel_description: "⚙️ | Change the game announce channel!"
 
 note_class_title: "📒 | Note"
 note_create_description: "📒 | Create a note!"
@@ -75,6 +79,7 @@ rank_card_member_description: "The member to show the rank of."
 
 setting_language_option_description: "Select the desired language!"
 setting_music_default_loop_mode_description: "Select the default loop mode!"
+setting_game_announce_channel_option_description: "Select the game announce channel!"
 
 game_dice_amount_description: "The amount of dice to roll."
 game_blackjack_bet_description: "The amount of points to bet."
@@ -188,6 +193,8 @@ points_leaderboard_header: "⭐️ | Points Leaderboard - Top {include}"
 points_leaderboard_user_row: "✨ > {points} points"
 
 # games
+game_announce_channel_changed: "Game announce channel changed to {channel}!"
+
 blackjack_game_title: "🃏 | Blackjack"
 blackjack_your_move: "Your move!"
 blackjack_timeout_message: "Player took too long! Dealer wins by default."
@@ -213,7 +220,6 @@ roulette_won_zeros: "Congratulations! You won {points} points on green! 5x the p
 roulette_won: "Congratulations! You won {points} points!"
 roulette_lost: "Sorry, you lost {points} points."
 
-
 jackpot_game_title: "🎰 | Jackpot"
 game_jackpot_rules: "### To win the game, all three columns on the spinner must display the same shape and color.\n
 The spinner can show these shapes and colors: 🟥 🟧 🟨 🟩 🟦 🟪 🟫❤️ 🧡 💛 💚 💙 💜🤎 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🃏\n\n
@@ -235,6 +241,9 @@ jackpot_your_points: "Your Points:"
 jackpot_total_points: "Total Points:"
 jackpot_result: "Result:"
 jackpot_show_total: "Total Points: {points}"
+jackpot_announce_jackpot: "{user} has won {points} points from the jackpot!"
+jackpot_announce_mega_score: "{user} has won {points} fro the Mega Score! 1.5x the jackpot!"
+jackpot_announce_deficient_score: "{user} has won {points} points from the jackpot! However, it's a deficient score (0.8x)."
 
 # note
 note_not_found: "Note not found!"

@@ -32,10 +32,11 @@ from config.loader import (
     jackpot_tax_rate,
     lang,
     type_color,
+    jackpot_win_global_announcement,
 )
 from database import user_handler
 from database.global_handler import change_global, get_global
-from database.guild_handler import get_guild_language
+from database.guild_handler import get_guild_language, get_jackpot_announcement_channels
 from module.embeds.blackjack import BlackjackView
 from module.embeds.generic import Embeds
 from module.embeds.jackpot import create_jackpot_embed
@@ -435,7 +436,7 @@ class GameSystem(commands.Cog):
         won, result, mega_score, deficient_score = self.jackpot_spinner.play()
         new_total = jackpot_total
 
-        if won:
+        if won and jackpot_win_global_announcement:
             # chunky code here, but it's just a simple jackpot result calculation lmao
             # if you want to make it more readable, help yourself
             if mega_score:
@@ -464,6 +465,33 @@ class GameSystem(commands.Cog):
                 bot_data["points"] += bot_tax - jackpot_base_amount
             await user_handler.update_user_data(self.bot.user.id, bot_data)
             await user_handler.update_user_data(interaction.user.id, user_data)
+
+        if won or deficient_score or mega_score:
+            for channel_id in await get_jackpot_announcement_channels():
+                channel = self.bot.get_channel(channel_id)
+                if channel:
+                    await channel.send(
+                        embed=Embeds.message(
+                            title=lang[await get_guild_language(channel.guild.id)][
+                                "jackpot_game_title"
+                            ],
+                            message=lang[await get_guild_language(channel.guild.id)][
+                                (
+                                    "jackpot_announce_mega_score"
+                                    if mega_score
+                                    else (
+                                        "jackpot_announce_deficient_score"
+                                        if deficient_score
+                                        else "jackpot_announce_jackpot"
+                                    )
+                                )
+                            ].format(
+                                user=interaction.user.global_name,
+                                points=format_number(new_total),
+                            ),
+                            message_type="info",
+                        ),
+                    )
 
         await interaction.followup.send(
             embed=create_jackpot_embed(

@@ -48,7 +48,7 @@ async def append_guild(guild_id: int):
         print(colored(f"Failed to Register Guild: {guild_id}", "red"))
 
 
-async def get_jackpot_announcement_channel():
+async def get_jackpot_announcement_channels():
     """
     Retrieves all channel IDs where jackpot announcements are made.
 
@@ -56,8 +56,8 @@ async def get_jackpot_announcement_channel():
         list: A list of channel IDs.
     """
     statement = {
-        "sqlite": "SELECT jackpot_announce_channel FROM guild WHERE jackpot_announce_channel IS NOT NULL",
-        "mysql": "SELECT jackpot_announce_channel FROM guild WHERE jackpot_announce_channel IS NOT NULL",
+        "sqlite": "SELECT game_announce_channel FROM guild WHERE game_announce_channel IS NOT NULL",
+        "mysql": "SELECT game_announce_channel FROM guild WHERE game_announce_channel IS NOT NULL",
     }
     db_handler.execute(statement)
     return [row[0] for row in (db_handler.fetchall() or [])]
