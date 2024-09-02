@@ -223,7 +223,7 @@ class PointSystem(commands.Cog):
         if user:
             message = lang[await get_guild_language(interaction.guild.id)][
                 "points_show_user"
-            ].format(user=user.display_name, points=points)
+            ].format(user=user.display_name, points=format_number(points))
         else:
             message = lang[await get_guild_language(interaction.guild.id)][
                 "points_show_self"

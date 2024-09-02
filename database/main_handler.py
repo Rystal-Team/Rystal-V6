@@ -52,7 +52,7 @@ create_statements = {
                     music_auto_leave BOOLEAN,
                     music_default_loop_mode INTEGER,
                     jackpot_total INTEGER,
-                    jackpot_announce_channel INTEGER
+                    game_announce_channel INTEGER
                 )
             """,
             "columns": {
@@ -62,7 +62,7 @@ create_statements = {
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INTEGER",
                 "jackpot_total": "INTEGER",
-                "jackpot_announce_channel": "INTEGER",
+                "game_announce_channel": "INTEGER",
             },
         },
         "game_sessions": {
@@ -112,7 +112,7 @@ create_statements = {
                     music_auto_leave BOOLEAN,
                     music_default_loop_mode INT,
                     jackpot_total INT,
-                    jackpot_announce_channel INT
+                    game_announce_channel INT
                 )
             """,
             "columns": {
@@ -122,7 +122,7 @@ create_statements = {
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INT",
                 "jackpot_total": "INT",
-                "jackpot_announce_channel": "INT",
+                "game_announce_channel": "INT",
             },
         },
         "game_sessions": {

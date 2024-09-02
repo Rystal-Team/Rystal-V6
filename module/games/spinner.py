@@ -23,7 +23,7 @@
 
 
 import random
-from typing import Any, List, Tuple
+from typing import Any, List
 
 
 class Spinner:

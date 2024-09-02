@@ -90,6 +90,41 @@ class Settings(commands.Cog):
                 )
             )
 
+    @setting.subcommand(description=lang[default_language]["setting_game_description"])
+    async def game(self, interaction: Interaction):
+        return
+
+    @game.subcommand(
+        description=lang[default_language]["setting_game_announce_channel_description"]
+    )
+    async def jackpot_announce_channel(
+        self,
+        interaction: Interaction,
+        channel: nextcord.TextChannel = SlashOption(
+            name="channel",
+            description=lang[default_language][
+                "setting_game_announce_channel_option_description"
+            ],
+            required=True,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        await change_guild_settings(
+            interaction.guild.id, "game_announce_channel", channel.id
+        )
+
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "game_announce_channel_changed"
+                ].format(channel=channel.mention),
+                message_type="info",
+            )
+        )
+
     @setting.subcommand(description=lang[default_language]["setting_music_description"])
     async def music(self, interaction: Interaction):
         return
