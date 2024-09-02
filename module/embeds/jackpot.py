@@ -28,7 +28,7 @@ from module.utils import format_number
 
 
 def create_jackpot_embed(
-    won, result, jackpot_total, user_points, mega_score, guild_lang
+    won, result, jackpot_total, user_points, mega_score, deficient_score, guild_lang
 ):
     """
     Creates an embed for the jackpot game.
@@ -44,7 +44,11 @@ def create_jackpot_embed(
             else (
                 lang[guild_lang]["jackpot_mega_score"]
                 if mega_score
-                else lang[guild_lang]["jackpot_won"]
+                else (
+                    lang[guild_lang]["jackpot_deficient_score"]
+                    if deficient_score
+                    else lang[guild_lang]["jackpot_won"]
+                )
             )
         ),
         color=(

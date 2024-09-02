@@ -432,19 +432,29 @@ class GameSystem(commands.Cog):
         await change_global("jackpot_total", jackpot_total + 1000)
         jackpot_total = await get_global("jackpot_total")
 
-        won, result, mega_score = self.jackpot_spinner.play()
+        won, result, mega_score, deficient_score = self.jackpot_spinner.play()
+        new_total = jackpot_total
 
         if won:
             # chunky code here, but it's just a simple jackpot result calculation lmao
             # if you want to make it more readable, help yourself
             if mega_score:
-                jackpot_total = round(jackpot_total * 1.5)
-                bot_tax = round(jackpot_tax_rate * jackpot_total)
-                user_data["points"] += jackpot_total - bot_tax
+                new_total = round(jackpot_total * 1.5)
+                bot_tax = round(jackpot_tax_rate * new_total)
+                user_data["points"] += new_total - bot_tax
                 await change_global("jackpot_total", jackpot_base_amount)
                 bot_data = await user_handler.get_user_data(self.bot.user.id)
                 bot_data["points"] += (
-                    round(jackpot_total * 0.5) - bot_tax - jackpot_base_amount
+                    bot_tax - round(new_total - jackpot_total) - jackpot_base_amount
+                )
+            elif deficient_score:
+                new_total = round(jackpot_total * 0.8)
+                bot_tax = round(jackpot_tax_rate * new_total)
+                user_data["points"] += new_total - bot_tax
+                await change_global("jackpot_total", jackpot_base_amount)
+                bot_data = await user_handler.get_user_data(self.bot.user.id)
+                bot_data["points"] += (
+                    bot_tax + round(jackpot_total - new_total) - jackpot_base_amount
                 )
             else:
                 bot_tax = round(jackpot_tax_rate * jackpot_total)
@@ -459,9 +469,10 @@ class GameSystem(commands.Cog):
             embed=create_jackpot_embed(
                 won,
                 result,
-                jackpot_total,
+                new_total,
                 user_data["points"],
                 mega_score,
+                deficient_score,
                 await get_guild_language(interaction.guild.id),
             ),
         )

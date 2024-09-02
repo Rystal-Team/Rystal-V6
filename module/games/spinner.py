@@ -53,6 +53,7 @@ class Spinner:
             "🟤",
             "⚫",
             "⚪",
+            "🃏",
         ]
 
     def spin_wheel(self) -> List[str]:
@@ -65,7 +66,7 @@ class Spinner:
         return [random.choice(self.options) for _ in range(3)]
 
     @staticmethod
-    def is_winning(columns: List[str]) -> Tuple[bool, bool]:
+    def is_winning(columns: List[str]) -> tuple[Any, bool, bool]:
         """
         Determines if the given columns result in a win.
 
@@ -75,13 +76,16 @@ class Spinner:
         Returns:
             bool: True if the columns result in a win, False otherwise.
         """
+        if "🃏" in columns:
+            return False, False, False
+
         col1, col2, col3 = columns
         mega_score = False
 
         if col1 == col2 == col3:
             if col1 in ("⚪", "⚫"):
                 mega_score = True
-            return True, mega_score
+            return True, mega_score, False
 
         def is_wildcard(col: str) -> bool:
             """
@@ -107,6 +111,9 @@ class Spinner:
             Returns:
                 bool: True if the columns result in a win considering wildcard combinations, False otherwise.
             """
+            if {"⚫", "⚪"}.issubset({c1, c2, c3}):
+                return False
+
             return (
                 (c1 == c2 and is_wildcard(c3))
                 or (c1 == c3 and is_wildcard(c2))
@@ -116,9 +123,13 @@ class Spinner:
                 or (is_wildcard(c2) and is_wildcard(c3) and c2 == c3)
             )
 
-        return check_wildcard_combinations(col1, col2, col3), mega_score
+        return (
+            check_wildcard_combinations(col1, col2, col3),
+            mega_score,
+            True,
+        )
 
-    def play(self) -> tuple[bool, Any, bool]:
+    def play(self) -> tuple[Any, list[str], bool, bool]:
         """
         Spins the wheel and checks if the result is a winning combination.
 
@@ -126,8 +137,8 @@ class Spinner:
             tuple: A tuple containing a boolean indicating if it's a win and the list of columns.
         """
         columns = self.spin_wheel()
-        won, mega_score = self.is_winning(columns)
-        return won, columns, mega_score
+        won, mega_score, deficient_score = self.is_winning(columns)
+        return won, columns, mega_score, deficient_score
 
     def run_simulation(self, num_spins: int, print_results: bool = False) -> float:
         """
@@ -142,25 +153,45 @@ class Spinner:
         """
         wins = 0
         mega_scores = 0
+        deficient_scores = 0
         for _ in range(num_spins):
-            win, columns, mega_score = self.play()
+            win, columns, mega_score, deficient_score = self.play()
             if win:
                 wins += 1
-                if mega_score:
-                    mega_scores += 1
                 if print_results:
                     print(", ".join(columns))
+                if mega_score:
+                    mega_scores += 1
+                if deficient_score:
+                    deficient_scores += 1
 
         winning_percentage = (wins / num_spins) * 100
         if print_results:
             print(f"Number of spins: {num_spins}")
             print(f"Number of wins: {wins}")
             print(f"Number of mega scores: {mega_scores}")
+            print(f"Number of deficient scores: {deficient_scores}")
             print(f"Winning percentage: {winning_percentage:.2f}%")
-            print("Mega score rate: {:.2f}%".format((mega_scores / wins) * 100))
+            print(
+                "Mega score rate: {:.2f}%".format((mega_scores / wins) * 100)
+                if mega_scores != 0
+                else "No mega scores"
+            )
+            print(
+                "deficient score rate: {:.2f}%".format((deficient_scores / wins) * 100)
+                if deficient_scores != 0
+                else "No deficient scores"
+            )
+            print(
+                "Winning percentage after deficient scores: {:.2f}%".format(
+                    (wins - deficient_scores) / num_spins * 100
+                )
+            )
         return winning_percentage
 
 
 if __name__ == "__main__":
     spinner = Spinner()
     spinner.run_simulation(10000, print_results=True)
+    won = False
+    trails = 0
