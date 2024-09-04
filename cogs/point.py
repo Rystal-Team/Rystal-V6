@@ -183,7 +183,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        receive_reset_str = data["last_point_claimed"]
+        receive_reset_str = recipient_data["last_point_claimed"]
         if not isinstance(receive_reset_str, str):
             receive_reset_str = datetime.datetime.min.isoformat()
 
@@ -194,7 +194,7 @@ class PointSystem(commands.Cog):
         if now - last_received < cooldown_period:
             recipient_data["receive_limit_reached"] = False
 
-        if recipent_data["received_today"] + amount > point_receive_limit or recipent_data["point_receive_limit_reached"] and not force:
+        if recipient_data["received_today"] + amount > point_receive_limit or recipient_data["point_receive_limit_reached"] and not force:
 
             await interaction.followup.send(
                 embed=Embeds.message(
