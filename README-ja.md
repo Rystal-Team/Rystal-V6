@@ -21,6 +21,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
 [![License](https://img.shields.io/github/license/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6/blob/main/LICENSE)
 [![Github Watchers](https://img.shields.io/github/watchers/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
+[![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
 
 </div>
 
