@@ -33,7 +33,18 @@ create_statements = {
             "columns": {"user_id": "TEXT PRIMARY KEY", "notes": "TEXT"},
         },
         "users": {
-            "create": "CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, level INTEGER, xp INTEGER, total_xp INTEGER, points INTEGER, last_point_claimed TEXT)",
+            "create": """CREATE TABLE IF NOT EXISTS users(
+            user_id TEXT PRIMARY KEY,
+            level INTEGER,
+            xp INTEGER,
+            total_xp INTEGER,
+            points INTEGER,
+            last_point_claimed TEXT,
+            receive_limit_reached TEXT,
+            last_point_received TEXT,
+            received_today, INTEGER
+            )
+            """,
             "columns": {
                 "user_id": "TEXT PRIMARY KEY",
                 "level": "INTEGER",
@@ -41,6 +52,9 @@ create_statements = {
                 "total_xp": "INTEGER",
                 "points": "INTEGER",
                 "last_point_claimed": "TEXT",
+                "receive_limit_reached": "BOOLEAN",
+                "last_point_received": "TEXT",
+                "received_today": "INTEGER",
             },
         },
         "guild": {

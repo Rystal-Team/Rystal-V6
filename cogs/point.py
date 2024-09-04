@@ -28,7 +28,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import banland, bot_owner_id, default_language, lang
+from config.loader import banland, bot_owner_id, default_language, lang, point_receive_limit
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -66,6 +66,7 @@ class PointSystem(commands.Cog):
 
         if now - last_claimed < cooldown_period:
             remaining_time = cooldown_period - (now - last_claimed)
+            print(remaining_time.seconds)
             minutes, seconds = divmod(remaining_time.seconds, 60)
             await interaction.followup.send(
                 embed=Embeds.message(
@@ -177,6 +178,32 @@ class PointSystem(commands.Cog):
                     message=lang[await get_guild_language(interaction.guild.id)][
                         "not_enough_points"
                     ],
+                    message_type="error",
+                ),
+            )
+            return
+
+        receive_reset_str = data["last_point_claimed"]
+        if not isinstance(receive_reset_str, str):
+            receive_reset_str = datetime.datetime.min.isoformat()
+
+        last_received = datetime.datetime.fromisoformat(receive_reset_str)
+        now = datetime.datetime.now()
+        cooldown_period = datetime.timedelta(days=1)
+
+        if now - last_received < cooldown_period:
+            recipient_data["receive_limit_reached"] = False
+
+        if recipent_data["received_today"] + amount > point_receive_limit or recipent_data["point_receive_limit_reached"] and not force:
+
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "recipient_limit_reached"
+                    ].format(),
                     message_type="error",
                 ),
             )

@@ -40,6 +40,7 @@ included_unmaintained_lang = config["included_unmaintained_lang"]
 use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
+point_receive_limit = config["point_receive_limit"]
 
 type_color = {
     "success": Color.from_rgb(*config["type_color"]["success"]),
