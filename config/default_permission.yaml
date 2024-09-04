@@ -1,0 +1,18 @@
+# Default permission for all commands
+# You can change the permission for each command in the command's yaml file
+# The permission is a string, it can be:
+# - "everyone": everyone can use the command
+# - "owner": only the bot owner can use the command
+# - "admin": only the server admins (with discord's administrator permission) can use the command
+# - "mod": only the server mods (with discord's manage server permission) can use the command
+# - "disabled": no one can use the command
+# To allow multiple permissions, separate them with a comma. For example: "owner,admin"
+
+setting:
+  game:
+    game_announce_channel: "admin,mod"
+  music:
+    silent_mode: "admin,mod"
+    auto_leave: "admin,mod"
+    default_loop_mode: "admin,mod"
+  language: "admin,mod"

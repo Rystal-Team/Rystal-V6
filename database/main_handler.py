@@ -143,7 +143,6 @@ create_statements = {
         },
     },
 }
-existing_tables = []
 
 if USE_SQLITE:
     db_handler = DatabaseHandler(

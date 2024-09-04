@@ -33,6 +33,7 @@ from database.guild_handler import (
     get_guild_settings,
 )
 from module.embeds.generic import Embeds
+from config.perm import auth_guard
 
 class_namespace = "setting_class_title"
 
@@ -51,6 +52,7 @@ class Settings(commands.Cog):
     @setting.subcommand(
         description=lang[default_language]["setting_language_description"]
     )
+    @auth_guard.check_permissions("setting/language")
     async def language(
         self,
         interaction: Interaction,
@@ -97,7 +99,8 @@ class Settings(commands.Cog):
     @game.subcommand(
         description=lang[default_language]["setting_game_announce_channel_description"]
     )
-    async def jackpot_announce_channel(
+    @auth_guard.check_permissions("setting/game/game_announce_channel")
+    async def game_announce_channel(
         self,
         interaction: Interaction,
         channel: nextcord.TextChannel = SlashOption(
@@ -132,6 +135,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_volume_description"]
     )
+    @auth_guard.check_permissions("setting/music/silent_mode")
     async def silent_mode(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         toggle = not (
@@ -160,6 +164,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_auto_leave_description"]
     )
+    @auth_guard.check_permissions("setting/music/auto_leave")
     async def auto_leave(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         toggle = not (
@@ -188,6 +193,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_default_loop_description"]
     )
+    @auth_guard.check_permissions("setting/music/default_loop_mode")
     async def default_loop_mode(
         self,
         interaction: Interaction,

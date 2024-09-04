@@ -41,6 +41,9 @@ use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
 
+AUTHGUARD_SQLITE_PATH = config["AUTHGUARD_SQLITE_PATH"]
+AUTHGUARD_USE_SQLITE = config["AUTHGUARD_USE_SQLITE"]
+
 type_color = {
     "success": Color.from_rgb(*config["type_color"]["success"]),
     "error": Color.from_rgb(*config["type_color"]["error"]),

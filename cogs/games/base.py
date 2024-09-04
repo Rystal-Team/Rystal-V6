@@ -30,9 +30,9 @@ from config.loader import (
     default_language,
     jackpot_base_amount,
     jackpot_tax_rate,
+    jackpot_win_global_announcement,
     lang,
     type_color,
-    jackpot_win_global_announcement,
 )
 from database import user_handler
 from database.global_handler import change_global, get_global
