@@ -20,4 +20,4 @@ xmltodict>=0.13.0
 youtube-search>=2.1.2
 yt-dlp>=2024.5.27
 Pillow~=10.1.0
-setuptools>=74.1.1
+setuptools>=58.0.4
