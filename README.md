@@ -60,7 +60,7 @@ from [Releases](https://github.com/Rystal-Team/Rystal-V6/releases).
 
 To run the bot you simply have to install requirements in `requirements.txt`
 with `pip install -r <path-to>/requirements.txt`.<br>
-**With containers such as pterodactyl, there might be issue with installing setuptools as it's already included. If this is the case please use container-requirements.txt instead.*
+**With containers such as pterodactyl, there might be issue with installing `setuptools` as it's already included. If this is the case please use `container-requirements.txt` or remove `setuptools` from `requirement.txt` instead.*
 
 The main config file is `.env`, make a copy of `.env.example` and rename it into `.env` and enter the required
 tokens.<br>
