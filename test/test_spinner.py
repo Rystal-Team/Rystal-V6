@@ -20,8 +20,9 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-from typing import Any, List
+
 import random
+from typing import Any, List
 
 
 class Spinner:
