@@ -66,7 +66,6 @@ class PointSystem(commands.Cog):
 
         if now - last_claimed < cooldown_period:
             remaining_time = cooldown_period - (now - last_claimed)
-            print(remaining_time.seconds)
             minutes, seconds = divmod(remaining_time.seconds, 60)
             await interaction.followup.send(
                 embed=Embeds.message(
@@ -194,8 +193,9 @@ class PointSystem(commands.Cog):
         if now - last_received < cooldown_period:
             recipient_data["receive_limit_reached"] = False
 
-        if recipient_data["received_today"] + amount > point_receive_limit or recipient_data["point_receive_limit_reached"] and not force:
-
+        if recipient_data["received_today"] + amount > point_receive_limit or recipient_data["receive_limit_reached"] and not force:
+            remaining_time = point_receive_limit - (now - last_received)
+            hours, minutes, seconds = map(lambda x: int(x), [remaining_time.seconds//3600, remaining_time.seconds % 3600//60, remaining_time.seconds % 60])
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -203,7 +203,7 @@ class PointSystem(commands.Cog):
                     ],
                     message=lang[await get_guild_language(interaction.guild.id)][
                         "recipient_limit_reached"
-                    ].format(),
+                    ].format(hours=hours, minutes=minutes, seconds=seconds),
                     message_type="error",
                 ),
             )
