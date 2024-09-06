@@ -1,5 +1,5 @@
-# Chinese Taiwan translations
-name: "繁體中文（台湾）"
+# Traditional-Chinese translations
+name: "繁體中文"
 
 # general
 must_be_positive: "`{option}` 的值必須是正數！"
