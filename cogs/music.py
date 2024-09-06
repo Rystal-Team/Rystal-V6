@@ -229,11 +229,14 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            loop_method = LOOPMODE(
+            guild_loop = (
                 await get_guild_settings(
                     interaction.guild.id, "music_default_loop_mode"
                 )
+                or 1
             )
+
+            loop_method = LOOPMODE(guild_loop)
             await player.change_loop_mode(loop_method)
 
             if loop_method != LOOPMODE.off:
