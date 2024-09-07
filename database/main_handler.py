@@ -40,9 +40,9 @@ create_statements = {
             total_xp INTEGER,
             points INTEGER,
             last_point_claimed TEXT,
-            receive_limit_reached TEXT,
+            receive_limit_reached BOOLEAN,
             last_point_received TEXT,
-            received_today, INTEGER
+            received_today INTEGER
             )
             """,
             "columns": {
@@ -107,7 +107,19 @@ create_statements = {
             "columns": {"user_id": "VARCHAR(255) PRIMARY KEY", "notes": "JSON"},
         },
         "users": {
-            "create": "CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(255) PRIMARY KEY, level INT, xp INT, total_xp INT, points INT, last_point_claimed DATETIME)",
+            "create": """
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id VARCHAR(255) PRIMARY KEY,
+                    level INT,
+                    xp INT,
+                    total_xp INT,
+                    points INT,
+                    last_point_claimed DATETIME,
+                    receive_limit_reached BOOLEAN,
+                    last_point_received TEXT,
+                    received_today INTEGER
+                    )
+                    """,
             "columns": {
                 "user_id": "VARCHAR(255) PRIMARY KEY",
                 "level": "INT",
@@ -115,6 +127,9 @@ create_statements = {
                 "total_xp": "INT",
                 "points": "INT",
                 "last_point_claimed": "DATETIME",
+                "receive_limit_reached": "BOOLEAN",
+                "last_point_received": "TEXT",
+                "received_today": "INTEGER",
             },
         },
         "guild": {

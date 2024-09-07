@@ -188,6 +188,7 @@ cooldown_message: "You can only claim points once every 20 minutes. Please try a
 points_given: "You have given {amount} points to {recipient}!"
 receive_not_allowed: "{recipient} is not allowed to receive points."
 recipient_limit_reached: "{recipient} has reached their daily limit of receiving points. Please try again in {hours} hours, {minutes} minutes, and {seconds} seconds."
+higher_than_receive_limit: "{recipient} cannot receive more than {limit} points per day."
 points_show_user: "{user} have {points} points!"
 points_show_self: "You have {points} points!"
 points_leaderboard_header: "⭐️ | Points Leaderboard - Top {include}"

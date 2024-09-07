@@ -190,10 +190,10 @@ class PointSystem(commands.Cog):
         now = datetime.datetime.now()
         cooldown_period = datetime.timedelta(days=1)
 
-        if now - last_received < cooldown_period:
+        if now - last_received > cooldown_period:
             recipient_data["receive_limit_reached"] = False
 
-        if recipient_data["received_today"] + amount > point_receive_limit or recipient_data["receive_limit_reached"] and not force:
+        if recipient_data["receive_limit_reached"] and not force:
             remaining_time = cooldown_period - (now - last_received)
             hours, minutes, seconds = map(lambda x: int(x), [remaining_time.seconds//3600, remaining_time.seconds % 3600//60, remaining_time.seconds % 60])
             await interaction.followup.send(
@@ -209,9 +209,29 @@ class PointSystem(commands.Cog):
             )
             return
 
+        if recipient_data["received_today"] + amount > point_receive_limit and not force:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "higher_than_receive_limit"
+                    ].format(recipient=recipient.display_name, limit=point_receive_limit),
+                    message_type="error",
+                ),
+            )
+            return
+
         if not force:
             giver_data["points"] -= amount
+            recipient_data["received_today"] += amount
         recipient_data["points"] += amount
+        recipient_data["last_point_received"] = now.isoformat()
+
+        if recipient_data["received_today"] + amount >= point_receive_limit and not force:
+            print("yes")
+            recipient_data["receive_limit_reached"] = True
 
         await user_handler.update_user_data(giver_id, giver_data)
         await user_handler.update_user_data(recipient_id, recipient_data)
