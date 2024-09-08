@@ -42,12 +42,18 @@ def create_jackpot_embed(
             lang[guild_lang]["jackpot_lost"]
             if not won
             else (
-                lang[guild_lang]["jackpot_mega_score"]
+                lang[guild_lang]["jackpot_mega_score"].format(
+                    points=format_number(jackpot_total)
+                )
                 if mega_score
                 else (
-                    lang[guild_lang]["jackpot_deficient_score"]
+                    lang[guild_lang]["jackpot_deficient_score"].format(
+                        points=format_number(jackpot_total)
+                    )
                     if deficient_score
-                    else lang[guild_lang]["jackpot_won"]
+                    else lang[guild_lang]["jackpot_won"].format(
+                        points=format_number(jackpot_total)
+                    )
                 )
             )
         ),

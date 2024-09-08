@@ -21,6 +21,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
 [![License](https://img.shields.io/github/license/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6/blob/main/LICENSE)
 [![Github Watchers](https://img.shields.io/github/watchers/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
+[![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
 
 </div>
 
@@ -58,7 +59,8 @@ Download the latest [release](https://github.com/Rystal-Team/Rystal-V6/releases/
 from [Releases](https://github.com/Rystal-Team/Rystal-V6/releases).
 
 To run the bot you simply have to install requirements in `requirements.txt`
-with `pip install -r <path-to>/requirements.txt`.
+with `pip install -r <path-to>/requirements.txt`.<br>
+**With containers such as pterodactyl, there might be issue with installing `setuptools` as it's already included. If this is the case please use `container-requirements.txt` or remove `setuptools` from `requirement.txt` instead.*
 
 The main config file is `.env`, make a copy of `.env.example` and rename it into `.env` and enter the required
 tokens.<br>

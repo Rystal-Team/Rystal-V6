@@ -21,6 +21,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
 [![License](https://img.shields.io/github/license/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6/blob/main/LICENSE)
 [![Github Watchers](https://img.shields.io/github/watchers/Rystal-Team/Rystal-V6.svg?style=for-the-badge)](https://github.com/Rystal-Team/Rystal-V6)
+[![Black Formatter](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge)](https://github.com/psf/black)
 
 </div>
 
@@ -57,7 +58,8 @@
 [リリース](https://github.com/Rystal-Team/Rystal-V6/releases)
 から最新の[リリース](https://github.com/Rystal-Team/Rystal-V6/releases/latest)をダウンロードしてください。
 
-ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`でインストールするだけです。
+ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`でインストールするだけです。<br>
+**Pterodactylのようなコンテナでは、`setuptools`が既に含まれているため、インストール時に問題が発生する可能性があります。その場合は、`container-requirements.txt`を使用するか、`requirements.txt`から`setuptools`を削除してください。*
 
 メインの設定ファイルは`.env`です。`.env.example`のコピーを作成し、それを`.env`
 にリネームして必要なトークンを入力してください。<br>

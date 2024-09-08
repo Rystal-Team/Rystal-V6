@@ -30,9 +30,9 @@ from config.loader import (
     default_language,
     jackpot_base_amount,
     jackpot_tax_rate,
+    jackpot_win_global_announcement,
     lang,
     type_color,
-    jackpot_win_global_announcement,
 )
 from database import user_handler
 from database.global_handler import change_global, get_global
@@ -466,7 +466,7 @@ class GameSystem(commands.Cog):
             await user_handler.update_user_data(self.bot.user.id, bot_data)
             await user_handler.update_user_data(interaction.user.id, user_data)
 
-        if won or deficient_score or mega_score:
+        if won:
             for channel_id in await get_jackpot_announcement_channels():
                 channel = self.bot.get_channel(channel_id)
                 if channel:

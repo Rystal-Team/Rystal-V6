@@ -80,7 +80,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        points_to_claim = random.randint(10, 2000)
+        points_to_claim = random.randint(999, 3500)
         data["points"] += points_to_claim
         data["last_point_claimed"] = now.isoformat()
         await user_handler.update_user_data(user_id, data)
