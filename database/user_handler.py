@@ -42,7 +42,20 @@ async def register_user(user_id: int):
             "sqlite": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             "mysql": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         }
-        db_handler.execute(statement, (str(user_id), 0, 0, 0, 0, datetime.datetime.min, False, datetime.datetime.min, 0))
+        db_handler.execute(
+            statement,
+            (
+                str(user_id),
+                0,
+                0,
+                0,
+                0,
+                datetime.datetime.min,
+                False,
+                datetime.datetime.min,
+                0,
+            ),
+        )
         print(colored(f"[USERS DATABASE] Registered User: {user_id}", "light_yellow"))
     except Exception as e:
         print(
