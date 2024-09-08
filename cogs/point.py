@@ -202,7 +202,7 @@ class PointSystem(commands.Cog):
         if recipient_data["receive_limit_reached"] and not force:
             remaining_time = cooldown_period - (now - last_received)
             hours, minutes, seconds = map(
-                lambda x: int(x),
+                int,
                 [
                     remaining_time.seconds // 3600,
                     remaining_time.seconds % 3600 // 60,
@@ -226,6 +226,9 @@ class PointSystem(commands.Cog):
                 ),
             )
             return
+
+        if recipient_data["received_today"] is None:
+            recipient_data["received_today"] = 0
 
         if (
             recipient_data["received_today"] + amount > point_receive_limit
@@ -256,7 +259,6 @@ class PointSystem(commands.Cog):
             recipient_data["received_today"] + amount >= point_receive_limit
             and not force
         ):
-            print("yes")
             recipient_data["receive_limit_reached"] = True
 
         await user_handler.update_user_data(giver_id, giver_data)
