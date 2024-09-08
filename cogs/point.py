@@ -92,7 +92,7 @@ class PointSystem(commands.Cog):
                 ],
                 message=lang[await get_guild_language(interaction.guild.id)][
                     "points_claimed"
-                ].format(points=points_to_claim),
+                ].format(points=format_number(points_to_claim)),
                 message_type="success",
             ),
         )
