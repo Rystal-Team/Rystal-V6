@@ -29,11 +29,11 @@ Might not be implemented as a feature
 from typing import Callable
 
 import nextcord
-from module.embeds.generic import Embeds
-from module.games.roulette import Roulette, RouletteResult
-from module.split_str import split_string
 from nextcord import SelectOption
 from nextcord.ui import Select, View
+
+from module.embeds.generic import Embeds
+from module.split_str import split_string
 
 
 class DropdownSelector(Select):

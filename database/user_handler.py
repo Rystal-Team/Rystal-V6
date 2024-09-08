@@ -26,6 +26,7 @@ import datetime
 from termcolor import colored
 
 from .main_handler import check_exists, db_handler
+from module.utils import ensure_iterable
 
 
 async def register_user(user_id: int):
@@ -169,12 +170,7 @@ async def get_leaderboard(limit, order_by):
         statement,
         (limit,),
     )
-    result = db_handler.fetchall()
-
-    if not isinstance(result, (list, tuple)) or not all(
-        isinstance(user, (list, tuple)) for user in result
-    ):
-        return []
+    result = ensure_iterable(db_handler.fetchall())
 
     leaderboard = {
         user[0]: {

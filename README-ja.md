@@ -58,8 +58,11 @@
 [リリース](https://github.com/Rystal-Team/Rystal-V6/releases)
 から最新の[リリース](https://github.com/Rystal-Team/Rystal-V6/releases/latest)をダウンロードしてください。
 
-ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`でインストールするだけです。<br>
-**Pterodactylのようなコンテナでは、`setuptools`が既に含まれているため、インストール時に問題が発生する可能性があります。その場合は、`container-requirements.txt`を使用するか、`requirements.txt`から`setuptools`を削除してください。*
+ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`
+でインストールするだけです。<br>
+**Pterodactylのようなコンテナでは、`setuptools`
+が既に含まれているため、インストール時に問題が発生する可能性があります。その場合は、`container-requirements.txt`
+を使用するか、`requirements.txt`から`setuptools`を削除してください。*
 
 メインの設定ファイルは`.env`です。`.env.example`のコピーを作成し、それを`.env`
 にリネームして必要なトークンを入力してください。<br>
