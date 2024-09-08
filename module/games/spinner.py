@@ -125,7 +125,7 @@ class Spinner:
         return (
             check_wildcard_combinations(col1, col2, col3),
             mega_score,
-            True,
+            check_wildcard_combinations(col1, col2, col3),
         )
 
     def play(self) -> tuple[Any, list[str], bool, bool]:

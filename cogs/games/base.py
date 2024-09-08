@@ -466,7 +466,7 @@ class GameSystem(commands.Cog):
             await user_handler.update_user_data(self.bot.user.id, bot_data)
             await user_handler.update_user_data(interaction.user.id, user_data)
 
-        if won or deficient_score or mega_score:
+        if won:
             for channel_id in await get_jackpot_announcement_channels():
                 channel = self.bot.get_channel(channel_id)
                 if channel:
