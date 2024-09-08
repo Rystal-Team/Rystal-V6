@@ -44,3 +44,6 @@ jackpot_tax_rate: 0.25
 jackpot_win_global_announcement: true
 handle_jackpot_bet_per_guild: true # this feature is not implemented yet, configuration is added for future use
 jackpot_mega_score_multiplier: 1.5
+
+# Points Configuration
+point_receive_limit: 50000

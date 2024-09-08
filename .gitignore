@@ -254,3 +254,6 @@ docs/
 .stfolder/
 .idea/**
 config/config.yaml
+
+.stfolder
+.stignore
