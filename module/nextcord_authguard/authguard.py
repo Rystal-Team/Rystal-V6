@@ -128,7 +128,7 @@ class AuthGuard:
             "sqlite": f"DELETE FROM permissions WHERE command_id NOT IN ({placeholders})",
             "mysql": f"DELETE FROM permissions WHERE command_id NOT IN ({placeholders})",
         }
-        self.db.execute(statement[self.db.db_type], tuple(self.command_id_list))
+        self.db.execute(statement, tuple(self.command_id_list))
         self.command_id_list.clear()
 
     def check_permissions(self, command_id):
@@ -207,7 +207,7 @@ class AuthGuard:
             "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND user_id = ?",
             "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND user_id = %s",
         }
-        self.db.execute(statement[self.db.db_type], (guild_id, user_id))
+        self.db.execute(statement, (guild_id, user_id))
         return self.db.fetchone()
 
     def get_commands(self):
@@ -234,7 +234,7 @@ class AuthGuard:
             "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND role_id = ?",
             "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND role_id = %s",
         }
-        self.db.execute(statement[self.db.db_type], (guild_id, role_id))
+        self.db.execute(statement, (guild_id, role_id))
         return self.db.fetchone()
 
     def get_command_permissions(self, command_id, guild_id):
@@ -252,7 +252,7 @@ class AuthGuard:
             "sqlite": "SELECT * FROM permissions WHERE command_id = ? AND guild_id = ?",
             "mysql": "SELECT * FROM permissions WHERE command_id = %s AND guild_id = %s",
         }
-        self.db.execute(statement[self.db.db_type], (command_id, guild_id))
+        self.db.execute(statement, (command_id, guild_id))
         return self.db.fetchall()
 
     def edit_user(self, command_id, user_id, guild_id, allowed):
@@ -271,7 +271,7 @@ class AuthGuard:
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (%s, %s, %s, %s, %s)",
             }
             self.db.execute(
-                statement[self.db.db_type],
+                statement,
                 (str(uuid4()), command_id, guild_id, user_id, allowed),
             )
         else:
@@ -279,9 +279,7 @@ class AuthGuard:
                 "sqlite": "UPDATE permissions SET allowed = ? WHERE command_id = ? AND guild_id = ? AND user_id = ?",
                 "mysql": "UPDATE permissions SET allowed = %s WHERE command_id = %s AND guild_id = %s AND user_id = %s",
             }
-            self.db.execute(
-                statement[self.db.db_type], (allowed, command_id, guild_id, user_id)
-            )
+            self.db.execute(statement, (allowed, command_id, guild_id, user_id))
 
     def edit_role(self, command_id, role_id, guild_id, allowed):
         """
@@ -299,7 +297,7 @@ class AuthGuard:
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (%s, %s, %s, %s, %s)",
             }
             self.db.execute(
-                statement[self.db.db_type],
+                statement,
                 (str(uuid4()), command_id, guild_id, role_id, allowed),
             )
         else:
@@ -307,6 +305,4 @@ class AuthGuard:
                 "sqlite": "UPDATE permissions SET allowed = ? WHERE command_id = ? AND guild_id = ? AND role_id = ?",
                 "mysql": "UPDATE permissions SET allowed = %s WHERE command_id = %s AND guild_id = %s AND role_id = %s",
             }
-            self.db.execute(
-                statement[self.db.db_type], (allowed, command_id, guild_id, role_id)
-            )
+            self.db.execute(statement, (allowed, command_id, guild_id, role_id))
