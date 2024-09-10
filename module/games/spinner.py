@@ -19,8 +19,6 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
-#
-
 
 import random
 from typing import Any, List
@@ -51,19 +49,19 @@ class Spinner:
             "🔵",
             "🟣",
             "🟤",
-            "⚫",
-            "⚪",
             "🃏",
+            "⚪",
+            "⚫",
         ]
 
     def spin_wheel(self) -> List[str]:
         """
-        Spins the wheel and returns a list of 3 random options.
+        Spins the wheel and returns a list of 4 random options.
 
         Returns:
-            list: A list of 3 randomly chosen emoji options.
+            list: A list of 4 randomly chosen emoji options.
         """
-        return [random.choice(self.options) for _ in range(3)]
+        return [random.choice(self.options) for _ in range(4)]
 
     @staticmethod
     def is_winning(columns: List[str]) -> tuple[Any, bool, bool]:
@@ -71,7 +69,7 @@ class Spinner:
         Determines if the given columns result in a win.
 
         Args:
-            columns (list): A list of 3 emoji options.
+            columns (list): A list of 4 emoji options.
 
         Returns:
             bool: True if the columns result in a win, False otherwise.
@@ -79,10 +77,10 @@ class Spinner:
         if "🃏" in columns:
             return False, False, False
 
-        col1, col2, col3 = columns
+        col1, col2, col3, col4 = columns
         mega_score = False
 
-        if col1 == col2 == col3:
+        if col1 == col2 == col3 == col4:
             if col1 in ("⚪", "⚫"):
                 mega_score = True
             return True, mega_score, False
@@ -99,7 +97,7 @@ class Spinner:
             """
             return col in ["⚪", "⚫"]
 
-        def check_wildcard_combinations(c1: str, c2: str, c3: str) -> bool:
+        def check_wildcard_combinations(c1: str, c2: str, c3: str, c4: str) -> bool:
             """
             Checks if the columns result in a win considering wildcard combinations.
 
@@ -107,24 +105,29 @@ class Spinner:
                 c1 (str): First column.
                 c2 (str): Second column.
                 c3 (str): Third column.
+                c4 (str): Fourth column.
 
             Returns:
                 bool: True if the columns result in a win considering wildcard combinations, False otherwise.
             """
-            if {"⚫", "⚪"}.issubset({c1, c2, c3}):
+            if {"⚫", "⚪"}.issubset({c1, c2, c3, c4}):
                 return False
 
             return (
-                (c1 == c2 and is_wildcard(c3))
-                or (c1 == c3 and is_wildcard(c2))
-                or (c2 == c3 and is_wildcard(c1))
-                or (is_wildcard(c1) and is_wildcard(c2) and c1 == c2)
-                or (is_wildcard(c1) and is_wildcard(c3) and c1 == c3)
-                or (is_wildcard(c2) and is_wildcard(c3) and c2 == c3)
+                (c1 == c2 == c3 and is_wildcard(c4))
+                or (c1 == c2 == c4 and is_wildcard(c3))
+                or (c1 == c3 == c4 and is_wildcard(c2))
+                or (c2 == c3 == c4 and is_wildcard(c1))
+                or (is_wildcard(c1) and is_wildcard(c2) and c1 == c2 and c3 == c4)
+                or (is_wildcard(c1) and is_wildcard(c3) and c1 == c3 and c2 == c4)
+                or (is_wildcard(c1) and is_wildcard(c4) and c1 == c4 and c2 == c3)
+                or (is_wildcard(c2) and is_wildcard(c3) and c2 == c3 and c1 == c4)
+                or (is_wildcard(c2) and is_wildcard(c4) and c2 == c4 and c1 == c3)
+                or (is_wildcard(c3) and is_wildcard(c4) and c3 == c4 and c1 == c2)
             )
 
         return (
-            check_wildcard_combinations(col1, col2, col3),
+            check_wildcard_combinations(col1, col2, col3, col4),
             mega_score,
             True,
         )
@@ -193,5 +196,3 @@ class Spinner:
 if __name__ == "__main__":
     spinner = Spinner()
     spinner.run_simulation(10000, print_results=True)
-    won = False
-    trails = 0
