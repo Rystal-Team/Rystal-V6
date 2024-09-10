@@ -66,6 +66,8 @@ shop_class_title: "🛒 | Shop"
 shop_buy_description: "🛒 | Buy an item from the shop!"
 shop_catalog_description: "🛒 | Show the shop catalog!"
 
+permission_class_title: "🔒 | Permissions"
+
 # option descriptions
 music_skip_index_description: "The index of the song to skip."
 music_most_played_period_description: "The time period for showing the most played songs."

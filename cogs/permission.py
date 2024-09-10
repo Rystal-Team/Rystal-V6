@@ -24,10 +24,15 @@ import nextcord
 from nextcord.ext import commands
 
 from config.perm import auth_guard
+from module.embeds.generic import Embeds
 from module.nextcord_authguard.event_manager import EventManager
+from database.guild_handler import get_guild_language
+from config.loader import lang
 
 # TODO: Add permission decorator for commands
 # TODO: Language support
+
+class_namespace = "permission_class_title"
 
 
 class PermissionSystem(commands.Cog):
@@ -36,9 +41,16 @@ class PermissionSystem(commands.Cog):
 
     @EventManager.listener
     async def on_permission_denied(self, interaction, permission, default_permission):
-        print(permission, default_permission)
         await interaction.response.send_message(
-            "You don't have permission to do this.",
+            embeds=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "missing_permission"
+                ],
+                message_type="error",
+            )
         )
 
     @nextcord.slash_command(description="Set the permission for a role.")

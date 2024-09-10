@@ -66,6 +66,8 @@ shop_class_title: "🛒 | ショップ"
 shop_buy_description: "🛒 | アイテムをショップで購入！"
 shop_catalog_description: "🛒 | ショップのカタログを表示！"
 
+permission_class_title: "🔒 | 権限"
+
 # option descriptions
 music_skip_index_description: "スキップする曲のインデックス。"
 music_most_played_period_description: "最も再生された曲を表示する期間。"
