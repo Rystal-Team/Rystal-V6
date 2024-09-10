@@ -58,7 +58,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description=lang[default_language]["points_claim_description"],
     )
-    @auth_guard.check_permissions("setting/point/claim")
+    @auth_guard.check_permissions("point/point/claim")
     async def claim(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
         user_id = interaction.user.id
@@ -108,7 +108,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description=lang[default_language]["points_give_description"],
     )
-    @auth_guard.check_permissions("setting/point/give")
+    @auth_guard.check_permissions("point/point/give")
     async def give(
         self,
         interaction: nextcord.Interaction,
@@ -284,7 +284,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description=lang[default_language]["points_show_description"],
     )
-    @auth_guard.check_permissions("setting/point/show")
+    @auth_guard.check_permissions("point/point/show")
     async def show(
         self,
         interaction: nextcord.Interaction,
@@ -321,7 +321,7 @@ class PointSystem(commands.Cog):
     @points.subcommand(
         description=lang[default_language]["points_leaderboard_description"],
     )
-    @auth_guard.check_permissions("setting/point/leaderboard")
+    @auth_guard.check_permissions("point/point/leaderboard")
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,

@@ -84,7 +84,7 @@ class System(commands.Cog):
     @nextcord.slash_command(
         description=lang[default_language]["system_ping_description"]
     )
-    @auth_guard.check_permissions("setting/status/ping")
+    @auth_guard.check_permissions("status/ping")
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -104,7 +104,7 @@ class System(commands.Cog):
     @nextcord.slash_command(
         description=lang[default_language]["system_info_description"]
     )
-    @auth_guard.check_permissions("setting/status/info")
+    @auth_guard.check_permissions("status/info")
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 

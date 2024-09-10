@@ -50,7 +50,7 @@ class NoteSystem(commands.Cog):
         return
 
     @note.subcommand(description=lang[default_language]["note_create_description"])
-    @auth_guard.check_permissions("setting/notes/check_permission")
+    @auth_guard.check_permissions("notes/notes/check_permission")
     async def create(
         self,
         interaction: Interaction,
@@ -84,7 +84,7 @@ class NoteSystem(commands.Cog):
         )
 
     @note.subcommand(description=lang[default_language]["note_list_description"])
-    @auth_guard.check_permissions("setting/notes/list")
+    @auth_guard.check_permissions("notes/notes/list")
     async def list(
         self,
         interaction: Interaction,
@@ -121,7 +121,7 @@ class NoteSystem(commands.Cog):
         await pagination.send_initial_message()
 
     @note.subcommand(description=lang[default_language]["note_view_description"])
-    @auth_guard.check_permissions("setting/notes/view")
+    @auth_guard.check_permissions("notes/notes/view")
     async def view(
         self,
         interaction: Interaction,
@@ -180,7 +180,7 @@ class NoteSystem(commands.Cog):
         view.message = message
 
     @note.subcommand(description=lang[default_language]["note_remove_description"])
-    @auth_guard.check_permissions("setting/notes/remove")
+    @auth_guard.check_permissions("notes/notes/remove")
     async def remove(
         self,
         interaction: Interaction,

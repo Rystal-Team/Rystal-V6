@@ -15,6 +15,10 @@ setting:
         silent_mode: "admin,mod"
         auto_leave: "admin,mod"
         default_loop_mode: "admin,mod"
+    language: "admin,mod"
+
+music:
+    music:
         play: "everyone"
         skip: "everyone"
         queue: "everyone"
@@ -28,27 +32,39 @@ setting:
         register: "everyone"
         most_played: "everyone"
 
-    language: "admin,mod"
+rank:
     rank:
         card: "everyone"
         leaderboard: "everyone"
+
+points:
     point:
         claim: "everyone"
         give: "everyone"
         show: "everyone"
         leaderboard: "everyone"
+
+permission:
     permission:
         list: "admin,mod"
         user: "admin"
         role: "admin"
-    notes:
+
+notes:
+    note:
         create: "everyone"
         list: "everyone"
         view: "everyone"
         remove: "everyone"
+
+shop:
     shop:
         catalog: "everyone"
         buy: "everyone"
-    status:
-        ping: "everyone"
-        info: "everyone"
+
+status:
+    ping: "everyone"
+    info: "everyone"
+
+bug_report:
+    bug: "everyone"

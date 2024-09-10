@@ -86,7 +86,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_card_description"],
     )
-    @auth_guard.check_permissions("setting/rank/card")
+    @auth_guard.check_permissions("rank/rank/card")
     async def card(
         self,
         interaction: nextcord.Interaction,
@@ -172,7 +172,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_leaderboard_description"],
     )
-    @auth_guard.check_permissions("setting/rank/leaderboard")
+    @auth_guard.check_permissions("rank/rank/leaderboard")
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
