@@ -67,7 +67,7 @@ class GameSystem(commands.Cog):
         name="jackpot",
         description=lang[default_language]["game_jackpot_rules_description"],
     )
-    @auth_guard.check_permissions("game/rules/jackpot_rule")
+    @auth_guard.check_permissions("game/rules/jackpot")
     async def jackpot_rule(self, interaction: nextcord.Interaction):
         await interaction.response.send_message(
             embed=Embeds.message(
