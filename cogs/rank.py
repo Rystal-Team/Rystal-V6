@@ -30,6 +30,7 @@ from nextcord import File
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, theme_color
+from config.perm import auth_guard
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -85,6 +86,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_card_description"],
     )
+    @auth_guard.check_permissions("setting/rank/card")
     async def card(
         self,
         interaction: nextcord.Interaction,
@@ -170,6 +172,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_leaderboard_description"],
     )
+    @auth_guard.check_permissions("setting/rank/leaderboard")
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,

@@ -32,6 +32,7 @@ from nextcord.ext import commands
 from termcolor import colored
 
 from config.loader import default_language, lang, status_text, use_ytdlp
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -83,6 +84,7 @@ class System(commands.Cog):
     @nextcord.slash_command(
         description=lang[default_language]["system_ping_description"]
     )
+    @auth_guard.check_permissions("setting/status/ping")
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -102,6 +104,7 @@ class System(commands.Cog):
     @nextcord.slash_command(
         description=lang[default_language]["system_info_description"]
     )
+    @auth_guard.check_permissions("setting/status/info")
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 

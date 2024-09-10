@@ -25,6 +25,7 @@ import nextcord
 from nextcord.ext import commands
 
 from config.loader import default_language, lang
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -43,6 +44,7 @@ class ShopSystem(commands.Cog):
         return
 
     @shop.subcommand(description=lang[default_language]["shop_catalog_description"])
+    @auth_guard.check_permissions("setting/shop/catalog")
     async def catalog(self, interaction):
         await interaction.response.send_message(
             embed=Embeds.message(
@@ -59,6 +61,7 @@ class ShopSystem(commands.Cog):
         return
 
     @shop.subcommand(description=lang[default_language]["shop_buy_description"])
+    @auth_guard.check_permissions("setting/shop/buy")
     async def buy(
         self,
         interaction,
