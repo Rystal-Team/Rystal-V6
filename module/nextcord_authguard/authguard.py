@@ -120,9 +120,7 @@ class AuthGuard:
         )
 
     def cleanup_permissions(self):
-        """
-        Cleans up permissions by removing entries not in the command_id_list.
-        """
+        """Cleans up permissions by removing entries not in the command_id_list."""
         placeholders = ", ".join(
             "?" if self.db.db_type == "sqlite" else "%s" for _ in self.command_id_list
         )
@@ -156,7 +154,8 @@ class AuthGuard:
                 permissions = self.get_command_permissions(command_id, guild.id)
                 default_perm = get_default_permission(self.default_perm, command_id)
 
-                if permissions:
+                if permissions and permissions is not None and len(permissions) > 0:
+                    permissions = permissions or []
                     for perm in permissions:
                         if perm[3] == user.id and perm[5] == 1:
                             return await func(*args, **kwargs)

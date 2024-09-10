@@ -26,6 +26,9 @@ from nextcord.ext import commands
 from config.perm import auth_guard
 from module.nextcord_authguard.event_manager import EventManager
 
+# TODO: Add permission decorator for commands
+# TODO: Language support
+
 
 class PermissionSystem(commands.Cog):
     def __init__(self, bot):
@@ -35,7 +38,7 @@ class PermissionSystem(commands.Cog):
     async def on_permission_denied(self, interaction, permission, default_permission):
         print(permission, default_permission)
         await interaction.response.send_message(
-            f"You don't have permission to do this.",
+            "You don't have permission to do this.",
         )
 
     @nextcord.slash_command(description="Set the permission for a role.")
