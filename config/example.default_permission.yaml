@@ -65,7 +65,7 @@ shop:
 
 game:
     rules:
-        jackpot_rule: "everyone"
+        jackpot: "everyone"
     jackpot: "everyone"
     dice: "everyone"
     roulette: "everyone"
