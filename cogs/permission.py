@@ -29,7 +29,6 @@ from module.nextcord_authguard.event_manager import EventManager
 from database.guild_handler import get_guild_language
 from config.loader import lang
 
-# TODO: Add permission decorator for commands
 # TODO: Language support
 
 class_namespace = "permission_class_title"
@@ -58,6 +57,7 @@ class PermissionSystem(commands.Cog):
         return
 
     @permission.subcommand(description="View all commands IDs.")
+    @auth_guard.check_permissions("permission/permission/list")
     async def list(self, interaction: nextcord.Interaction):
         commands_list = auth_guard.get_commands()
 
@@ -66,6 +66,7 @@ class PermissionSystem(commands.Cog):
         )
 
     @permission.subcommand(description="Set the permission for user.")
+    @auth_guard.check_permissions("permission/permission/user")
     async def user(
         self,
         interaction: nextcord.Interaction,
@@ -87,6 +88,7 @@ class PermissionSystem(commands.Cog):
         return
 
     @permission.subcommand(description="Set the permission for role.")
+    @auth_guard.check_permissions("setting/permission/role")
     async def role(
         self,
         interaction: nextcord.Interaction,

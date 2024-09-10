@@ -28,6 +28,7 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, type_color
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from database.note_handler import add_note, remove_note
 from database.note_handler import fetch_note, get_notes
@@ -49,6 +50,7 @@ class NoteSystem(commands.Cog):
         return
 
     @note.subcommand(description=lang[default_language]["note_create_description"])
+    @auth_guard.check_permissions("notes/notes/check_permission")
     async def create(
         self,
         interaction: Interaction,
@@ -82,6 +84,7 @@ class NoteSystem(commands.Cog):
         )
 
     @note.subcommand(description=lang[default_language]["note_list_description"])
+    @auth_guard.check_permissions("notes/notes/list")
     async def list(
         self,
         interaction: Interaction,
@@ -118,6 +121,7 @@ class NoteSystem(commands.Cog):
         await pagination.send_initial_message()
 
     @note.subcommand(description=lang[default_language]["note_view_description"])
+    @auth_guard.check_permissions("notes/notes/view")
     async def view(
         self,
         interaction: Interaction,
@@ -176,6 +180,7 @@ class NoteSystem(commands.Cog):
         view.message = message
 
     @note.subcommand(description=lang[default_language]["note_remove_description"])
+    @auth_guard.check_permissions("notes/notes/remove")
     async def remove(
         self,
         interaction: Interaction,

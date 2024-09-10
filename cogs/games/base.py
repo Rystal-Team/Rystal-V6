@@ -34,6 +34,7 @@ from config.loader import (
     lang,
     type_color,
 )
+from config.perm import auth_guard
 from database import user_handler
 from database.global_handler import change_global, get_global
 from database.guild_handler import get_guild_language, get_jackpot_announcement_channels
@@ -66,6 +67,7 @@ class GameSystem(commands.Cog):
         name="jackpot",
         description=lang[default_language]["game_jackpot_rules_description"],
     )
+    @auth_guard.check_permissions("game/rules/jackpot")
     async def jackpot_rule(self, interaction: nextcord.Interaction):
         await interaction.response.send_message(
             embed=Embeds.message(
@@ -80,6 +82,7 @@ class GameSystem(commands.Cog):
         )
 
     @game.subcommand(description=lang[default_language]["game_blackjack_description"])
+    @auth_guard.check_permissions("game/blackjack")
     async def blackjack(
         self,
         interaction: nextcord.Interaction,
@@ -167,6 +170,7 @@ class GameSystem(commands.Cog):
         view.set_follow_up(follow_up_msg)
 
     @game.subcommand(description=lang[default_language]["game_dice_description"])
+    @auth_guard.check_permissions("game/dice")
     async def dice(
         self,
         interaction: nextcord.Interaction,
@@ -231,6 +235,7 @@ class GameSystem(commands.Cog):
     @game.subcommand(
         description=lang[default_language]["game_coinflip_description"],
     )
+    @auth_guard.check_permissions("game/coinflip")
     async def coinflip(
         self,
         interaction: nextcord.Interaction,
@@ -310,6 +315,7 @@ class GameSystem(commands.Cog):
     @game.subcommand(
         description=lang[default_language]["game_roulette_description"],
     )
+    @auth_guard.check_permissions("game/roulette")
     async def roulette(
         self,
         interaction: nextcord.Interaction,
@@ -426,6 +432,7 @@ class GameSystem(commands.Cog):
     @game.subcommand(
         description=lang[default_language]["game_jackpot_description"],
     )
+    @auth_guard.check_permissions("game/jackpot")
     async def jackpot(
         self,
         interaction: nextcord.Interaction,
@@ -532,6 +539,7 @@ class GameSystem(commands.Cog):
     @game.subcommand(
         description=lang[default_language]["game_showjackpot_description"],
     )
+    @auth_guard.check_permissions("game/showjackpot")
     async def showjackpot(self, interaction: nextcord.Interaction):
         await interaction.response.defer()
         jackpot_total = await get_global("jackpot_total")

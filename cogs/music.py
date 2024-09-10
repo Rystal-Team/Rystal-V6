@@ -33,6 +33,7 @@ from nextcord.ext import commands
 from termcolor import colored
 
 from config.loader import SQLITE_PATH, USE_SQLITE, default_language, lang, type_color
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embeds.generic import Embeds
 from module.embeds.nowplaying import NowPlayingMenu
@@ -168,6 +169,7 @@ class Music(commands.Cog, EventManager):
         return
 
     @music.subcommand(description=lang[default_language]["music_play_description"])
+    @auth_guard.check_permissions("music/music/play")
     async def play(
         self,
         interaction: Interaction,
@@ -332,6 +334,7 @@ class Music(commands.Cog, EventManager):
             return
 
     @music.subcommand(description=lang[default_language]["music_skip_description"])
+    @auth_guard.check_permissions("music/music/skip")
     async def skip(
         self,
         interaction: Interaction,
@@ -398,6 +401,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_queue_description"])
+    @auth_guard.check_permissions("music/music/queue")
     async def queue(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -490,6 +494,7 @@ class Music(commands.Cog, EventManager):
         Pagination.compute_total_pages(len(await player.current_queue()), 10)
 
     @music.subcommand(description=lang[default_language]["music_shuffle_description"])
+    @auth_guard.check_permissions("music/music/shuffle")
     async def shuffle(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         player = await self.ensure_voice_state(self.bot, interaction)
@@ -523,6 +528,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_loop_description"])
+    @auth_guard.check_permissions("music/music/loop")
     async def loop(
         self,
         interaction: Interaction,
@@ -582,6 +588,7 @@ class Music(commands.Cog, EventManager):
     @music.subcommand(
         description=lang[default_language]["music_nowplaying_description"]
     )
+    @auth_guard.check_permissions("music/music/nowplaying")
     async def nowplaying(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -619,6 +626,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_stop_description"])
+    @auth_guard.check_permissions("music/music/stop")
     async def stop(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -642,6 +650,7 @@ class Music(commands.Cog, EventManager):
         )
 
     @music.subcommand(description=lang[default_language]["music_pause_description"])
+    @auth_guard.check_permissions("music/music/pause")
     async def pause(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -688,6 +697,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_resume_description"])
+    @auth_guard.check_permissions("music/music/resume")
     async def resume(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 
@@ -734,6 +744,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_remove_description"])
+    @auth_guard.check_permissions("music/music/remove")
     async def remove(
         self,
         interaction: Interaction,
@@ -811,6 +822,7 @@ class Music(commands.Cog, EventManager):
             )
 
     @music.subcommand(description=lang[default_language]["music_register_description"])
+    @auth_guard.check_permissions("music/music/register")
     async def register(
         self,
         interaction: Interaction,
@@ -872,6 +884,7 @@ class Music(commands.Cog, EventManager):
     @music.subcommand(
         description=lang[default_language]["music_most_played_description"]
     )
+    @auth_guard.check_permissions("music/music/most_played")
     async def most_played(
         self,
         interaction: Interaction,
