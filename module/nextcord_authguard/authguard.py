@@ -120,9 +120,7 @@ class AuthGuard:
         )
 
     def cleanup_permissions(self):
-        """
-        Cleans up permissions by removing entries not in the command_id_list.
-        """
+        """Cleans up permissions by removing entries not in the command_id_list."""
         placeholders = ", ".join(
             "?" if self.db.db_type == "sqlite" else "%s" for _ in self.command_id_list
         )

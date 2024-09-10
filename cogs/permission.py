@@ -38,7 +38,7 @@ class PermissionSystem(commands.Cog):
     async def on_permission_denied(self, interaction, permission, default_permission):
         print(permission, default_permission)
         await interaction.response.send_message(
-            f"You don't have permission to do this.",
+            "You don't have permission to do this.",
         )
 
     @nextcord.slash_command(description="Set the permission for a role.")
