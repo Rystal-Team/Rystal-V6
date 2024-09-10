@@ -26,6 +26,9 @@ from nextcord.ext import commands
 from config.perm import auth_guard
 from module.nextcord_authguard.event_manager import EventManager
 
+# TODO: Add permission decorator for commands
+# TODO: Language support
+
 
 class PermissionSystem(commands.Cog):
     def __init__(self, bot):
