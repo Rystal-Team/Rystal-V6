@@ -22,9 +22,8 @@
 
 import os
 
+from config.loader import AUTHGUARD_SQLITE_PATH, AUTHGUARD_USE_SQLITE
 from module.nextcord_authguard.authguard import AuthGuard
-from config.loader import AUTHGUARD_USE_SQLITE, AUTHGUARD_SQLITE_PATH
-
 
 auth_guard = AuthGuard(
     db_type="sqlite" if AUTHGUARD_USE_SQLITE else "mysql",

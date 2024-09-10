@@ -22,16 +22,33 @@
 
 import nextcord
 from nextcord.ext import commands
+
 from config.perm import auth_guard
+from module.nextcord_authguard.event_manager import EventManager
 
 
 class PermissionSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @EventManager.listener
+    async def on_permission_denied(self, interaction, permission, default_permission):
+        print(permission, default_permission)
+        await interaction.response.send_message(
+            f"You don't have permission to do this.",
+        )
+
     @nextcord.slash_command(description="Set the permission for a role.")
     async def permission(self, interaction: nextcord.Interaction):
         return
+
+    @permission.subcommand(description="View all commands IDs.")
+    async def list(self, interaction: nextcord.Interaction):
+        commands_list = auth_guard.get_commands()
+
+        await interaction.response.send_message(
+            "\n".join(commands_list),
+        )
 
     @permission.subcommand(description="Set the permission for user.")
     async def user(
@@ -41,11 +58,36 @@ class PermissionSystem(commands.Cog):
         user: nextcord.Member,
         allow: bool,
     ):
+        if command_id not in auth_guard.get_commands():
+            await interaction.response.send_message(
+                f"Command ID {command_id} is not found.",
+            )
+            return
         auth_guard.edit_user(command_id, user.id, interaction.guild.id, allow)
 
         await interaction.response.send_message(
             f"Permission for {user.mention} to use {command_id} has been set to {allow}.",
-            ephemeral=True,
+        )
+
+        return
+
+    @permission.subcommand(description="Set the permission for role.")
+    async def role(
+        self,
+        interaction: nextcord.Interaction,
+        command_id: str,
+        role: nextcord.Role,
+        allow: bool,
+    ):
+        if command_id not in auth_guard.get_commands():
+            await interaction.response.send_message(
+                f"Command ID {command_id} is not found.",
+            )
+            return
+        auth_guard.edit_role(command_id, role.id, interaction.guild.id, allow)
+
+        await interaction.response.send_message(
+            f"Permission for {role.mention} to use {command_id} has been set to {allow}.",
         )
 
         return
@@ -54,3 +96,4 @@ class PermissionSystem(commands.Cog):
 async def setup(bot):
     cog = PermissionSystem(bot)
     bot.add_cog(cog)
+    EventManager.attach(cog)

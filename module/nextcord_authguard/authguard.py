@@ -22,202 +22,292 @@
 
 from functools import wraps
 from uuid import uuid4
+
 import nextcord
-from yaml import YAMLError
+from yaml.error import YAMLError
 
 from .database.base import DatabaseHandler
 from .database_create import create_statement
-from .loader import load_permission
-from . import LogHandler
+from .event_manager import EventManager
+from .loader import get_default_permission, load_permission
+from .permission import GeneralPermission
 
 
 class AuthGuard:
     """
-    Initializes the AuthGuard with the given permission config.
+    A class to handle authorization and permissions for commands in a Nextcord bot.
 
-    Args:
-        db_type (str): The type of the database ('sqlite' or 'mysql').
-        db_path (str): The path to the SQLite database file.
-        mysql_host (str): The hostname of the MySQL server.
-        mysql_port (int): The port of the MySQL server.
-        mysql_user (str): The username of the MySQL server.
-        mysql_password (str): The password of the MySQL server.
-        mysql_database (str): The name of the MySQL database.
-        perm_config (dict): The permission config to be used.
-
-    Raises:
-        ValueError: If a valid permission config is not provided.
-        FileNotFoundError: If the permission config is not found.
-        YAMLError: If the permission config has an invalid YAML format.
+    Attributes:
+        db (DatabaseHandler): The database handler for managing permissions.
+        command_id_list (list): A list of command IDs to manage permissions.
+        default_perm (dict): The default permissions loaded from the configuration.
     """
 
     def __init__(
         self,
-        db_type: str = "sqlite",
-        db_path: str = "./sqlite/authguard.sqlite",
-        mysql_host: str = "localhost",
-        mysql_port: int = 3306,
-        mysql_user: str = "root",
-        mysql_password: str = "password",
-        mysql_database: str = "authguard",
-        perm_config: str = None,
+        db_type="sqlite",
+        db_path="./sqlite/authguard.sqlite",
+        mysql_host="localhost",
+        mysql_port=3306,
+        mysql_user="root",
+        mysql_password="password",
+        mysql_database="authguard",
+        perm_config=None,
     ):
         """
-        Initializes the AuthGuard with the given permission config.
+        Initializes the AuthGuard class with database and permission configurations.
 
         Args:
-            db_type (str): The type of the database ('sqlite' or 'mysql').
+            db_type (str): The type of database to use ('sqlite' or 'mysql').
             db_path (str): The path to the SQLite database file.
-            mysql_host (str): The hostname of the MySQL server.
-            mysql_port (int): The port of the MySQL server.
-            mysql_user (str): The username of the MySQL server.
-            mysql_password (str): The password of the MySQL server.
-            mysql_database (str): The name of the MySQL database.
-            perm_config (str): The permission config to be used.
+            mysql_host (str): The MySQL database host.
+            mysql_port (int): The MySQL database port.
+            mysql_user (str): The MySQL database user.
+            mysql_password (str): The MySQL database password.
+            mysql_database (str): The MySQL database name.
+            perm_config (dict): The permission configuration dictionary.
 
         Raises:
-            ValueError: If a valid permission config is not provided.
-            FileNotFoundError: If the permission config is not found.
-            YAMLError: If the permission config has an invalid YAML format.
+            ValueError: If perm_config is not provided or if an invalid database type is provided.
+            FileNotFoundError: If the permission config file is not found.
+            YAMLError: If there is an error in the YAML format of the permission config.
         """
         if not perm_config:
             raise ValueError("A valid permission config is required!")
 
         try:
             self.default_perm = load_permission(perm_config)
-        except FileNotFoundError:
-            raise FileNotFoundError("Permission config not found!")
-        except YAMLError:
-            raise YAMLError(
-                "Invalid YAML format, recheck if the config YAML format is correct!"
-            )
+        except (FileNotFoundError, YAMLError) as e:
+            raise e
 
-        if db_type == "sqlite":
-            self.db = DatabaseHandler(
-                db_type=db_type,
-                create_query=create_statement,
-                db_file=db_path,
-            )
-        elif db_type == "mysql":
-            self.db = DatabaseHandler(
-                db_type=db_type,
-                create_query=create_statement,
-                host=mysql_host,
-                port=mysql_port,
-                user=mysql_user,
-                password=mysql_password,
-                database=mysql_database,
-            )
-        else:
+        db_params = {
+            "sqlite": {
+                "db_type": db_type,
+                "create_query": create_statement,
+                "db_file": db_path,
+            },
+            "mysql": {
+                "db_type": db_type,
+                "create_query": create_statement,
+                "host": mysql_host,
+                "port": mysql_port,
+                "user": mysql_user,
+                "password": mysql_password,
+                "database": mysql_database,
+            },
+        }
+
+        if db_type not in db_params:
             raise ValueError("Invalid database type provided!")
 
+        self.db = DatabaseHandler(**db_params[db_type])
         self.db.create_tables()
         self.command_id_list = []
 
-        return
-
     @staticmethod
     def find_interaction(*args):
-        for arg in args:
-            if isinstance(arg, nextcord.Interaction):
-                return arg
-        return None
+        """
+        Finds and returns the first instance of nextcord.Interaction in the provided arguments.
+
+        Args:
+            *args: Variable length argument list.
+
+        Returns:
+            nextcord.Interaction: The first interaction found, or None if not found.
+        """
+        return next(
+            (arg for arg in args if isinstance(arg, nextcord.Interaction)), None
+        )
 
     def cleanup_permissions(self):
         """
-        Deletes all permissions that are not registered anymore.
+        Cleans up permissions by removing entries not in the command_id_list.
         """
+        placeholders = ", ".join(
+            "?" if self.db.db_type == "sqlite" else "%s" for _ in self.command_id_list
+        )
         statement = {
-            "sqlite": "DELETE FROM permissions WHERE command_id NOT IN ({})".format(
-                ", ".join("?" * len(self.command_id_list))
-            ),
-            "mysql": "DELETE FROM permissions WHERE command_id NOT IN ({})".format(
-                ", ".join("%s" * len(self.command_id_list))
-            ),
+            "sqlite": f"DELETE FROM permissions WHERE command_id NOT IN ({placeholders})",
+            "mysql": f"DELETE FROM permissions WHERE command_id NOT IN ({placeholders})",
         }
-        self.db.execute(statement, tuple(self.command_id_list))
+        self.db.execute(statement[self.db.db_type], tuple(self.command_id_list))
         self.command_id_list.clear()
 
-    def check_permissions(self, command_id: str):
+    def check_permissions(self, command_id):
         """
-        A decorator to check if the user has the required permissions to use the command.
+        Decorator to check permissions for a command.
 
         Args:
-            command_id (str): The command ID to be checked.
+            command_id (str): The ID of the command to check permissions for.
 
         Returns:
-            The decorator function.
+            function: The decorated function with permission checks.
         """
+        if command_id in self.command_id_list:
+            raise ValueError("Command ID already exists!")
         self.command_id_list.append(command_id)
 
         def decorator(func):
-
             @wraps(func)
             async def wrapper(*args, **kwargs):
-                """
-                A wrapper to check if the user has the required permissions to use the command.
+                cog, interaction = args[0], args[1]
+                user, guild = interaction.user, interaction.guild
+                user_roles = [role.id for role in user.roles]
+                permissions = self.get_command_permissions(command_id, guild.id)
+                default_perm = get_default_permission(self.default_perm, command_id)
 
-                Args:
-                    *args: The arguments passed to the function.
-                    **kwargs: The keyword arguments passed to the function.
+                if permissions:
+                    for perm in permissions:
+                        if perm[3] == user.id and perm[5] == 1:
+                            return await func(*args, **kwargs)
+                        if perm[4] in user_roles and perm[5] == 1:
+                            return await func(*args, **kwargs)
+                else:
+                    if any(
+                        [
+                            GeneralPermission.ADMIN in default_perm
+                            and user.guild_permissions.administrator,
+                            GeneralPermission.OWNER in default_perm
+                            and cog.bot.owner_id == user.id,
+                            GeneralPermission.MOD in default_perm
+                            and user.guild_permissions.manage_guild,
+                            GeneralPermission.EVERYONE in default_perm,
+                        ]
+                    ):
+                        return await func(*args, **kwargs)
 
-                Returns:
-                    The function if the user has the required permissions, else sends an ephemeral message
-                    to the user.
-                """
-                event_name = func.__name__
-                LogHandler.info(
-                    f"Started Listening `check_permission` on function {event_name}"
+                    if GeneralPermission.DISABLED in default_perm:
+                        await EventManager.fire(
+                            "on_permission_denied",
+                            interaction,
+                            permissions,
+                            default_perm,
+                        )
+                        return
+
+                await EventManager.fire(
+                    "on_permission_denied", interaction, permissions, default_perm
                 )
-                interaction = AuthGuard.find_interaction(*args)
-                user = interaction.user
-                guild = interaction.guild
-                allowed_roles = kwargs.get("allowed_roles")
-                allowed_permissions = kwargs.get("allowed_permissions")
-
-                print(guild.name)
-                print(user.name)
-
-                if not interaction.guild:
-                    await interaction.response.send_message(
-                        "権限なし",
-                        ephemeral=True,
-                    )
-                    return
-
-                return await func(*args, **kwargs)
 
             return wrapper
 
         return decorator
 
-    def user_exists(self, guild_id: str, user_id: str):
+    def user_exists(self, guild_id, user_id):
+        """
+        Checks if a user exists in the permissions table.
+
+        Args:
+            guild_id (str): The ID of the guild.
+            user_id (str): The ID of the user.
+
+        Returns:
+            tuple: The user record if exists, otherwise None.
+        """
         statement = {
             "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND user_id = ?",
             "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND user_id = %s",
         }
-        self.db.execute(statement, (guild_id, user_id))
+        self.db.execute(statement[self.db.db_type], (guild_id, user_id))
         return self.db.fetchone()
 
-    def edit_user(self, command_id: str, guild_id: str, user_id: str, allowed: bool):
+    def get_commands(self):
+        """
+        Returns the list of command IDs.
+
+        Returns:
+            list: The list of command IDs.
+        """
+        return self.command_id_list
+
+    def role_exists(self, guild_id, role_id):
+        """
+        Checks if a role exists in the permissions table.
+
+        Args:
+            guild_id (str): The ID of the guild.
+            role_id (str): The ID of the role.
+
+        Returns:
+            tuple: The role record if exists, otherwise None.
+        """
+        statement = {
+            "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND role_id = ?",
+            "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND role_id = %s",
+        }
+        self.db.execute(statement[self.db.db_type], (guild_id, role_id))
+        return self.db.fetchone()
+
+    def get_command_permissions(self, command_id, guild_id):
+        """
+        Retrieves permissions for a specific command in a guild.
+
+        Args:
+            command_id (str): The ID of the command.
+            guild_id (int): The ID of the guild.
+
+        Returns:
+            list: The list of permissions for the command.
+        """
+        statement = {
+            "sqlite": "SELECT * FROM permissions WHERE command_id = ? AND guild_id = ?",
+            "mysql": "SELECT * FROM permissions WHERE command_id = %s AND guild_id = %s",
+        }
+        self.db.execute(statement[self.db.db_type], (command_id, guild_id))
+        return self.db.fetchall()
+
+    def edit_user(self, command_id, user_id, guild_id, allowed):
+        """
+        Edits or inserts a user's permission for a command in a guild.
+
+        Args:
+            command_id (str): The ID of the command.
+            user_id (str): The ID of the user.
+            guild_id (str): The ID of the guild.
+            allowed (bool): Whether the user is allowed to use the command.
+        """
         if not self.user_exists(guild_id, user_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (%s, %s, %s, %s, %s)",
             }
             self.db.execute(
-                statement,
-                (
-                    str(uuid4()),
-                    command_id,
-                    guild_id,
-                    user_id,
-                    allowed,
-                ),
+                statement[self.db.db_type],
+                (str(uuid4()), command_id, guild_id, user_id, allowed),
             )
         else:
             statement = {
                 "sqlite": "UPDATE permissions SET allowed = ? WHERE command_id = ? AND guild_id = ? AND user_id = ?",
                 "mysql": "UPDATE permissions SET allowed = %s WHERE command_id = %s AND guild_id = %s AND user_id = %s",
             }
-            self.db.execute(statement, (allowed, command_id, guild_id, user_id))
+            self.db.execute(
+                statement[self.db.db_type], (allowed, command_id, guild_id, user_id)
+            )
+
+    def edit_role(self, command_id, role_id, guild_id, allowed):
+        """
+        Edits or inserts a role's permission for a command in a guild.
+
+        Args:
+            command_id (str): The ID of the command.
+            role_id (str): The ID of the role.
+            guild_id (str): The ID of the guild.
+            allowed (bool): Whether the role is allowed to use the command.
+        """
+        if not self.role_exists(guild_id, role_id):
+            statement = {
+                "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (?, ?, ?, ?, ?)",
+                "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (%s, %s, %s, %s, %s)",
+            }
+            self.db.execute(
+                statement[self.db.db_type],
+                (str(uuid4()), command_id, guild_id, role_id, allowed),
+            )
+        else:
+            statement = {
+                "sqlite": "UPDATE permissions SET allowed = ? WHERE command_id = ? AND guild_id = ? AND role_id = ?",
+                "mysql": "UPDATE permissions SET allowed = %s WHERE command_id = %s AND guild_id = %s AND role_id = %s",
+            }
+            self.db.execute(
+                statement[self.db.db_type], (allowed, command_id, guild_id, role_id)
+            )

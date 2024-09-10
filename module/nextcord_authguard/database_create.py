@@ -22,16 +22,6 @@
 
 create_statement = {
     "sqlite": {
-        "command": {
-            "create": """
-                CREATE TABLE IF NOT EXISTS command (
-                    command_id TEXT PRIMARY KEY NOT NULL
-                )
-            """,
-            "columns": {
-                "command_id": "TEXT PRIMARY KEY NOT NULL",
-            },
-        },
         "permissions": {
             "create": """
                 CREATE TABLE IF NOT EXISTS permissions (
@@ -39,7 +29,7 @@ create_statement = {
                     command_id TEXT NOT NULL, 
                     guild_id TEXT NOT NULL, 
                     user_id TEXT, 
-                    roles_id TEXT,
+                    role_id TEXT,
                     allowed BOOLEAN NOT NULL
                 )
             """,
@@ -48,22 +38,12 @@ create_statement = {
                 "command_id": "TEXT NOT NULL",
                 "guild_id": "TEXT NOT NULL",
                 "user_id": "TEXT",
-                "roles_id": "TEXT",
+                "role_id": "TEXT",
                 "allowed": "BOOLEAN NOT NULL",
             },
         },
     },
     "mysql": {
-        "command": {
-            "create": """
-                CREATE TABLE IF NOT EXISTS command (
-                    command_id VARCHAR(255) PRIMARY KEY NOT NULL
-                )
-            """,
-            "columns": {
-                "command_id": "VARCHAR(255) PRIMARY KEY NOT NULL",
-            },
-        },
         "permissions": {
             "create": """
                 CREATE TABLE IF NOT EXISTS permissions (

@@ -26,11 +26,7 @@ __license__ = "MIT"
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 
-import os
-
-from dotenv import load_dotenv
 
 from .logger import Logger
 
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 LogHandler = Logger()

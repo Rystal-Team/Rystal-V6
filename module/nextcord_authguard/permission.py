@@ -25,8 +25,8 @@ import enum
 
 @enum.unique
 class GeneralPermission(enum.Enum):
-    OWNER = "owner"
-    ADMIN = "admin"
-    EVERYONE = "everyone"
-    MOD = "mod"
-    DISABLED = "disabled"
+    OWNER = "owner"  # equivalent to bot owner
+    ADMIN = "admin"  # equivalent to discord's Administrator permission
+    EVERYONE = "everyone"  # equivalent to @everyone role
+    MOD = "mod"  # equivalent to discord's Manage Server permission
+    DISABLED = "disabled"  # no one

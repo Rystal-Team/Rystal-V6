@@ -26,6 +26,7 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, lang_list, lang_mapping
+from config.perm import auth_guard
 from database.guild_handler import (
     change_guild_language,
     change_guild_settings,
@@ -33,7 +34,6 @@ from database.guild_handler import (
     get_guild_settings,
 )
 from module.embeds.generic import Embeds
-from config.perm import auth_guard
 
 class_namespace = "setting_class_title"
 
