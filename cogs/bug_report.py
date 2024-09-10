@@ -35,7 +35,7 @@ class BugReport(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(description=lang[default_language][class_namespace])
-    @auth_guard.check_permissions("bug_report/music/auto_leave")
+    @auth_guard.check_permissions("bug_report/bug")
     async def bug(self, interaction: nextcord.Interaction):
         modal = BugReportModal(title="Bug Report")
         await interaction.response.send_modal(modal)
