@@ -42,7 +42,7 @@ class PermissionSystem(commands.Cog):
     @EventManager.listener
     async def on_permission_denied(self, interaction, permission, default_permission):
         await interaction.response.send_message(
-            embeds=Embeds.message(
+            embed=Embeds.message(
                 title=lang[await get_guild_language(interaction.guild.id)][
                     class_namespace
                 ],
