@@ -146,12 +146,21 @@ class GameSystem(commands.Cog):
                 "blackjack_your_hand"
             ],
             value=f"[{blackjack.hand_str(blackjack.player_hand)}] {lang[await get_guild_language(interaction.guild.id)]['blackjack_total'].format(total=player_total)}",
+            inline=True,
         )
         embed.add_field(
             name=lang[await get_guild_language(interaction.guild.id)][
                 "blackjack_dealer_hand"
             ],
             value=f"[{blackjack.hand_str(blackjack.dealer_hand)}] {lang[await get_guild_language(interaction.guild.id)]['blackjack_total'].format(total=dealer_total)}",
+            inline=True,
+        )
+        embed.add_field(
+            name=lang[await get_guild_language(interaction.guild.id)][
+                "game_your_points"
+            ],
+            value=format_number(user_data["points"]),
+            inline=False,
         )
         view = BlackjackView(blackjack, interaction, bet, self.bot.user.id)
         follow_up_msg = await interaction.followup.send(embed=embed, view=view)
@@ -290,6 +299,11 @@ class GameSystem(commands.Cog):
                 ],
                 message=result_message,
                 message_type="win" if outcome == guess else "lose",
+            ).add_field(
+                name=lang[await get_guild_language(interaction.guild.id)][
+                    "game_your_points"
+                ],
+                value=format_number(data["points"]),
             ),
         )
 
@@ -399,6 +413,14 @@ class GameSystem(commands.Cog):
             value=result,
         )
 
+        embed.add_field(
+            name=lang[await get_guild_language(interaction.guild.id)][
+                "game_your_points"
+            ],
+            value=format_number(user_data["points"]),
+            inline=False,
+        )
+
         await interaction.followup.send(embed=embed)
 
     @game.subcommand(
@@ -466,7 +488,7 @@ class GameSystem(commands.Cog):
             await user_handler.update_user_data(self.bot.user.id, bot_data)
             await user_handler.update_user_data(interaction.user.id, user_data)
 
-        if won or deficient_score or mega_score:
+        if won:
             for channel_id in await get_jackpot_announcement_channels():
                 channel = self.bot.get_channel(channel_id)
                 if channel:

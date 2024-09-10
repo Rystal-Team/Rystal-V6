@@ -25,3 +25,8 @@
 def format_number(number: int) -> str:
     """Formats a number."""
     return "{:,}".format(number)
+
+
+def ensure_iterable(val=None):
+    """Ensures a value is iterable."""
+    return val or []

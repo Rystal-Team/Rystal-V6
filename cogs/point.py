@@ -28,7 +28,13 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 
-from config.loader import banland, bot_owner_id, default_language, lang
+from config.loader import (
+    banland,
+    bot_owner_id,
+    default_language,
+    lang,
+    point_receive_limit,
+)
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -80,7 +86,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        points_to_claim = random.randint(10, 2000)
+        points_to_claim = random.randint(999, 3500)
         data["points"] += points_to_claim
         data["last_point_claimed"] = now.isoformat()
         await user_handler.update_user_data(user_id, data)
@@ -92,7 +98,7 @@ class PointSystem(commands.Cog):
                 ],
                 message=lang[await get_guild_language(interaction.guild.id)][
                     "points_claimed"
-                ].format(points=points_to_claim),
+                ].format(points=format_number(points_to_claim)),
                 message_type="success",
             ),
         )
@@ -182,9 +188,78 @@ class PointSystem(commands.Cog):
             )
             return
 
+        receive_reset_str = recipient_data["last_point_received"]
+        if not isinstance(receive_reset_str, str):
+            receive_reset_str = datetime.datetime.min.isoformat()
+
+        last_received = datetime.datetime.fromisoformat(receive_reset_str)
+        now = datetime.datetime.now()
+        cooldown_period = datetime.timedelta(days=1)
+
+        if now - last_received > cooldown_period:
+            recipient_data["receive_limit_reached"] = False
+
+        if recipient_data["receive_limit_reached"] and not force:
+            remaining_time = cooldown_period - (now - last_received)
+            hours, minutes, seconds = map(
+                int,
+                [
+                    remaining_time.seconds // 3600,
+                    remaining_time.seconds % 3600 // 60,
+                    remaining_time.seconds % 60,
+                ],
+            )
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "recipient_limit_reached"
+                    ].format(
+                        recipient=recipient.display_name,
+                        hours=hours,
+                        minutes=minutes,
+                        seconds=seconds,
+                    ),
+                    message_type="error",
+                ),
+            )
+            return
+
+        if recipient_data["received_today"] is None:
+            recipient_data["received_today"] = 0
+
+        if (
+            recipient_data["received_today"] + amount > point_receive_limit
+            and not force
+        ):
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "higher_than_receive_limit"
+                    ].format(
+                        recipient=recipient.display_name, limit=point_receive_limit
+                    ),
+                    message_type="error",
+                ),
+            )
+            return
+
         if not force:
             giver_data["points"] -= amount
+            recipient_data["received_today"] += amount
         recipient_data["points"] += amount
+        recipient_data["last_point_received"] = now.isoformat()
+
+        if (
+            recipient_data["received_today"] + amount >= point_receive_limit
+            and not force
+        ):
+            recipient_data["receive_limit_reached"] = True
 
         await user_handler.update_user_data(giver_id, giver_data)
         await user_handler.update_user_data(recipient_id, recipient_data)

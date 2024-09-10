@@ -26,6 +26,7 @@ import datetime
 from termcolor import colored
 
 from .main_handler import check_exists, db_handler
+from module.utils import ensure_iterable
 
 
 async def register_user(user_id: int):
@@ -39,10 +40,23 @@ async def register_user(user_id: int):
         db_handler.connection.ping(reconnect=True, attempts=3)
     try:
         statement = {
-            "sqlite": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed) VALUES (?, ?, ?, ?, ?, ?)",
-            "mysql": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed) VALUES (%s, %s, %s, %s, %s, %s)",
+            "sqlite": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "mysql": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         }
-        db_handler.execute(statement, (str(user_id), 0, 0, 0, 0, datetime.datetime.min))
+        db_handler.execute(
+            statement,
+            (
+                str(user_id),
+                0,
+                0,
+                0,
+                0,
+                datetime.datetime.min,
+                False,
+                datetime.datetime.min,
+                0,
+            ),
+        )
         print(colored(f"[USERS DATABASE] Registered User: {user_id}", "light_yellow"))
     except Exception as e:
         print(
@@ -83,8 +97,8 @@ async def update_user_data(user_id: int, data):
     data["points"] = round(data["points"])
 
     statement = {
-        "sqlite": "UPDATE users SET level = ?, xp = ?, total_xp = ?, points = ?, last_point_claimed = ? WHERE user_id = ?",
-        "mysql": "UPDATE users SET level = %s, xp = %s, total_xp = %s, points = %s, last_point_claimed = %s WHERE user_id = %s",
+        "sqlite": "UPDATE users SET level = ?, xp = ?, total_xp = ?, points = ?, last_point_claimed = ?, receive_limit_reached = ? , last_point_received = ?, received_today = ? WHERE user_id = ?",
+        "mysql": "UPDATE users SET level = %s, xp = %s, total_xp = %s, points = %s, last_point_claimed = %s, receive_limit_reached = %s, last_point_received = %s, received_today = %s WHERE user_id = %s",
     }
     db_handler.execute(
         statement,
@@ -94,6 +108,9 @@ async def update_user_data(user_id: int, data):
             data["totalxp"],
             data["points"],
             data["last_point_claimed"],
+            data["receive_limit_reached"],
+            data["last_point_received"],
+            data["received_today"],
             str(user_id),
         ),
     )
@@ -115,8 +132,8 @@ async def get_user_data(user_id: int):
     if not check_exists("users", "user_id", user_id):
         await register_user(user_id)
     statement = {
-        "sqlite": "SELECT level, xp, total_xp, points, last_point_claimed FROM users WHERE user_id = ?",
-        "mysql": "SELECT level, xp, total_xp, points, last_point_claimed FROM users WHERE user_id = %s",
+        "sqlite": "SELECT level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today FROM users WHERE user_id = ?",
+        "mysql": "SELECT level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today FROM users WHERE user_id = %s",
     }
     db_handler.execute(statement, (user_id,))
     result = db_handler.fetchall()[0]
@@ -126,6 +143,9 @@ async def get_user_data(user_id: int):
         "totalxp": result[2],
         "points": result[3],
         "last_point_claimed": result[4],
+        "receive_limit_reached": result[5],
+        "last_point_received": result[6],
+        "received_today": result[7],
     }
 
 
@@ -150,12 +170,7 @@ async def get_leaderboard(limit, order_by):
         statement,
         (limit,),
     )
-    result = db_handler.fetchall()
-
-    if not isinstance(result, (list, tuple)) or not all(
-        isinstance(user, (list, tuple)) for user in result
-    ):
-        return []
+    result = ensure_iterable(db_handler.fetchall())
 
     leaderboard = {
         user[0]: {
