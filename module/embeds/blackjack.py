@@ -27,6 +27,7 @@ from config.loader import lang, type_color
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.games.blackjack import BlackjackResult
+from module.utils import format_number
 
 # Mapping of BlackjackResult to language keys
 message_mapper = {
@@ -61,7 +62,7 @@ class BlackjackView(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered the view.
             bet (int): The bet amount placed by the player.
         """
-        super().__init__(timeout=120)
+        super().__init__(timeout=180)
         self.blackjack = blackjack
         self.interaction = interaction
         self.author_id = interaction.user.id
@@ -97,6 +98,7 @@ class BlackjackView(nextcord.ui.View):
         color,
         player_total,
         dealer_total,
+        user_points,
         view=None,
     ):
         """
@@ -109,6 +111,7 @@ class BlackjackView(nextcord.ui.View):
             color (int): The color of the embed.
             player_total (int): The total value of the player's hand.
             dealer_total (int): The total value of the dealer's hand.
+            user_points: The total points of the user.
             view (nextcord.ui.View, optional): The view to attach to the message.
         """
         self.lang = await self.get_lang()
@@ -116,18 +119,26 @@ class BlackjackView(nextcord.ui.View):
         embed.add_field(
             name=self.lang["blackjack_your_hand"],
             value=f"[{self.blackjack.hand_str(self.blackjack.player_hand)}] {self.lang['blackjack_total'].format(total=player_total)}",
+            inline=True,
         )
         embed.add_field(
             name=self.lang["blackjack_dealer_hand"],
             value=f"[{self.blackjack.hand_str(self.blackjack.dealer_hand)}] {self.lang['blackjack_total'].format(total=dealer_total)}",
+            inline=True,
+        )
+        embed.add_field(
+            name=self.lang["game_your_points"],
+            value=format_number(user_points),
+            inline=False,
         )
         await interaction.response.edit_message(embed=embed, view=view)
 
-    async def handle_bet_result(self, result):
+    async def handle_bet_result(self, interaction, result, send=True):
         """
         Handle the result of the bet and update user points.
 
         Args:
+            interaction: The interaction that triggered the button click.
             result (BlackjackResult): The result of the Blackjack game.
         """
         self.ended = True
@@ -149,6 +160,26 @@ class BlackjackView(nextcord.ui.View):
         await user_handler.update_user_data(user_id, user_data)
         await user_handler.update_user_data(self.interaction.client.user.id, bot_data)
 
+        if send:
+            await self.update_message(
+                interaction,
+                self.lang["blackjack_game_title"],
+                self.lang[message_mapper[result]],
+                (
+                    type_color["win"]
+                    if result
+                    in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}
+                    else (
+                        type_color["big_win"]
+                        if result == BlackjackResult.PLAYER_BLACKJACK
+                        else type_color["lose"]
+                    )
+                ),
+                self.blackjack.calculate_hand(self.blackjack.player_hand),
+                self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+                user_data["points"],
+            )
+
     @nextcord.ui.button(label="Hit", style=nextcord.ButtonStyle.primary)
     async def hit_button(self, button, interaction):
         """
@@ -159,29 +190,13 @@ class BlackjackView(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
         self.lang = await self.get_lang()
+        user_id = self.interaction.user.id
+        user_points = (await user_handler.get_user_data(user_id))["points"]
         if interaction.user.id == self.author_id:
             player_total, game_end = self.blackjack.hit(self.blackjack.player_hand)
             if game_end:
                 result = self.blackjack.check_winner()
-                color = (
-                    type_color["win"]
-                    if result
-                    in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}
-                    else (
-                        type_color["big_win"]
-                        if result == BlackjackResult.PLAYER_BLACKJACK
-                        else type_color["lose"]
-                    )
-                )
-                await self.update_message(
-                    interaction,
-                    self.lang["blackjack_game_title"],
-                    self.lang[message_mapper[result]],
-                    color,
-                    player_total,
-                    self.blackjack.calculate_hand(self.blackjack.dealer_hand),
-                )
-                await self.handle_bet_result(result)
+                await self.handle_bet_result(interaction, result)
             else:
                 await self.update_message(
                     interaction,
@@ -190,6 +205,7 @@ class BlackjackView(nextcord.ui.View):
                     type_color["game"],
                     player_total,
                     self.blackjack.calculate_hand(self.blackjack.dealer_hand),
+                    user_points,
                     self,
                 )
         else:
@@ -215,25 +231,8 @@ class BlackjackView(nextcord.ui.View):
             """
             dealer_total = self.blackjack.stand()
             result = self.blackjack.check_winner()
-            color = (
-                type_color["win"]
-                if result
-                in {
-                    BlackjackResult.PLAYER_WINS,
-                    BlackjackResult.PLAYER_BLACKJACK,
-                    BlackjackResult.DEALER_BUSTS,
-                }
-                else type_color["lose"]
-            )
-            await self.update_message(
-                interaction,
-                self.lang["blackjack_game_title"],
-                self.lang[message_mapper[result]],
-                color,
-                self.blackjack.calculate_hand(self.blackjack.player_hand),
-                self.blackjack.calculate_hand(self.blackjack.dealer_hand),
-            )
-            await self.handle_bet_result(result)
+
+            await self.handle_bet_result(interaction, result)
         else:
             await interaction.response.send_message(
                 embed=nextcord.Embed(
@@ -248,28 +247,44 @@ class BlackjackView(nextcord.ui.View):
         """Handle the timeout event for the view."""
         if not self.ended:
             self.lang = await self.get_lang()
-            await self.handle_bet_result(BlackjackResult.DEALER_WINS)
+            await self.handle_bet_result(
+                self.interaction, BlackjackResult.DEALER_WINS, send=False
+            )
             player_total = self.lang["blackjack_total"].format(
                 total=self.blackjack.calculate_hand(self.blackjack.player_hand)
             )
             dealer_total = self.lang["blackjack_total"].format(
                 total=self.blackjack.calculate_hand(self.blackjack.dealer_hand)
             )
-            if not self.ended:
-                await self.interaction.followup.edit_message(
-                    message_id=self.follow_up.id,
-                    embed=nextcord.Embed(
-                        title=self.lang["blackjack_game_title"],
-                        description=self.lang["blackjack_timeout_message"],
-                        color=type_color["lose"],
-                    )
-                    .add_field(
-                        name=self.lang["blackjack_your_hand"],
-                        value=f"{self.blackjack.player_hand}, {player_total}",
-                    )
-                    .add_field(
-                        name=self.lang["blackjack_dealer_hand"],
-                        value=f"{self.blackjack.dealer_hand}, {dealer_total}",
-                    ),
-                    view=None,
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id,
+                embed=nextcord.Embed(
+                    title=self.lang["blackjack_game_title"],
+                    description=self.lang["blackjack_timeout_message"],
+                    color=type_color["lose"],
                 )
+                .add_field(
+                    name=self.lang["blackjack_your_hand"],
+                    value=f"{self.blackjack.player_hand}, {player_total}",
+                    inline=True,
+                )
+                .add_field(
+                    name=self.lang["blackjack_dealer_hand"],
+                    value=f"{self.blackjack.dealer_hand}, {dealer_total}",
+                    inline=True,
+                )
+                .add_field(
+                    name=self.lang["game_your_points"],
+                    value=format_number(
+                        int(
+                            (
+                                await user_handler.get_user_data(
+                                    self.interaction.user.id
+                                )
+                            )["points"]
+                        )
+                    ),
+                    inline=False,
+                ),
+                view=None,
+            )

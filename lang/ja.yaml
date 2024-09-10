@@ -196,6 +196,7 @@ points_leaderboard_user_row: "✨ > {points} ポイント"
 
 # games
 game_announce_channel_changed: "ゲーム告知チャンネルが {channel} に変更されました！"
+game_your_points: "あなたのポイント:"
 
 blackjack_game_title: "🃏 | ブラックジャック"
 blackjack_your_move: "あなたの番です！"
@@ -239,7 +240,6 @@ jackpot_mega_score: "メガスコア！ ジャックポットの1.5倍！"
 jackpot_deficient_score: "おめでとうございます！ ジャックポットに当選しました！ ただし、欠陥のあるスコア (0.8倍) です。獲得したポイントは {points} ポイントです。"
 jackpot_point_won: "獲得したポイント:"
 jackpot_point_lost: "失ったポイント:"
-jackpot_your_points: "あなたのポイント:"
 jackpot_total_points: "合計ポイント:"
 jackpot_result: "結果:"
 jackpot_show_total: "合計ポイント: {points}"

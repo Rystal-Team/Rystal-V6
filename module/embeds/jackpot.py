@@ -82,7 +82,7 @@ def create_jackpot_embed(
             inline=False,
         )
     embed.add_field(
-        name=lang[guild_lang]["jackpot_your_points"],
+        name=lang[guild_lang]["game_your_points"],
         value=format_number(user_points),
         inline=False,
     )
