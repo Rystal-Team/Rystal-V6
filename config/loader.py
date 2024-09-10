@@ -40,6 +40,7 @@ included_unmaintained_lang = config["included_unmaintained_lang"]
 use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
+point_receive_limit = config["point_receive_limit"]
 
 AUTHGUARD_SQLITE_PATH = config["AUTHGUARD_SQLITE_PATH"]
 AUTHGUARD_USE_SQLITE = config["AUTHGUARD_USE_SQLITE"]
