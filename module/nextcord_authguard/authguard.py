@@ -52,7 +52,7 @@ class AuthGuard:
         mysql_user="root",
         mysql_password="password",
         mysql_database="authguard",
-        perm_config=None,
+        perm_config: str = None,
     ):
         """
         Initializes the AuthGuard class with database and permission configurations.
@@ -65,7 +65,7 @@ class AuthGuard:
             mysql_user (str): The MySQL database user.
             mysql_password (str): The MySQL database password.
             mysql_database (str): The MySQL database name.
-            perm_config (dict): The permission configuration dictionary.
+            perm_config (str): The permission configuration path.
 
         Raises:
             ValueError: If perm_config is not provided or if an invalid database type is provided.
