@@ -12,6 +12,7 @@ status_text: "🌟 v6.5.3"
 # SQLite Database Configuration
 USE_SQLITE: true
 SQLITE_PATH: "sqlite/database.db"
+AUTHGUARD_SQLITE_PATH: "sqlite/authguard.db"
 
 # YouTube Metadata Configuration
 use_ytdlp: false
