@@ -156,7 +156,7 @@ class AuthGuard:
                 permissions = self.get_command_permissions(command_id, guild.id)
                 default_perm = get_default_permission(self.default_perm, command_id)
 
-                if permissions:
+                if permissions and permissions is not None and len(permissions) > 0:
                     for perm in permissions:
                         if perm[3] == user.id and perm[5] == 1:
                             return await func(*args, **kwargs)
