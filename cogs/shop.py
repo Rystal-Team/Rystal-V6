@@ -44,7 +44,7 @@ class ShopSystem(commands.Cog):
         return
 
     @shop.subcommand(description=lang[default_language]["shop_catalog_description"])
-    @auth_guard.check_permissions("shop/shop/catalog")
+    @auth_guard.check_permissions("shop/catalog")
     async def catalog(self, interaction):
         await interaction.response.send_message(
             embed=Embeds.message(
@@ -61,7 +61,7 @@ class ShopSystem(commands.Cog):
         return
 
     @shop.subcommand(description=lang[default_language]["shop_buy_description"])
-    @auth_guard.check_permissions("shop/shop/buy")
+    @auth_guard.check_permissions("shop/buy")
     async def buy(
         self,
         interaction,
