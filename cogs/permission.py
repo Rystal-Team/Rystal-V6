@@ -23,11 +23,11 @@
 import nextcord
 from nextcord.ext import commands
 
+from config.loader import lang
 from config.perm import auth_guard
+from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 from module.nextcord_authguard.event_manager import EventManager
-from database.guild_handler import get_guild_language
-from config.loader import lang
 
 # TODO: Language support
 

@@ -25,8 +25,8 @@ import datetime
 
 from termcolor import colored
 
-from .main_handler import check_exists, db_handler
 from module.utils import ensure_iterable
+from .main_handler import check_exists, db_handler
 
 
 async def register_user(user_id: int):

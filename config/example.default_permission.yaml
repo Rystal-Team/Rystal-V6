@@ -12,62 +12,61 @@ ping: "everyone"
 info: "everyone"
 
 setting:
-    game:
-        game_announce_channel: "admin,mod"
-    music:
-        silent_mode: "admin,mod"
-        auto_leave: "admin,mod"
-        default_loop_mode: "admin,mod"
-    language: "admin,mod"
+  game:
+    game_announce_channel: "admin,mod"
+  music:
+    silent_mode: "admin,mod"
+    auto_leave: "admin,mod"
+    default_loop_mode: "admin,mod"
+  language: "admin,mod"
 
 music:
-    music:
-        play: "everyone"
-        skip: "everyone"
-        queue: "everyone"
-        shuffle: "everyone"
-        loop: "everyone"
-        nowplaying: "everyone"
-        stop: "everyone"
-        pause: "everyone"
-        resume: "everyone"
-        remove: "everyone"
-        register: "everyone"
-        most_played: "everyone"
+  play: "everyone"
+  skip: "everyone"
+  queue: "everyone"
+  shuffle: "everyone"
+  loop: "everyone"
+  nowplaying: "everyone"
+  stop: "everyone"
+  pause: "everyone"
+  resume: "everyone"
+  remove: "everyone"
+  register: "everyone"
+  most_played: "everyone"
 
 rank:
-    card: "everyone"
-    leaderboard: "everyone"
+  card: "everyone"
+  leaderboard: "everyone"
 
 point:
-    claim: "everyone"
-    give: "everyone"
-    show: "everyone"
-    leaderboard: "everyone"
+  claim: "everyone"
+  give: "everyone"
+  show: "everyone"
+  leaderboard: "everyone"
 
 permission:
-    list: "admin,mod"
-    user: "admin"
-    role: "admin"
+  list: "admin,mod"
+  user: "admin"
+  role: "admin"
 
 note:
-    create: "everyone"
-    list: "everyone"
-    view: "everyone"
-    remove: "everyone"
+  create: "everyone"
+  list: "everyone"
+  view: "everyone"
+  remove: "everyone"
 
 bug_report:
-    bug: "everyone"
+  bug: "everyone"
 
 shop:
-    catalog: "everyone"
-    buy: "everyone"
+  catalog: "everyone"
+  buy: "everyone"
 
 game:
-    rules:
-        jackpot: "everyone"
+  rules:
     jackpot: "everyone"
-    dice: "everyone"
-    roulette: "everyone"
-    coinflip: "everyone"
-    showjackpot: "everyone"
+  jackpot: "everyone"
+  dice: "everyone"
+  roulette: "everyone"
+  coinflip: "everyone"
+  showjackpot: "everyone"
