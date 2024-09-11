@@ -26,6 +26,7 @@ from uuid import uuid4
 import nextcord
 from yaml.error import YAMLError
 
+from . import LogHandler
 from .database.base import DatabaseHandler
 from .database_create import create_statement
 from .event_manager import EventManager
@@ -154,35 +155,47 @@ class AuthGuard:
                 permissions = self.get_command_permissions(command_id, guild.id)
                 default_perm = get_default_permission(self.default_perm, command_id)
 
+                if default_perm is None or default_perm == []:
+                    LogHandler.warning(
+                        "Missing default permission for command: " + command_id
+                    )
+
                 if permissions and permissions is not None and len(permissions) > 0:
                     permissions = permissions or []
                     for perm in permissions:
-                        if perm[3] == user.id and perm[5] == 1:
+                        if (
+                            not perm[3] is None
+                            and int(perm[3]) == user.id
+                            and perm[5] == 1
+                        ):
                             return await func(*args, **kwargs)
-                        if perm[4] in user_roles and perm[5] == 1:
+                        if (
+                            not perm[4] is None
+                            and int(perm[4]) in user_roles
+                            and perm[5] == 1
+                        ):
                             return await func(*args, **kwargs)
-                else:
-                    if any(
-                        [
-                            GeneralPermission.ADMIN in default_perm
-                            and user.guild_permissions.administrator,
-                            GeneralPermission.OWNER in default_perm
-                            and cog.bot.owner_id == user.id,
-                            GeneralPermission.MOD in default_perm
-                            and user.guild_permissions.manage_guild,
-                            GeneralPermission.EVERYONE in default_perm,
-                        ]
-                    ):
-                        return await func(*args, **kwargs)
+                if any(
+                    [
+                        GeneralPermission.ADMIN in default_perm
+                        and user.guild_permissions.administrator,
+                        GeneralPermission.OWNER in default_perm
+                        and cog.bot.owner_id == user.id,
+                        GeneralPermission.MOD in default_perm
+                        and user.guild_permissions.manage_guild,
+                        GeneralPermission.EVERYONE in default_perm,
+                    ]
+                ):
+                    return await func(*args, **kwargs)
 
-                    if GeneralPermission.DISABLED in default_perm:
-                        await EventManager.fire(
-                            "on_permission_denied",
-                            interaction,
-                            permissions,
-                            default_perm,
-                        )
-                        return
+                if GeneralPermission.DISABLED in default_perm:
+                    await EventManager.fire(
+                        "on_permission_denied",
+                        interaction,
+                        permissions,
+                        default_perm,
+                    )
+                    return
 
                 await EventManager.fire(
                     "on_permission_denied", interaction, permissions, default_perm
@@ -192,22 +205,42 @@ class AuthGuard:
 
         return decorator
 
-    def user_exists(self, guild_id, user_id):
+    def user_exists(self, guild_id, user_id, command_id):
         """
         Checks if a user exists in the permissions table.
 
         Args:
             guild_id (str): The ID of the guild.
             user_id (str): The ID of the user.
+            command_id (str): The ID of the command.
 
         Returns:
             tuple: The user record if exists, otherwise None.
         """
         statement = {
-            "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND user_id = ?",
-            "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND user_id = %s",
+            "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND user_id = ? AND command_id = ?",
+            "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND user_id = %s AND command_id = %s",
         }
-        self.db.execute(statement, (guild_id, user_id))
+        self.db.execute(statement, (guild_id, user_id, command_id))
+        return self.db.fetchone()
+
+    def role_exists(self, guild_id, role_id, command_id):
+        """
+        Checks if a role exists in the permissions table.
+
+        Args:
+            guild_id (str): The ID of the guild.
+            role_id (str): The ID of the role.
+            command_id (str): The ID of the command.
+
+        Returns:
+            tuple: The role record if exists, otherwise None.
+        """
+        statement = {
+            "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND role_id = ? AND command_id = ?",
+            "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND role_id = %s AND command_id = %s",
+        }
+        self.db.execute(statement, (guild_id, role_id, command_id))
         return self.db.fetchone()
 
     def get_commands(self):
@@ -218,24 +251,6 @@ class AuthGuard:
             list: The list of command IDs.
         """
         return self.command_id_list
-
-    def role_exists(self, guild_id, role_id):
-        """
-        Checks if a role exists in the permissions table.
-
-        Args:
-            guild_id (str): The ID of the guild.
-            role_id (str): The ID of the role.
-
-        Returns:
-            tuple: The role record if exists, otherwise None.
-        """
-        statement = {
-            "sqlite": "SELECT * FROM permissions WHERE guild_id = ? AND role_id = ?",
-            "mysql": "SELECT * FROM permissions WHERE guild_id = %s AND role_id = %s",
-        }
-        self.db.execute(statement, (guild_id, role_id))
-        return self.db.fetchone()
 
     def get_command_permissions(self, command_id, guild_id):
         """
@@ -265,7 +280,9 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the user is allowed to use the command.
         """
-        if not self.user_exists(guild_id, user_id):
+        print(command_id, user_id, guild_id, allowed)
+        print(self.user_exists(guild_id, user_id, command_id))
+        if not self.user_exists(guild_id, user_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (%s, %s, %s, %s, %s)",
@@ -291,7 +308,7 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the role is allowed to use the command.
         """
-        if not self.role_exists(guild_id, role_id):
+        if not self.role_exists(guild_id, role_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (%s, %s, %s, %s, %s)",
