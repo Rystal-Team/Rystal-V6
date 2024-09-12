@@ -65,6 +65,7 @@ shop:
 game:
   rules:
     jackpot: "everyone"
+  blackjack: "everyone"
   jackpot: "everyone"
   dice: "everyone"
   roulette: "everyone"
