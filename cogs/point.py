@@ -201,6 +201,7 @@ class PointSystem(commands.Cog):
 
         if now - last_received > cooldown_period:
             recipient_data["receive_limit_reached"] = False
+            recipient_data["received_today"] = 0
 
         if recipient_data["receive_limit_reached"] and not force:
             remaining_time = cooldown_period - (now - last_received)
