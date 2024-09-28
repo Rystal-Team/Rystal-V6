@@ -286,13 +286,13 @@ class GameSystem(commands.Cog):
             bot_data["points"] -= bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_win"
-            ].format(points=format_number(bet))
+            ].format(guess=guess, outcome=outcome, points=format_number(bet))
         else:
             data["points"] -= bet
             bot_data["points"] += bet
             result_message = lang[await get_guild_language(interaction.guild.id)][
                 "coinflip_lose"
-            ].format(points=format_number(bet))
+            ].format(guess=guess, outcome=outcome, points=format_number(bet))
 
         await user_handler.update_user_data(self.bot.user.id, bot_data)
         await user_handler.update_user_data(user_id, data)
