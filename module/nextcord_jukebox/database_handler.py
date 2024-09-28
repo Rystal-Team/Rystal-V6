@@ -302,10 +302,10 @@ class Database:
             LogHandler.error(f"Error fetching replay history: {e}")
             raise e
 
-    def clear_old_cache(self):
+    def clear_old_cache(self, days=28):
         """Clears old cached video metadata from the database."""
         try:
-            cutoff_date = (datetime.now() - timedelta(days=28)).isoformat()
+            cutoff_date = (datetime.now() - timedelta(days=days)).isoformat()
             query = {
                 "sqlite": "DELETE FROM jukebox_ytcache WHERE registered_date < ?",
                 "mysql": "DELETE FROM jukebox_ytcache WHERE registered_date < %s",

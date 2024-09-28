@@ -19,6 +19,7 @@ music_stop_description: "🎵 | 音楽を停止！"
 music_remove_description: "🎵 | キューから曲を削除！"
 music_register_description: "🎵 | RPCクライアント用のシークレットを登録/再生成！"
 music_most_played_description: "🎵 | 最も再生された曲を表示！"
+music_flush_cache_description: "🎵 | キャッシュをフラッシュ！"
 
 rank_class_title: "🎖️ | ランキングモジュール"
 rank_card_description: "🎖️ | ユーザーのランクを表示！"
@@ -149,6 +150,7 @@ skipped: "**{old}** をスキップしました！"
 
 music_registered_secret: "シークレットの登録に成功しました。詳細はプライベートメッセージをご確認ください。何も受け取っていない場合は、プライバシー設定で「サーバーメンバーからのダイレクトメッセージを許可」が有効になっていることを確認してください。"
 music_secret: "これが新しいシークレットです\n\n ```{secret}```"
+music_cache_flushed: "キャッシュがリフレッシュされました！"
 
 # level
 level_up: "{user} がレベル {level} に到達しました！！！"

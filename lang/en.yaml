@@ -19,6 +19,7 @@ music_stop_description: "🎵 | Stop the music!"
 music_remove_description: "🎵 | Remove a song from the queue!"
 music_register_description: "🎵 | Register or regenerate a secret for our RPC client!"
 music_most_played_description: "🎵 | Show the most played songs!"
+music_flush_cache_description: "🎵 | Flush the music cache!"
 
 rank_class_title: "🎖️ | Ranking Module"
 rank_card_description: "🎖️ | Show a user's rank!"
@@ -149,6 +150,7 @@ skipped: "Skipped **{old}**!"
 
 music_registered_secret: "You have successfully registered a secret. Please check your private messages for details. If you haven't received a message, make sure 'Allow direct messages from server members' is enabled in your privacy settings."
 music_secret: "Your new secret is:\n\n ```{secret}```"
+music_cache_flushed: "Cache flushed successfully!"
 
 # level
 level_up: "{user} has reached level {level}!!!"

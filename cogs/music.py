@@ -41,19 +41,9 @@ from module.embeds.queue import Pagination
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
-from module.nextcord_jukebox.exceptions import (
-    AlreadyPaused,
-    EmptyQueue,
-    InvalidPlaylist,
-    LoadingStream,
-    NoQueryResult,
-    NotConnected,
-    NotPaused,
-    NotPlaying,
-    NothingPlaying,
-    UserNotConnected,
-    VoiceChannelMismatch,
-)
+from module.nextcord_jukebox.exceptions import (AlreadyPaused, EmptyQueue, InvalidPlaylist, LoadingStream,
+                                                NoQueryResult, NotConnected, NotPaused, NotPlaying, NothingPlaying,
+                                                UserNotConnected, VoiceChannelMismatch)
 from module.nextcord_jukebox.player_manager import PlayerManager
 from module.nextcord_jukebox.utils import get_playlist_id
 from module.progressBar import progressBar
@@ -992,6 +982,28 @@ class Music(commands.Cog, EventManager):
                     f"Canvas Generated, Time Taken: {time.time() - timer}", "dark_grey"
                 )
             )
+
+    @music.subcommand(
+        description=lang[default_language]["music_flush_cache_description"]
+    )
+    @auth_guard.check_permissions("music/flush_cache")
+    async def flush_cache(
+        self,
+        interaction: Interaction,
+    ):
+        await interaction.response.defer(with_message=True)
+        self.manager.database.clear_old_cache(days=0)
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "music_cache_flushed"
+                ],
+                message_type="success",
+            )
+        )
 
 
 async def setup(bot):
