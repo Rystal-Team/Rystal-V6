@@ -198,6 +198,10 @@ if __name__ == "__main__":
             channel="夢追翔のJUKEBOX",
         ),
         Song(name="[MV] We don't talk anymore", channel="Justin Bieber"),
+        Song(
+            name="【歌衣メイカ爆誕祭2024】W/X/Y／歌衣メイカ × アステル・レダ",
+            channel="歌衣メイカ",
+        ),
     ]
 
     queries = [
@@ -210,7 +214,7 @@ if __name__ == "__main__":
         "カグラナナ",
         "アステル レダ",
         "アステルレダ",
-        "x/y/z",
+        "w/x/y",
     ]
 
     for q in queries:
