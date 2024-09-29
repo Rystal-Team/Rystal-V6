@@ -747,14 +747,10 @@ class MusicPlayer:
 
     @property
     def fetching_stream(self):
-        """
-        bool: Whether a stream is currently being fetched.
-        """
+        """bool: Whether a stream is currently being fetched."""
         return self._fetching_stream
 
     @property
     def members(self):
-        """
-        list: The list of members currently in the voice channel.
-        """
+        """list: The list of members currently in the voice channel."""
         return self._members
