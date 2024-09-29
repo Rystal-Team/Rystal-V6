@@ -121,11 +121,12 @@ class SongMatcher:
         if not case_sens:
             query = query.lower()
 
+        query = re.sub(r"[^\w\s]", "", query)
         q_terms = cls.split(query)
         results = []
 
         for song in song_queue:
-            song_title = song.name
+            song_title = re.sub(r"[^\w\s]", "", song.name)
             song_channel = song.channel
 
             title_proc = song_title.lower() if not case_sens else song_title
@@ -208,6 +209,8 @@ if __name__ == "__main__":
         "   一度だ  け  の   恋   なら",
         "カグラナナ",
         "アステル レダ",
+        "アステルレダ",
+        "x/y/z",
     ]
 
     for q in queries:
