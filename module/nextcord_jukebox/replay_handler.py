@@ -59,7 +59,7 @@ class ReplayHandler(EventManager):
             before: The state before the track started.
             after: The state after the track started.
         """
-        for member in player._members:
+        for member in player.members:
             if member == player.bot or member is None:
                 continue
             now_playing = await player.now_playing()

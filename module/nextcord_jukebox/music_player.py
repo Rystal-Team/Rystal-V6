@@ -87,7 +87,7 @@ class MusicPlayer:
     Methods:
         _attempt_reconnect(max_retries=5, delay=1):
             Attempts to reconnect to the voice channel if disconnected.
-        _on_voice_state_update(member, before, after):
+        on_voice_state_update(member, before, after):
             Handles voice state updates to manage member join/leave events and bot reconnection.
         _play_func(last: Union[Song, None], new: Song):
             Plays a new song and updates the now playing state.
@@ -191,7 +191,7 @@ class MusicPlayer:
                 await asyncio.sleep(delay)
         return False
 
-    async def _on_voice_state_update(self, member, before, after):
+    async def on_voice_state_update(self, member, before, after):
         """
         Handles voice state updates to manage member join/leave events and bot reconnection.
 
@@ -744,3 +744,17 @@ class MusicPlayer:
             song = self.music_queue.pop(index)
 
         return song
+
+    @property
+    def fetching_stream(self):
+        """
+        bool: Whether a stream is currently being fetched.
+        """
+        return self._fetching_stream
+
+    @property
+    def members(self):
+        """
+        list: The list of members currently in the voice channel.
+        """
+        return self._members

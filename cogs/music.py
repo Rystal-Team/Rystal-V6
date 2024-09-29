@@ -192,7 +192,7 @@ class Music(commands.Cog, EventManager):
 
         try:
             playlist_id = await get_playlist_id(query)
-            if playlist_id and not player._fetching_stream:
+            if playlist_id and not player.fetching_stream:
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][

@@ -159,7 +159,7 @@ class PlayerManager:
         ):
             await self.remove_player(member)
         if member.guild.id in self.players:
-            await self.players[member.guild.id]._on_voice_state_update(
+            await self.players[member.guild.id].on_voice_state_update(
                 member, before, after
             )
         return
