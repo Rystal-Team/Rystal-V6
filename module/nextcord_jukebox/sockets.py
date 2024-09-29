@@ -90,6 +90,7 @@ class RPCHandler(EventManager):
                             "title": after.title,
                             "url": after.url,
                             "channel": after.channel,
+                            "thumbnail": after.thumbnail,
                         },
                     },
                 )
@@ -150,6 +151,7 @@ class RPCHandler(EventManager):
                         "title": now_playing.title,
                         "url": now_playing.url,
                         "channel": now_playing.channel,
+                        "thumbnail": now_playing.thumbnail,
                     },
                 },
             )
