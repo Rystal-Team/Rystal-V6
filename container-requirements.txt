@@ -19,4 +19,4 @@ Werkzeug~=3.0.3
 xmltodict>=0.13.0
 youtube-search>=2.1.2
 yt-dlp>=2024.5.27
-Pillow~=10.1.0
+Pillow~=10.4.0
