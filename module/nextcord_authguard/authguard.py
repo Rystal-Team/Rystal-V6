@@ -23,7 +23,6 @@
 from functools import wraps
 from uuid import uuid4
 
-import nextcord
 from yaml.error import YAMLError
 
 from . import LogHandler
@@ -104,21 +103,6 @@ class AuthGuard:
         self.db = DatabaseHandler(**db_params[db_type])
         self.db.create_tables()
         self.command_id_list = []
-
-    @staticmethod
-    def find_interaction(*args):
-        """
-        Finds and returns the first instance of nextcord.Interaction in the provided arguments.
-
-        Args:
-            *args: Variable length argument list.
-
-        Returns:
-            nextcord.Interaction: The first interaction found, or None if not found.
-        """
-        return next(
-            (arg for arg in args if isinstance(arg, nextcord.Interaction)), None
-        )
 
     def cleanup_permissions(self):
         """Cleans up permissions by removing entries not in the command_id_list."""
@@ -205,7 +189,7 @@ class AuthGuard:
 
         return decorator
 
-    def user_exists(self, guild_id, user_id, command_id):
+    def __user_exists__(self, guild_id, user_id, command_id):
         """
         Checks if a user exists in the permissions table.
 
@@ -224,7 +208,7 @@ class AuthGuard:
         self.db.execute(statement, (guild_id, user_id, command_id))
         return self.db.fetchone()
 
-    def role_exists(self, guild_id, role_id, command_id):
+    def __role_exists__(self, guild_id, role_id, command_id):
         """
         Checks if a role exists in the permissions table.
 
@@ -280,9 +264,7 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the user is allowed to use the command.
         """
-        print(command_id, user_id, guild_id, allowed)
-        print(self.user_exists(guild_id, user_id, command_id))
-        if not self.user_exists(guild_id, user_id, command_id):
+        if not self.__user_exists__(guild_id, user_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (%s, %s, %s, %s, %s)",
@@ -308,7 +290,7 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the role is allowed to use the command.
         """
-        if not self.role_exists(guild_id, role_id, command_id):
+        if not self.__role_exists__(guild_id, role_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (%s, %s, %s, %s, %s)",

@@ -57,7 +57,7 @@ def create_top_songs_poster(
         pos: tuple,
         color: str = "#97A8CB",
     ) -> int:
-        width, height = draw.textbbox((0, 0), text_str, font=font)[2:4]
+        width, _ = draw.textbbox((0, 0), text_str, font=font)[2:4]
         rect_w, rect_h = width + 2 * x_pad, 24 + 2 * y_pad
         x, y = pos
         rect_bbox = (x, y, x + rect_w, y + rect_h)

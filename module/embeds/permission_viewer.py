@@ -21,32 +21,15 @@
 #  ------------------------------------------------------------
 #
 
-import nextcord
-
-from config.loader import type_color
+from nextcord.ui import View
 
 
-class Embeds:
-    """Class for creating Nextcord embed messages."""
-    @staticmethod
-    def message(title, message, message_type, thumbnail=None):
-        """
-        Create an embed message.
+class PermissionViewer(View):
+    def __init__(
+        self,
+    ):
+        pass
 
-        Args:
-            title (str): The title of the embed.
-            message (str): The message content of the embed.
-            message_type (str): The type of the message to determine the embed color.
-            thumbnail (str, optional): URL of the thumbnail image.
 
-        Returns:
-            nextcord.Embed: The generated embed message.
-        """
-        embed = nextcord.Embed(
-            title=title, description=message, color=(type_color[message_type])
-        )
-
-        if thumbnail is not None:
-            embed.set_thumbnail(url=thumbnail)
-
-        return embed
+	
+    
