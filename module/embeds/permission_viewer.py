@@ -29,7 +29,3 @@ class PermissionViewer(View):
         self,
     ):
         pass
-
-
-	
-    
