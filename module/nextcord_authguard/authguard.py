@@ -53,6 +53,7 @@ class AuthGuard:
         mysql_password="password",
         mysql_database="authguard",
         perm_config: str = None,
+        owner_id: int = None,
     ):
         """
         Initializes the AuthGuard class with database and permission configurations.
@@ -66,6 +67,7 @@ class AuthGuard:
             mysql_password (str): The MySQL database password.
             mysql_database (str): The MySQL database name.
             perm_config (str): The permission configuration path.
+            owner_id (int): The ID of the bot owner.
 
         Raises:
             ValueError: If perm_config is not provided or if an invalid database type is provided.
@@ -103,6 +105,7 @@ class AuthGuard:
         self.db = DatabaseHandler(**db_params[db_type])
         self.db.create_tables()
         self.command_id_list = []
+        self.owner_id = owner_id
 
     def cleanup_permissions(self):
         """Cleans up permissions by removing entries not in the command_id_list."""
@@ -164,7 +167,7 @@ class AuthGuard:
                         GeneralPermission.ADMIN in default_perm
                         and user.guild_permissions.administrator,
                         GeneralPermission.OWNER in default_perm
-                        and cog.bot.owner_id == user.id,
+                        and self.owner_id == user.id,
                         GeneralPermission.MOD in default_perm
                         and user.guild_permissions.manage_guild,
                         GeneralPermission.EVERYONE in default_perm,
