@@ -229,7 +229,7 @@ class BlackjackView(nextcord.ui.View):
                 button (nextcord.ui.Button): The button that was clicked.
                 interaction (nextcord.Interaction): The interaction that triggered the button click.
             """
-            dealer_total = self.blackjack.stand()
+            _ = self.blackjack.stand()
             result = self.blackjack.check_winner()
 
             await self.handle_bet_result(interaction, result)

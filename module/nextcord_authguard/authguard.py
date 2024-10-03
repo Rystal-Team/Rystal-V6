@@ -23,7 +23,6 @@
 from functools import wraps
 from uuid import uuid4
 
-import nextcord
 from yaml.error import YAMLError
 
 from . import LogHandler
@@ -54,6 +53,7 @@ class AuthGuard:
         mysql_password="password",
         mysql_database="authguard",
         perm_config: str = None,
+        owner_id: int = None,
     ):
         """
         Initializes the AuthGuard class with database and permission configurations.
@@ -67,6 +67,7 @@ class AuthGuard:
             mysql_password (str): The MySQL database password.
             mysql_database (str): The MySQL database name.
             perm_config (str): The permission configuration path.
+            owner_id (int): The ID of the bot owner.
 
         Raises:
             ValueError: If perm_config is not provided or if an invalid database type is provided.
@@ -104,21 +105,7 @@ class AuthGuard:
         self.db = DatabaseHandler(**db_params[db_type])
         self.db.create_tables()
         self.command_id_list = []
-
-    @staticmethod
-    def find_interaction(*args):
-        """
-        Finds and returns the first instance of nextcord.Interaction in the provided arguments.
-
-        Args:
-            *args: Variable length argument list.
-
-        Returns:
-            nextcord.Interaction: The first interaction found, or None if not found.
-        """
-        return next(
-            (arg for arg in args if isinstance(arg, nextcord.Interaction)), None
-        )
+        self.owner_id = owner_id
 
     def cleanup_permissions(self):
         """Cleans up permissions by removing entries not in the command_id_list."""
@@ -180,7 +167,7 @@ class AuthGuard:
                         GeneralPermission.ADMIN in default_perm
                         and user.guild_permissions.administrator,
                         GeneralPermission.OWNER in default_perm
-                        and cog.bot.owner_id == user.id,
+                        and self.owner_id == user.id,
                         GeneralPermission.MOD in default_perm
                         and user.guild_permissions.manage_guild,
                         GeneralPermission.EVERYONE in default_perm,
@@ -205,7 +192,7 @@ class AuthGuard:
 
         return decorator
 
-    def user_exists(self, guild_id, user_id, command_id):
+    def __user_exists__(self, guild_id, user_id, command_id):
         """
         Checks if a user exists in the permissions table.
 
@@ -224,7 +211,7 @@ class AuthGuard:
         self.db.execute(statement, (guild_id, user_id, command_id))
         return self.db.fetchone()
 
-    def role_exists(self, guild_id, role_id, command_id):
+    def __role_exists__(self, guild_id, role_id, command_id):
         """
         Checks if a role exists in the permissions table.
 
@@ -280,9 +267,7 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the user is allowed to use the command.
         """
-        print(command_id, user_id, guild_id, allowed)
-        print(self.user_exists(guild_id, user_id, command_id))
-        if not self.user_exists(guild_id, user_id, command_id):
+        if not self.__user_exists__(guild_id, user_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, user_id, allowed) VALUES (%s, %s, %s, %s, %s)",
@@ -308,7 +293,7 @@ class AuthGuard:
             guild_id (str): The ID of the guild.
             allowed (bool): Whether the role is allowed to use the command.
         """
-        if not self.role_exists(guild_id, role_id, command_id):
+        if not self.__role_exists__(guild_id, role_id, command_id):
             statement = {
                 "sqlite": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (?, ?, ?, ?, ?)",
                 "mysql": "INSERT INTO permissions (permission_id, command_id, guild_id, role_id, allowed) VALUES (%s, %s, %s, %s, %s)",

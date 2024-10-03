@@ -19,20 +19,17 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
+#
 
-import os
+from nextcord.ui import View
 
-from config.loader import AUTHGUARD_SQLITE_PATH, AUTHGUARD_USE_SQLITE, bot_owner_id
-from module.nextcord_authguard.authguard import AuthGuard
 
-auth_guard = AuthGuard(
-    db_type="sqlite" if AUTHGUARD_USE_SQLITE else "mysql",
-    db_path=AUTHGUARD_SQLITE_PATH,
-    mysql_host=os.getenv("AUTHGUARD_MYSQL_HOST"),
-    mysql_port=int(os.getenv("AUTHGUARD_MYSQL_PORT")),
-    mysql_user=os.getenv("AUTHGUARD_MYSQL_USER"),
-    mysql_password=os.getenv("AUTHGUARD_MYSQL_PASSWORD"),
-    mysql_database=os.getenv("AUTHGUARD_MYSQL_DATABASE"),
-    perm_config="config/default_permission.yaml",
-    owner_id=bot_owner_id,
-)
+class PermissionViewer(View):
+    def __init__(
+        self,
+    ):
+        pass
+
+
+	
+    

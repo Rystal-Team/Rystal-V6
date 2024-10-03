@@ -28,7 +28,7 @@ from config.loader import type_color
 
 class Embeds:
     """Class for creating Nextcord embed messages."""
-
+    @staticmethod
     def message(title, message, message_type, thumbnail=None):
         """
         Create an embed message.
