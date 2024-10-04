@@ -28,4 +28,4 @@ class PermissionViewer(View):
     def __init__(
         self,
     ):
-        pass
+        raise NotImplementedError()
