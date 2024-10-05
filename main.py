@@ -252,7 +252,7 @@ async def reloadcogs(ctx):
     name="list",
     description="🤖 | See a list of servers that I am in!",
 )
-async def list(
+async def server_list(
     interaction: nextcord.Interaction,
 ):
     if interaction.user.id == bot_owner_id:

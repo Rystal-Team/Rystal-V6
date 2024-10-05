@@ -40,6 +40,7 @@ class progressBar:
             Generates a progress bar with filled style.
     """
 
+    @staticmethod
     def splitBar(total, current, size=15, line="▬", slider="🔘"):
         """
         Generate a split-style progress bar.
@@ -67,6 +68,7 @@ class progressBar:
         calculated = percentage * 100
         return [bar, calculated]
 
+    @staticmethod
     def filledBar(total, current, size=15, line="⬛", slider="⬜"):
         """
         Generate a filled-style progress bar.

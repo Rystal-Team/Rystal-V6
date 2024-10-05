@@ -22,7 +22,7 @@
 
 import os
 
-from config.loader import AUTHGUARD_SQLITE_PATH, AUTHGUARD_USE_SQLITE
+from config.loader import AUTHGUARD_SQLITE_PATH, AUTHGUARD_USE_SQLITE, bot_owner_id
 from module.nextcord_authguard.authguard import AuthGuard
 
 auth_guard = AuthGuard(
@@ -34,4 +34,5 @@ auth_guard = AuthGuard(
     mysql_password=os.getenv("AUTHGUARD_MYSQL_PASSWORD"),
     mysql_database=os.getenv("AUTHGUARD_MYSQL_DATABASE"),
     perm_config="config/default_permission.yaml",
+    owner_id=bot_owner_id,
 )

@@ -390,6 +390,7 @@ class MusicPlayer:
 
         return True
 
+    @staticmethod
     def pre_check(*d_args, **d_kwargs) -> Callable:
         """
         A decorator for methods requiring pre-checks.
