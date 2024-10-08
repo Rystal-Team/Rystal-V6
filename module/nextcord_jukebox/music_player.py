@@ -502,6 +502,9 @@ class MusicPlayer:
         self._fetching_stream = True
         result = None
 
+        if self.loop is None:
+            self.loop = interaction.guild.voice_client.loop
+
         if self.is_valid_playlist_url(query):
             try:
                 playlist = await asyncio.to_thread(Playlist, query)
