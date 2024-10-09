@@ -3,7 +3,7 @@ name: Sync with Panel
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   sync:
