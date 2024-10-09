@@ -22,9 +22,9 @@
 #
 
 import asyncio
+import traceback
 
 import websockets
-import traceback
 
 
 async def check_websocket(url):
