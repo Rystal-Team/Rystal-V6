@@ -248,33 +248,5 @@ async def reloadcogs(ctx):
         )
 
 
-@bot.slash_command(
-    name="list",
-    description="🤖 | See a list of servers that I am in!",
-)
-async def server_list(
-    interaction: nextcord.Interaction,
-):
-    if interaction.user.id == bot_owner_id:
-        para = "========= Guilds ========="
-        for guild in bot.guilds:
-            para = para + f"\nGuild: {guild.name} | Member: {guild.member_count}"
-
-        await interaction.response.send_message(para, ephemeral=True)
-    else:
-        await interaction.response.send_message(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(interaction.guild.id)][
-                    class_namespace
-                ],
-                message=lang[await get_guild_language(interaction.guild.id)][
-                    "missing_permission"
-                ],
-                message_type="warn",
-            ),
-            ephemeral=True,
-        )
-
-
 asyncio.run(setup())
 bot.run(TOKEN)
