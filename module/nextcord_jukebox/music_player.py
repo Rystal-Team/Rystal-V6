@@ -164,7 +164,7 @@ class MusicPlayer:
         self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options": "-vn",
+            "options": "-vn -af loudnorm",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
