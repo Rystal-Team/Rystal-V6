@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 
 import random
+import secrets
 from typing import Any, List
 
 
@@ -61,7 +62,7 @@ class Spinner:
         Returns:
             list: A list of 4 randomly chosen emoji options.
         """
-        return [random.choice(self.options) for _ in range(4)]
+        return [secrets.choice(self.options) for _ in range(4)]
 
     @staticmethod
     def is_winning(columns: List[str]) -> tuple[Any, bool, bool]:

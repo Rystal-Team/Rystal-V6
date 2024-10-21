@@ -24,6 +24,8 @@
 import random
 from enum import Enum
 
+from module.utils import crypto_shuffle
+
 
 class BlackjackResult(Enum):
     """Enum representing the possible outcomes of a Blackjack game."""
@@ -44,7 +46,7 @@ class Blackjack:
         Initialize the Blackjack game with a shuffled deck and empty hands for player and dealer.
         """
         self.deck = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11] * 8
-        random.shuffle(self.deck)
+        crypto_shuffle(self.deck)
         self.player_hand = []
         self.dealer_hand = []
         self.dealer_first_card = self.deck.pop()

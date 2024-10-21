@@ -23,6 +23,7 @@
 
 import random
 from enum import Enum
+import secrets
 
 
 class RouletteResult(Enum):
@@ -76,7 +77,7 @@ class Roulette:
         ]
 
     def spin_wheel(self):
-        return random.choice(self.Wheel)
+        return secrets.choice(self.Wheel)
 
     @staticmethod
     def check_winner(result, option):

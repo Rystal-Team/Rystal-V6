@@ -23,6 +23,7 @@
 
 import copy
 import random
+import secrets
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -301,10 +302,10 @@ class AIPlayer:
             return None
 
         if self.difficulty == "easy":
-            return random.choice(valid_moves)
+            return secrets.choice(valid_moves)
         if self.difficulty == "medium":
             return (
-                random.choice(valid_moves)
+                secrets.choice(valid_moves)
                 if random.random() < 0.5
                 else max(valid_moves, key=self.evaluate_move)
             )

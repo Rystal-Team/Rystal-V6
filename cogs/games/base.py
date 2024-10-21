@@ -22,6 +22,7 @@
 #
 
 import random
+import secrets
 
 import nextcord
 from nextcord.ext import commands
@@ -44,7 +45,7 @@ from module.embeds.jackpot import create_jackpot_embed
 from module.games.blackjack import Blackjack
 from module.games.roulette import Roulette, RouletteResult
 from module.games.spinner import Spinner
-from module.utils import format_number
+from module.utils import crypto_randint, format_number
 
 class_namespace = "game_class_title"
 MAX_DICE_LIMIT = 10
@@ -211,7 +212,7 @@ class GameSystem(commands.Cog):
             )
             return
 
-        dice_results = [random.randint(1, 6) for _ in range(amount)]
+        dice_results = [crypto_randint(1, 6) for _ in range(amount)]
         total = sum(dice_results)
 
         embed = nextcord.Embed(
@@ -279,7 +280,7 @@ class GameSystem(commands.Cog):
             )
             return
 
-        outcome = random.choice(["Heads", "Tails"])
+        outcome = secrets.choice(["Heads", "Tails"])
         bot_data = await user_handler.get_user_data(self.bot.user.id)
         if outcome == guess:
             data["points"] += bet
