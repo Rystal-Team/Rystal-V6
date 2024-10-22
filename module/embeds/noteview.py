@@ -43,6 +43,25 @@ class NoteState(Enum):
     FINISHED = 33
 
 
+def map_state_to_text(guild_lang, state):
+    """
+    Map the state value to the corresponding text.
+
+    Args:
+        state (int): The state value.
+
+    Returns:
+        str: The corresponding text for the state.
+    """
+    state_mapping = {
+        NoteState.UNBEGUN.value: lang[guild_lang]["note_state_unbegun"],
+        NoteState.STALLED.value: lang[guild_lang]["note_state_stalled"],
+        NoteState.ONGOING.value: lang[guild_lang]["note_state_ongoing"],
+        NoteState.FINISHED.value: lang[guild_lang]["note_state_finished"],
+    }
+    return state_mapping.get(state, "Unknown")
+
+
 class Note:
     """
     A class representing a note.
@@ -95,7 +114,11 @@ class NotesEmbed:
             color=type_color["list"],
         )
         for note in notes:
-            embed.add_field(name=note.title, value=f"ID: {note.id}", inline=False)
+            embed.add_field(
+                name=f"{note.title} [{map_state_to_text(guild_lang, note.state)}]",
+                value=f"ID: {note.id}",
+                inline=False,
+            )
         return embed
 
 
@@ -253,24 +276,6 @@ class NoteStateView(nextcord.ui.View):
         note_data = await fetch_note(self.user_id, self.note_id)
         note_data = json.loads(note_data)
 
-        def map_state_to_text(state):
-            """
-            Map the state value to the corresponding text.
-
-            Args:
-                state (int): The state value.
-
-            Returns:
-                str: The corresponding text for the state.
-            """
-            state_mapping = {
-                NoteState.UNBEGUN.value: lang[self.guild_lang]["note_state_unbegun"],
-                NoteState.STALLED.value: lang[self.guild_lang]["note_state_stalled"],
-                NoteState.ONGOING.value: lang[self.guild_lang]["note_state_ongoing"],
-                NoteState.FINISHED.value: lang[self.guild_lang]["note_state_finished"],
-            }
-            return state_mapping.get(state, "Unknown")
-
         embed = nextcord.Embed(
             title=lang[self.guild_lang][class_namespace],
             description=lang[self.guild_lang]["note_view_details"].format(
@@ -280,7 +285,7 @@ class NoteStateView(nextcord.ui.View):
         )
         embed.add_field(
             name=lang[self.guild_lang]["note_state_title"],
-            value=map_state_to_text(note_data["state"]),
+            value=map_state_to_text(self.guild_lang, note_data["state"]),
             inline=False,
         )
         await self.message.edit(embed=embed, view=self)
