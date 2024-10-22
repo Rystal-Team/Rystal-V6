@@ -48,6 +48,7 @@ def map_state_to_text(guild_lang, state):
     Map the state value to the corresponding text.
 
     Args:
+        guild_lang (str): The language of the guild.
         state (int): The state value.
 
     Returns:
@@ -60,6 +61,25 @@ def map_state_to_text(guild_lang, state):
         NoteState.FINISHED.value: lang[guild_lang]["note_state_finished"],
     }
     return state_mapping.get(state, "Unknown")
+
+
+def map_state_to_emoji(state):
+    """
+    Map the state value to the corresponding emoji.
+
+    Args:
+        state (int): The state value.
+
+    Returns:
+        str: The corresponding emoji for the state.
+    """
+    state_mapping = {
+        NoteState.UNBEGUN.value: "❔",
+        NoteState.STALLED.value: "🛑",
+        NoteState.ONGOING.value: "🕰️",
+        NoteState.FINISHED.value: "✅",
+    }
+    return state_mapping.get(state, "❔")
 
 
 class Note:
@@ -86,7 +106,7 @@ class Note:
         self.id = note_id
         self.title = title
         self.message = message
-        self.state = 30
+        self.state = state
 
 
 class NotesEmbed:
@@ -113,16 +133,10 @@ class NotesEmbed:
             ),
             color=type_color["list"],
         )
-        state_mapping = {
-            NoteState.UNBEGUN.value: "❔",
-            NoteState.STALLED.value: "🛑",
-            NoteState.ONGOING.value: "🕰️",
-            NoteState.FINISHED.value: "✅",
-        }
 
         for note in notes:
             embed.add_field(
-                name=f"{note.title} [{state_mapping.get(note.state, 'Unknown')}]",
+                name=f"{note.title}【{map_state_to_emoji(note.state)}】",
                 value=f"ID: {note.id}",
                 inline=False,
             )
@@ -292,7 +306,7 @@ class NoteStateView(nextcord.ui.View):
         )
         embed.add_field(
             name=lang[self.guild_lang]["note_state_title"],
-            value=map_state_to_text(self.guild_lang, note_data["state"]),
+            value=f"{map_state_to_text(self.guild_lang, note_data['state'])} 【{map_state_to_emoji(note_data['state'])}】",
             inline=False,
         )
         await self.message.edit(embed=embed, view=self)
