@@ -124,10 +124,6 @@ class NoteSystem(commands.Cog):
             for parsed_data in [json.loads(data)]
         ]
 
-        for note_id, data in notes_data.items():
-            for parsed_data in [json.loads(data)]:
-                print(parsed_data)
-
         pagination = NotesPagination(notes, interaction)
         await pagination.send_initial_message()
 
