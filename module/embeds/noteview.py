@@ -113,9 +113,16 @@ class NotesEmbed:
             ),
             color=type_color["list"],
         )
+        state_mapping = {
+			NoteState.UNBEGUN.value: "❔",
+			NoteState.STALLED.value: "🛑",
+			NoteState.ONGOING.value: "🕰️",
+			NoteState.FINISHED.value:"✅",
+		}
+		
         for note in notes:
             embed.add_field(
-                name=f"{note.title} [{map_state_to_text(guild_lang, note.state)}]",
+                name=f"{note.title} [{state_mapping.get(note.state, "Unknown")}]",
                 value=f"ID: {note.id}",
                 inline=False,
             )
