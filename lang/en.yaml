@@ -74,7 +74,7 @@ music_skip_index_description: "The index of the song to skip."
 music_most_played_period_description: "The time period for showing the most played songs."
 music_remove_index_description: "The index of the song to remove. Use -1 to remove all songs."
 music_loop_mode_description: "The loop mode to set."
-music_play_shuffle_description: "Shuffle the queue after adding a song or playlist."
+music_play_shuffle_added_description: "Shuffle the added playlist."
 music_play_query_description: "The query to search for a song or playlist URL."
 
 rank_leaderboard_include_description: "The number of users to include in the leaderboard."
