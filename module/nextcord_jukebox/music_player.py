@@ -513,10 +513,12 @@ class MusicPlayer:
                 if playlist:
                     await EventManager.fire("loading_playlist", self, interaction, None)
                     if shuffle_added:
-                        playlist.video_urls = random.sample(
+                        shuffled_playlist = random.sample(
                             list(playlist.video_urls), len(playlist.video_urls)
                         )
-                    for url in playlist.video_urls:
+                    else:
+                        shuffled_playlist = list(playlist.video_urls)
+                    for url in shuffled_playlist:
                         song = await self.loop.create_task(self._queue_single(url))
                         await EventManager.fire(
                             "loading_playlist", self, interaction, song
