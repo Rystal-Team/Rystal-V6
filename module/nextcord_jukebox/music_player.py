@@ -485,7 +485,7 @@ class MusicPlayer:
         return "list" in query_params
 
     @pre_check(check_fetching_stream=True)
-    async def queue(self, interaction: Interaction, query: str):
+    async def queue(self, interaction: Interaction, query: str, shuffle_added: bool=False):
         """
         Queues a song or playlist based on the given query.
 
@@ -510,6 +510,8 @@ class MusicPlayer:
                 playlist = await asyncio.to_thread(Playlist, query)
                 if playlist:
                     await EventManager.fire("loading_playlist", self, interaction, None)
+                    if shuffle_added:
+                        random.shuffle(playlist.video_urls)
                     for url in playlist.video_urls:
                         song = await self.loop.create_task(self._queue_single(url))
                         await EventManager.fire(

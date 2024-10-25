@@ -178,11 +178,13 @@ class Music(commands.Cog, EventManager):
             description=lang[default_language]["music_play_query_description"],
             required=True,
         ),
-        shuffle_after: Optional[bool] = SlashOption(
+        shuffle_added: Optional[bool] = SlashOption(
             name="shuffle",
             choices=[True, False],
             required=False,
-            description=lang[default_language]["music_play_shuffle_description"],
+            description=lang[default_language][
+                "music_play_shuffle_added_description"
+            ],
         ),
     ):
         await interaction.response.defer()
@@ -205,7 +207,7 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            feed = await self.bot.loop.create_task(player.queue(interaction, query))
+            feed = await self.bot.loop.create_task(player.queue(interaction, query, shuffle_added=shuffle_added))
             if playlist_id:
                 await interaction.channel.send(
                     embed=Embeds.message(
@@ -264,20 +266,6 @@ class Music(commands.Cog, EventManager):
                         ],
                         message=message,
                         message_type="success",
-                    )
-                )
-
-            if shuffle_after:
-                await player.shuffle()
-                await interaction.followup.send(
-                    embed=Embeds.message(
-                        title=lang[await get_guild_language(interaction.guild.id)][
-                            class_namespace
-                        ],
-                        message=lang[await get_guild_language(interaction.guild.id)][
-                            "shuffled_queue"
-                        ],
-                        message_type="info",
                     )
                 )
         except NoQueryResult:
