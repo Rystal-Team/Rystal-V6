@@ -512,12 +512,13 @@ class MusicPlayer:
                 playlist = await asyncio.to_thread(Playlist, query)
                 if playlist:
                     await EventManager.fire("loading_playlist", self, interaction, None)
-                    if shuffle_added:
-                        shuffled_playlist = random.sample(
+                    shuffled_playlist = (
+                        random.sample(
                             list(playlist.video_urls), len(playlist.video_urls)
                         )
-                    else:
-                        shuffled_playlist = list(playlist.video_urls)
+                        if shuffle_added
+                        else list(playlist.video_urls)
+                    )
                     for url in shuffled_playlist:
                         song = await self.loop.create_task(self._queue_single(url))
                         await EventManager.fire(
