@@ -22,7 +22,6 @@
 #
 
 import datetime
-import random
 from typing import Optional
 
 import nextcord
@@ -39,7 +38,7 @@ from config.perm import auth_guard
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
-from module.utils import format_number
+from module.utils import crypto_randint, format_number
 
 class_namespace = "point_class_title"
 
@@ -88,7 +87,7 @@ class PointSystem(commands.Cog):
             )
             return
 
-        points_to_claim = random.randint(999, 3500)
+        points_to_claim = crypto_randint(999, 3500)
         data["points"] += points_to_claim
         data["last_point_claimed"] = now.isoformat()
         await user_handler.update_user_data(user_id, data)

@@ -21,7 +21,7 @@
 #  ------------------------------------------------------------
 #
 
-import random
+import secrets
 from typing import Any, List
 
 
@@ -62,7 +62,7 @@ class Spinner:
         Returns:
             list: A list of 3 randomly chosen emoji options.
         """
-        return [random.choice(self.options) for _ in range(3)]
+        return [secrets.choice(self.options) for _ in range(3)]
 
     @staticmethod
     def is_winning(columns: List[str]) -> tuple[Any, bool, bool]:
@@ -196,9 +196,9 @@ if __name__ == "__main__":
     result_percentage = []
     mega_score_percentage = []
     for i in range(100):
-        print(f"Simulation {i+1}: ")
+        print(f"Simulation {i + 1}: ")
         output_file = open(
-            f"spinner_test_results/output_{i+1}.txt", "a", encoding="utf-8"
+            f"spinner_test_results/output_{i + 1}.txt", "a", encoding="utf-8"
         )
         spinner = Spinner()
         winning_perc, mega_score_perc = spinner.run_simulation(
@@ -207,5 +207,5 @@ if __name__ == "__main__":
         result_percentage.append(winning_perc)
         mega_score_percentage.append(mega_score_perc)
         output_file.close()
-    print(f"Average winning percentage: {sum(result_percentage)/100:.2f}%")
-    print(f"Average mega score rate: {sum(mega_score_percentage)/100:.2f}%")
+    print(f"Average winning percentage: {sum(result_percentage) / 100:.2f}%")
+    print(f"Average mega score rate: {sum(mega_score_percentage) / 100:.2f}%")

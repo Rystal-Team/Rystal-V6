@@ -43,6 +43,45 @@ class NoteState(Enum):
     FINISHED = 33
 
 
+def map_state_to_text(guild_lang, state):
+    """
+    Map the state value to the corresponding text.
+
+    Args:
+        guild_lang (str): The language of the guild.
+        state (int): The state value.
+
+    Returns:
+        str: The corresponding text for the state.
+    """
+    state_mapping = {
+        NoteState.UNBEGUN.value: lang[guild_lang]["note_state_unbegun"],
+        NoteState.STALLED.value: lang[guild_lang]["note_state_stalled"],
+        NoteState.ONGOING.value: lang[guild_lang]["note_state_ongoing"],
+        NoteState.FINISHED.value: lang[guild_lang]["note_state_finished"],
+    }
+    return state_mapping.get(state, "Unknown")
+
+
+def map_state_to_emoji(state):
+    """
+    Map the state value to the corresponding emoji.
+
+    Args:
+        state (int): The state value.
+
+    Returns:
+        str: The corresponding emoji for the state.
+    """
+    state_mapping = {
+        NoteState.UNBEGUN.value: "❔",
+        NoteState.STALLED.value: "🛑",
+        NoteState.ONGOING.value: "🕰️",
+        NoteState.FINISHED.value: "✅",
+    }
+    return state_mapping.get(state, "❔")
+
+
 class Note:
     """
     A class representing a note.
@@ -67,7 +106,7 @@ class Note:
         self.id = note_id
         self.title = title
         self.message = message
-        self.state = 30
+        self.state = state
 
 
 class NotesEmbed:
@@ -94,8 +133,13 @@ class NotesEmbed:
             ),
             color=type_color["list"],
         )
+
         for note in notes:
-            embed.add_field(name=note.title, value=f"ID: {note.id}", inline=False)
+            embed.add_field(
+                name=f"{note.title}【{map_state_to_emoji(note.state)}】",
+                value=f"ID: {note.id}",
+                inline=False,
+            )
         return embed
 
 
@@ -125,6 +169,7 @@ class NotesPagination(nextcord.ui.View):
         self.index = 0
         self.notes_per_page = 10
         self.total_pages = (len(self.notes) - 1) // self.notes_per_page + 1
+        self.author_id = interaction.user.id
 
     async def send_initial_message(self):
         """Send the initial message with the first page of notes."""
@@ -161,9 +206,19 @@ class NotesPagination(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        if self.index > 0:
-            self.index -= 1
-            await self.update_message()
+        if interaction.user.id == self.author_id:
+            if self.index > 0:
+                self.index -= 1
+                await self.update_message()
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
 
     @nextcord.ui.button(label="▶️", style=nextcord.ButtonStyle.blurple)
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -174,9 +229,19 @@ class NotesPagination(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        if self.index < self.total_pages - 1:
-            self.index += 1
-            await self.update_message()
+        if interaction.user.id == self.author_id:
+            if self.index < self.total_pages - 1:
+                self.index += 1
+                await self.update_message()
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
 
     async def update_message(self):
         """Update the message with the current page of notes."""
@@ -232,24 +297,6 @@ class NoteStateView(nextcord.ui.View):
         note_data = await fetch_note(self.user_id, self.note_id)
         note_data = json.loads(note_data)
 
-        def map_state_to_text(state):
-            """
-            Map the state value to the corresponding text.
-
-            Args:
-                state (int): The state value.
-
-            Returns:
-                str: The corresponding text for the state.
-            """
-            state_mapping = {
-                NoteState.UNBEGUN.value: lang[self.guild_lang]["note_state_unbegun"],
-                NoteState.STALLED.value: lang[self.guild_lang]["note_state_stalled"],
-                NoteState.ONGOING.value: lang[self.guild_lang]["note_state_ongoing"],
-                NoteState.FINISHED.value: lang[self.guild_lang]["note_state_finished"],
-            }
-            return state_mapping.get(state, "Unknown")
-
         embed = nextcord.Embed(
             title=lang[self.guild_lang][class_namespace],
             description=lang[self.guild_lang]["note_view_details"].format(
@@ -259,7 +306,7 @@ class NoteStateView(nextcord.ui.View):
         )
         embed.add_field(
             name=lang[self.guild_lang]["note_state_title"],
-            value=map_state_to_text(note_data["state"]),
+            value=f"{map_state_to_text(self.guild_lang, note_data['state'])} 【{map_state_to_emoji(note_data['state'])}】",
             inline=False,
         )
         await self.message.edit(embed=embed, view=self)
@@ -274,7 +321,17 @@ class NoteStateView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        await self.update_state(interaction, NoteState.STALLED.value)
+        if interaction.user.id == self.user_id:
+            await self.update_state(interaction, NoteState.STALLED.value)
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
 
     @nextcord.ui.button(label="🕰️", style=nextcord.ButtonStyle.blurple)
     async def ongoing(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -285,7 +342,17 @@ class NoteStateView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        await self.update_state(interaction, NoteState.ONGOING.value)
+        if interaction.user.id == self.user_id:
+            await self.update_state(interaction, NoteState.ONGOING.value)
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
 
     @nextcord.ui.button(label="✅", style=nextcord.ButtonStyle.green)
     async def finished(
@@ -298,7 +365,17 @@ class NoteStateView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        await self.update_state(interaction, NoteState.FINISHED.value)
+        if interaction.user.id == self.user_id:
+            await self.update_state(interaction, NoteState.FINISHED.value)
+        else:
+            await interaction.response.send_message(
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
+            )
 
     @nextcord.ui.button(label="🗑️", style=nextcord.ButtonStyle.danger)
     async def remove(self, button: nextcord.Button, interaction: nextcord.Interaction):
@@ -309,15 +386,25 @@ class NoteStateView(nextcord.ui.View):
             button (nextcord.ui.Button): The button that was clicked.
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
-        success = await remove_note(self.user_id, self.note_id)
-        if success:
-            await self.message.delete()
-            await interaction.response.send_message(
-                lang[self.guild_lang]["note_remove_success"], ephemeral=True
-            )
+        if interaction.user.id == self.user_id:
+            success = await remove_note(self.user_id, str(self.note_id))
+            if success:
+                await self.message.delete()
+                await interaction.response.send_message(
+                    lang[self.guild_lang]["note_remove_success"], ephemeral=True
+                )
+            else:
+                await interaction.response.send_message(
+                    lang[self.guild_lang]["note_remove_failure"], ephemeral=True
+                )
         else:
             await interaction.response.send_message(
-                lang[self.guild_lang]["note_remove_failure"], ephemeral=True
+                embed=nextcord.Embed(
+                    title=lang[self.guild_lang][class_namespace],
+                    description=lang[self.guild_lang]["interaction_author_only"],
+                    color=type_color["warn"],
+                ),
+                ephemeral=True,
             )
 
     async def on_timeout(self):

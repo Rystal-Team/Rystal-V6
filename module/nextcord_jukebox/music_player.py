@@ -164,7 +164,7 @@ class MusicPlayer:
         self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options": "-vn",
+            "options": "-vn -af loudnorm",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
@@ -485,13 +485,15 @@ class MusicPlayer:
         return "list" in query_params
 
     @pre_check(check_fetching_stream=True)
-    async def queue(self, interaction: Interaction, query: str):
+    async def queue(
+        self, interaction: Interaction, query: str, shuffle_added: bool = False
+    ):
         """
         Queues a song or playlist based on the given query.
 
         Args:
-            interaction (Interaction): The interaction object containing information about the user and the guild.
-            query (str): The search query or URL to queue.
+            interaction (Interaction): Contains information about the user and the guild.
+            query (str): Search query or URL to queue.
 
         Returns:
             Union[Playlist, Song]: The queued playlist or song.
@@ -501,37 +503,40 @@ class MusicPlayer:
         """
         self._fetching_stream = True
         result = None
+        self.loop = self.loop or interaction.guild.voice_client.loop
 
-        if self.is_valid_playlist_url(query):
-            try:
+        try:
+            if self.is_valid_playlist_url(query):
                 playlist = await asyncio.to_thread(Playlist, query)
-                if playlist:
-                    await EventManager.fire("loading_playlist", self, interaction, None)
-                    for url in playlist.video_urls:
-                        song = await self.loop.create_task(self._queue_single(url))
-                        await EventManager.fire(
-                            "loading_playlist", self, interaction, song
-                        )
-                    result = playlist
-            except urllib.error.HTTPError as e:
-                LogHandler.error(f"Failed to fetch playlist: {e}")
-                self._fetching_stream = False
-                raise InvalidPlaylist from e
-        else:
-            try:
+                await EventManager.fire("loading_playlist", self, interaction, None)
+
+                shuffled_playlist = (
+                    random.sample(list(playlist.video_urls), len(playlist.video_urls))
+                    if shuffle_added
+                    else list(playlist.video_urls)
+                )
+                for url in shuffled_playlist:
+                    song = await self.loop.create_task(self._queue_single(url))
+                    await EventManager.fire("loading_playlist", self, interaction, song)
+                result = playlist
+
+            else:
                 yt = await asyncio.to_thread(YouTube, query)
-            except Exception as e:
-                self._fetching_stream = False
-                raise NoQueryResult from e
-            if not yt:
-                self._fetching_stream = False
-                raise NoQueryResult
-            if yt.video and yt:
+                if not yt or not yt.video:
+                    raise NoQueryResult
                 result = await self._queue_single(yt.video.url)
 
-        self._fetching_stream = False
-        if result:
-            return result
+        except urllib.error.HTTPError as e:
+            LogHandler.error(f"Failed to fetch playlist: {e}")
+            raise InvalidPlaylist from e
+
+        except Exception as e:
+            raise NoQueryResult from e
+
+        finally:
+            self._fetching_stream = False
+
+        return result if result else None
 
     @pre_check(check_connection=False)
     async def connect(self, interaction: Interaction) -> Optional[bool]:

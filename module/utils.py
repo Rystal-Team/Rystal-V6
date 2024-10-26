@@ -21,6 +21,8 @@
 #  ------------------------------------------------------------
 #
 
+import secrets
+
 
 def format_number(number: int) -> str:
     """Formats a number."""
@@ -30,3 +32,15 @@ def format_number(number: int) -> str:
 def ensure_iterable(val=None):
     """Ensures a value is iterable."""
     return val or []
+
+
+def crypto_randint(min: int, max: int) -> int:
+    """Generates a random integer."""
+    return secrets.randbelow(max - min + 1) + min
+
+
+def crypto_shuffle(deck):
+    """Shuffles a table using a secure random generator."""
+    for i in range(len(deck) - 1, 0, -1):
+        j = secrets.randbelow(i + 1)
+        deck[i], deck[j] = deck[j], deck[i]

@@ -22,6 +22,7 @@
 #
 
 import asyncio
+import traceback
 
 import websockets
 
@@ -33,6 +34,7 @@ async def check_websocket(url):
             return True
     except Exception as e:
         print(f"failed to connect to {url}: {e}")
+        traceback.print_exc()
         return False
 
 
@@ -41,7 +43,7 @@ def check_websocket_sync(url):
 
 
 if __name__ == "__main__":
-    url = "wss://rpc.rystal.xyz"
+    url = "wss://rpc.rystal.space"
     if check_websocket_sync(url):
         print("connected")
     else:
