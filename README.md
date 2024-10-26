@@ -35,6 +35,7 @@
 - Multi-Language Support
 - Point System
 - Notes System
+- Permissions System
 - Mini-games
     - Blackjack
     - Dice
