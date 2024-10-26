@@ -39,7 +39,7 @@ async def append_guild(guild_id: int):
     try:
         statement = {
             "sqlite": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave, music_default_loop_mode) VALUES (?, ?, ?, ?, ?)",
-            "mysql" : "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave, music_default_loop_mode) VALUES (%s, %s, %s, %s, %s)",
+            "mysql": "INSERT INTO guild (guild_id, language, music_silent_mode, music_auto_leave, music_default_loop_mode) VALUES (%s, %s, %s, %s, %s)",
         }
         values = (str(guild_id), default_language, False, True, 1)
         db_handler.execute(statement, values)
@@ -57,7 +57,7 @@ async def get_jackpot_announcement_channels():
     """
     statement = {
         "sqlite": "SELECT game_announce_channel FROM guild WHERE game_announce_channel IS NOT NULL",
-        "mysql" : "SELECT game_announce_channel FROM guild WHERE game_announce_channel IS NOT NULL",
+        "mysql": "SELECT game_announce_channel FROM guild WHERE game_announce_channel IS NOT NULL",
     }
     db_handler.execute(statement)
     return [row[0] for row in (db_handler.fetchall() or [])]
@@ -77,7 +77,7 @@ async def change_guild_language(guild_id: int, language: str):
         await append_guild(guild_id)
     statement = {
         "sqlite": "UPDATE guild SET language = ? WHERE guild_id = ?",
-        "mysql" : "UPDATE guild SET language = %s WHERE guild_id = %s",
+        "mysql": "UPDATE guild SET language = %s WHERE guild_id = %s",
     }
     db_handler.execute(statement, (language, str(guild_id)))
     print(
@@ -101,7 +101,7 @@ async def get_guild_language(guild_id: int):
         await append_guild(guild_id)
     statement = {
         "sqlite": "SELECT language FROM guild WHERE guild_id = ?",
-        "mysql" : "SELECT language FROM guild WHERE guild_id = %s",
+        "mysql": "SELECT language FROM guild WHERE guild_id = %s",
     }
     db_handler.execute(statement, (guild_id,))
     guild_language = db_handler.fetchall()[0][0]
@@ -125,7 +125,7 @@ async def change_guild_settings(guild_id: int | str, key, value):
         await append_guild(guild_id)
     statement = {
         "sqlite": f"UPDATE guild SET {key} = ? WHERE guild_id = ?",
-        "mysql" : f"UPDATE guild SET {key} = %s WHERE guild_id = %s",
+        "mysql": f"UPDATE guild SET {key} = %s WHERE guild_id = %s",
     }
     db_handler.execute(statement, (value, str(guild_id)))
     print(
@@ -152,7 +152,7 @@ async def get_guild_settings(guild_id: int | str, key):
         await append_guild(guild_id)
     statement = {
         "sqlite": f"SELECT {key} FROM guild WHERE guild_id = ?",
-        "mysql" : f"SELECT {key} FROM guild WHERE guild_id = %s",
+        "mysql": f"SELECT {key} FROM guild WHERE guild_id = %s",
     }
     db_handler.execute(statement, (guild_id,))
     return db_handler.fetchall()[0][0]

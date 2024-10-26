@@ -85,11 +85,11 @@ class RPCHandler(EventManager):
                     user_secret,
                     {
                         "version": __socket_standard_version__,
-                        "state"  : "playing",
-                        "data"   : {
-                            "title"    : after.title,
-                            "url"      : after.url,
-                            "channel"  : after.channel,
+                        "state": "playing",
+                        "data": {
+                            "title": after.title,
+                            "url": after.url,
+                            "channel": after.channel,
                             "thumbnail": after.thumbnail,
                         },
                     },
@@ -115,8 +115,8 @@ class RPCHandler(EventManager):
                     user_secret,
                     {
                         "version": __socket_standard_version__,
-                        "state"  : "idle",
-                        "data"   : {},
+                        "state": "idle",
+                        "data": {},
                     },
                 )
                 LogHandler.info(
@@ -146,11 +146,11 @@ class RPCHandler(EventManager):
                 user_secret,
                 {
                     "version": __socket_standard_version__,
-                    "state"  : "playing",
-                    "data"   : {
-                        "title"    : now_playing.title,
-                        "url"      : now_playing.url,
-                        "channel"  : now_playing.channel,
+                    "state": "playing",
+                    "data": {
+                        "title": now_playing.title,
+                        "url": now_playing.url,
+                        "channel": now_playing.channel,
                         "thumbnail": now_playing.thumbnail,
                     },
                 },
@@ -175,8 +175,8 @@ class RPCHandler(EventManager):
                 user_secret,
                 {
                     "version": __socket_standard_version__,
-                    "state"  : "idle",
-                    "data"   : {},
+                    "state": "idle",
+                    "data": {},
                 },
             )
             LogHandler.info(f"Dispatched idle to {user_secret}[{member.global_name}]")

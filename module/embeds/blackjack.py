@@ -31,11 +31,11 @@ from module.utils import format_number
 
 # Mapping of BlackjackResult to language keys
 message_mapper = {
-    BlackjackResult.PLAYER_BUSTS    : "blackjack_player_busts",
-    BlackjackResult.DEALER_BUSTS    : "blackjack_dealer_busts",
-    BlackjackResult.TIE             : "blackjack_tie",
-    BlackjackResult.PLAYER_WINS     : "blackjack_player_wins",
-    BlackjackResult.DEALER_WINS     : "blackjack_dealer_wins",
+    BlackjackResult.PLAYER_BUSTS: "blackjack_player_busts",
+    BlackjackResult.DEALER_BUSTS: "blackjack_dealer_busts",
+    BlackjackResult.TIE: "blackjack_tie",
+    BlackjackResult.PLAYER_WINS: "blackjack_player_wins",
+    BlackjackResult.DEALER_WINS: "blackjack_dealer_wins",
     BlackjackResult.PLAYER_BLACKJACK: "blackjack_player_blackjack",
 }
 
@@ -168,7 +168,7 @@ class BlackjackView(nextcord.ui.View):
                 (
                     type_color["win"]
                     if result
-                       in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}
+                    in {BlackjackResult.PLAYER_WINS, BlackjackResult.DEALER_BUSTS}
                     else (
                         type_color["big_win"]
                         if result == BlackjackResult.PLAYER_BLACKJACK
