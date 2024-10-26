@@ -33,9 +33,9 @@ import requests
 from typing_extensions import Literal
 
 type_property_map = {
-    "videos" : "videoRenderer",
+    "videos": "videoRenderer",
     "streams": "videoRenderer",
-    "shorts" : "reelItemRenderer",
+    "shorts": "reelItemRenderer",
 }
 
 
@@ -209,17 +209,17 @@ def get_search(
             ``"video"|"channel"|"playlist"|"movie"``. Defaults to "video".
     """
     sort_by_map = {
-        "relevance"  : "A",
+        "relevance": "A",
         "upload_date": "I",
-        "view_count" : "M",
-        "rating"     : "E",
+        "view_count": "M",
+        "rating": "E",
     }
 
     results_type_map = {
-        "video"   : ["B", "videoRenderer"],
-        "channel" : ["C", "channelRenderer"],
+        "video": ["B", "videoRenderer"],
+        "channel": ["C", "channelRenderer"],
         "playlist": ["D", "playlistRenderer"],
-        "movie"   : ["E", "videoRenderer"],
+        "movie": ["E", "videoRenderer"],
     }
 
     param_string = f"CA{sort_by_map[sort_by]}SAhA{results_type_map[results_type][0]}"
@@ -327,7 +327,7 @@ def get_ajax_data(
     client: dict,
 ) -> dict:
     data = {
-        "context"     : {"clickTracking": next_data["click_params"], "client": client},
+        "context": {"clickTracking": next_data["click_params"], "client": client},
         "continuation": next_data["token"],
     }
     response = session.post(api_endpoint, params={"key": api_key}, json=data)
@@ -343,9 +343,9 @@ def get_json_from_html(html: str, key: str, num_chars: int = 2, stop: str = '"')
 def get_next_data(data: dict, sort_by: str = None) -> dict:
     # Youtube, please don't change the order of these
     sort_by_map = {
-        "newest" : 0,
+        "newest": 0,
         "popular": 1,
-        "oldest" : 2,
+        "oldest": 2,
     }
     if sort_by and sort_by != "newest":
         endpoint = next(search_dict(data, "feedFilterChipBarRenderer"), None)[
@@ -356,7 +356,7 @@ def get_next_data(data: dict, sort_by: str = None) -> dict:
     if not endpoint:
         return None
     next_data = {
-        "token"       : endpoint["continuationCommand"]["token"],
+        "token": endpoint["continuationCommand"]["token"],
         "click_params": {"clickTrackingParams": endpoint["clickTrackingParams"]},
     }
 

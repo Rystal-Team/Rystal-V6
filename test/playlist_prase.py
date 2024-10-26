@@ -78,8 +78,8 @@ def getPlaylistVideoIds(playlistId):
     while True:
         params = {
             "action_get_playlist_details": 1,
-            "ajax"                       : 1,
-            "continuation"               : continuationToken,
+            "ajax": 1,
+            "continuation": continuationToken,
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:

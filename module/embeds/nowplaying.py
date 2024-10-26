@@ -90,7 +90,7 @@ class NowPlayingMenu(nextcord.ui.View):
         self.loop_task = asyncio.create_task(self.auto_update())
 
     async def auto_update(self):
-        """Automatically update the Now Playing embed every 5 seconds."""
+        """Automatically update the Now Playing embed every 0.5 seconds."""
         await asyncio.sleep(1)
         while not self.is_timeout:
             if (datetime.now() - self.last_interact).total_seconds() > self.__timeout:
