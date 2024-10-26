@@ -21,15 +21,15 @@ use_ytdlp: false
 
 # Color Settings for Different Types of Messages
 type_color:
-  success: [ 157, 255, 158 ]
-  error: [ 255, 157, 157 ]
-  warn: [ 255, 206, 157 ]
-  info: [ 219, 157, 255 ]
-  list: [ 157, 200, 255 ]
-  big_win: [ 212, 255, 203 ]
-  win: [ 255, 194, 125 ]
-  lose: [ 52, 55, 74 ]
-  game: [ 97, 113, 255 ]
+  success: [157, 255, 158]
+  error: [255, 157, 157]
+  warn: [255, 206, 157]
+  info: [219, 157, 255]
+  list: [157, 200, 255]
+  big_win: [212, 255, 203]
+  win: [255, 194, 125]
+  lose: [52, 55, 74]
+  game: [97, 113, 255]
 
 # Error and Bug Reporting
 error_log_channel_id: 000000000000000000

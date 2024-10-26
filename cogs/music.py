@@ -182,9 +182,7 @@ class Music(commands.Cog, EventManager):
             name="shuffle",
             choices=[True, False],
             required=False,
-            description=lang[default_language][
-                "music_play_shuffle_added_description"
-            ],
+            description=lang[default_language]["music_play_shuffle_added_description"],
         ),
     ):
         await interaction.response.defer()
@@ -207,7 +205,9 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            feed = await self.bot.loop.create_task(player.queue(interaction, query, shuffle_added=shuffle_added))
+            feed = await self.bot.loop.create_task(
+                player.queue(interaction, query, shuffle_added=shuffle_added)
+            )
             if playlist_id:
                 await interaction.channel.send(
                     embed=Embeds.message(
