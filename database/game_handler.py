@@ -29,7 +29,7 @@ from .main_handler import db_handler
 async def save_session(thread_id, game, data, players):
     query = {
         "sqlite": "INSERT INTO game_sessions (thread_id, game, data, players) VALUES (?, ?, ?, ?)",
-        "mysql": "INSERT INTO game_sessions (thread_id, game, data, players) VALUES (%s, %s, %s, %s)",
+        "mysql" : "INSERT INTO game_sessions (thread_id, game, data, players) VALUES (%s, %s, %s, %s)",
     }
     db_handler.execute(
         query[db_handler.db_type],
@@ -42,7 +42,7 @@ async def save_session(thread_id, game, data, players):
 def load_session(thread_id):
     query = {
         "sqlite": "SELECT game, data, players FROM game_sessions WHERE thread_id = ?",
-        "mysql": "SELECT game, data, players FROM game_sessions WHERE thread_id = %s",
+        "mysql" : "SELECT game, data, players FROM game_sessions WHERE thread_id = %s",
     }
     db_handler.execute(query[db_handler.db_type], (thread_id,))
     return db_handler.fetchone()
@@ -51,7 +51,7 @@ def load_session(thread_id):
 def delete_session(thread_id):
     query = {
         "sqlite": "DELETE FROM game_sessions WHERE thread_id = ?",
-        "mysql": "DELETE FROM game_sessions WHERE thread_id = %s",
+        "mysql" : "DELETE FROM game_sessions WHERE thread_id = %s",
     }
     db_handler.execute(query[db_handler.db_type], (thread_id,))
     db_handler.connection.commit()

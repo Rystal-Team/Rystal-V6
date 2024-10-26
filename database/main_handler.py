@@ -28,12 +28,12 @@ from .base import DatabaseHandler
 
 create_statements = {
     "sqlite": {
-        "note": {
-            "create": "CREATE TABLE IF NOT EXISTS note (user_id TEXT PRIMARY KEY, notes TEXT)",
+        "note"         : {
+            "create" : "CREATE TABLE IF NOT EXISTS note (user_id TEXT PRIMARY KEY, notes TEXT)",
             "columns": {"user_id": "TEXT PRIMARY KEY", "notes": "TEXT"},
         },
-        "users": {
-            "create": """CREATE TABLE IF NOT EXISTS users(
+        "users"        : {
+            "create" : """CREATE TABLE IF NOT EXISTS users(
             user_id TEXT PRIMARY KEY,
             level INTEGER,
             xp INTEGER,
@@ -46,19 +46,19 @@ create_statements = {
             )
             """,
             "columns": {
-                "user_id": "TEXT PRIMARY KEY",
-                "level": "INTEGER",
-                "xp": "INTEGER",
-                "total_xp": "INTEGER",
-                "points": "INTEGER",
-                "last_point_claimed": "TEXT",
+                "user_id"              : "TEXT PRIMARY KEY",
+                "level"                : "INTEGER",
+                "xp"                   : "INTEGER",
+                "total_xp"             : "INTEGER",
+                "points"               : "INTEGER",
+                "last_point_claimed"   : "TEXT",
                 "receive_limit_reached": "BOOLEAN",
-                "last_point_received": "TEXT",
-                "received_today": "INTEGER",
+                "last_point_received"  : "TEXT",
+                "received_today"       : "INTEGER",
             },
         },
-        "guild": {
-            "create": """
+        "guild"        : {
+            "create" : """
                 CREATE TABLE IF NOT EXISTS guild (
                     guild_id TEXT PRIMARY KEY,
                     language TEXT,
@@ -70,44 +70,44 @@ create_statements = {
                 )
             """,
             "columns": {
-                "guild_id": "TEXT PRIMARY KEY",
-                "language": "TEXT",
-                "music_silent_mode": "BOOLEAN",
-                "music_auto_leave": "BOOLEAN",
+                "guild_id"               : "TEXT PRIMARY KEY",
+                "language"               : "TEXT",
+                "music_silent_mode"      : "BOOLEAN",
+                "music_auto_leave"       : "BOOLEAN",
                 "music_default_loop_mode": "INTEGER",
-                "jackpot_total": "INTEGER",
-                "game_announce_channel": "INTEGER",
+                "jackpot_total"          : "INTEGER",
+                "game_announce_channel"  : "INTEGER",
             },
         },
         "game_sessions": {
-            "create": "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
+            "create" : "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
             "columns": {
                 "thread_id": "TEXT PRIMARY KEY",
-                "game": "TEXT",
-                "data": "TEXT",
-                "players": "TEXT",
+                "game"     : "TEXT",
+                "data"     : "TEXT",
+                "players"  : "TEXT",
             },
         },
-        "global": {
-            "create": """
+        "global"       : {
+            "create" : """
                 CREATE TABLE IF NOT EXISTS global (
                     jackpot_total INTEGER,
                     jackpot_next_invest TEXT
                 )
             """,
             "columns": {
-                "jackpot_total": "INTEGER",
+                "jackpot_total"      : "INTEGER",
                 "jackpot_next_invest": "TEXT",
             },
         },
     },
-    "mysql": {
-        "note": {
-            "create": "CREATE TABLE IF NOT EXISTS note (user_id VARCHAR(255) PRIMARY KEY, notes JSON)",
+    "mysql" : {
+        "note"         : {
+            "create" : "CREATE TABLE IF NOT EXISTS note (user_id VARCHAR(255) PRIMARY KEY, notes JSON)",
             "columns": {"user_id": "VARCHAR(255) PRIMARY KEY", "notes": "JSON"},
         },
-        "users": {
-            "create": """
+        "users"        : {
+            "create" : """
                 CREATE TABLE IF NOT EXISTS users (
                     user_id VARCHAR(255) PRIMARY KEY,
                     level INT,
@@ -121,19 +121,19 @@ create_statements = {
                     )
                     """,
             "columns": {
-                "user_id": "VARCHAR(255) PRIMARY KEY",
-                "level": "INT",
-                "xp": "INT",
-                "total_xp": "INT",
-                "points": "INT",
-                "last_point_claimed": "DATETIME",
+                "user_id"              : "VARCHAR(255) PRIMARY KEY",
+                "level"                : "INT",
+                "xp"                   : "INT",
+                "total_xp"             : "INT",
+                "points"               : "INT",
+                "last_point_claimed"   : "DATETIME",
                 "receive_limit_reached": "BOOLEAN",
-                "last_point_received": "TEXT",
-                "received_today": "INTEGER",
+                "last_point_received"  : "TEXT",
+                "received_today"       : "INTEGER",
             },
         },
-        "guild": {
-            "create": """
+        "guild"        : {
+            "create" : """
                 CREATE TABLE IF NOT EXISTS guild (
                     guild_id TEXT PRIMARY KEY,
                     language TEXT,
@@ -145,28 +145,28 @@ create_statements = {
                 )
             """,
             "columns": {
-                "guild_id": "TEXT PRIMARY KEY",
-                "language": "TEXT",
-                "music_silent_mode": "BOOLEAN",
-                "music_auto_leave": "BOOLEAN",
+                "guild_id"               : "TEXT PRIMARY KEY",
+                "language"               : "TEXT",
+                "music_silent_mode"      : "BOOLEAN",
+                "music_auto_leave"       : "BOOLEAN",
                 "music_default_loop_mode": "INT",
-                "jackpot_total": "INT",
-                "game_announce_channel": "INT",
+                "jackpot_total"          : "INT",
+                "game_announce_channel"  : "INT",
             },
         },
         "game_sessions": {
-            "create": "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
+            "create" : "CREATE TABLE IF NOT EXISTS game_sessions (thread_id TEXT PRIMARY KEY, game TEXT, data TEXT, players TEXT)",
             "columns": {
                 "thread_id": "TEXT PRIMARY KEY",
-                "game": "TEXT",
-                "data": "TEXT",
-                "players": "TEXT",
+                "game"     : "TEXT",
+                "data"     : "TEXT",
+                "players"  : "TEXT",
             },
         },
-        "global": {
-            "create": "CREATE TABLE IF NOT EXISTS global (jackpot_total INT, jackpot_next_invest TEXT)",
+        "global"       : {
+            "create" : "CREATE TABLE IF NOT EXISTS global (jackpot_total INT, jackpot_next_invest TEXT)",
             "columns": {
-                "jackpot_total": "INT",
+                "jackpot_total"      : "INT",
                 "jackpot_next_invest": "TEXT",
             },
         },
@@ -194,7 +194,7 @@ def check_exists(table, key, value):
         db_handler.connection.ping(reconnect=True, attempts=3)
     statement = {
         "sqlite": f"SELECT {key} FROM {table} WHERE {key} = ?",
-        "mysql": f"SELECT {key} FROM {table} WHERE {key} = %s",
+        "mysql" : f"SELECT {key} FROM {table} WHERE {key} = %s",
     }
     db_handler.execute(statement, (value,))
     return bool(db_handler.fetchall())

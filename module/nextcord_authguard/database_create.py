@@ -23,7 +23,7 @@
 create_statement = {
     "sqlite": {
         "permissions": {
-            "create": """
+            "create" : """
                 CREATE TABLE IF NOT EXISTS permissions (
                     permission_id CHAR(36) PRIMARY KEY NOT NULL, 
                     command_id TEXT NOT NULL, 
@@ -35,17 +35,17 @@ create_statement = {
             """,
             "columns": {
                 "permission_id": "CHAR(36) PRIMARY KEY NOT NULL",
-                "command_id": "TEXT NOT NULL",
-                "guild_id": "TEXT NOT NULL",
-                "user_id": "TEXT",
-                "role_id": "TEXT",
-                "allowed": "BOOLEAN NOT NULL",
+                "command_id"   : "TEXT NOT NULL",
+                "guild_id"     : "TEXT NOT NULL",
+                "user_id"      : "TEXT",
+                "role_id"      : "TEXT",
+                "allowed"      : "BOOLEAN NOT NULL",
             },
         },
     },
-    "mysql": {
+    "mysql" : {
         "permissions": {
-            "create": """
+            "create" : """
                 CREATE TABLE IF NOT EXISTS permissions (
                     permission_id CHAR(36) PRIMARY KEY NOT NULL, 
                     command_id VARCHAR(255) NOT NULL, 
@@ -57,11 +57,11 @@ create_statement = {
             """,
             "columns": {
                 "permission_id": "CHAR(36) PRIMARY KEY NOT NULL",
-                "command_id": "VARCHAR(255) NOT NULL",
-                "guild_id": "VARCHAR(255) NOT NULL",
-                "user_id": "VARCHAR(255)",
-                "role_id": "VARCHAR(255)",
-                "allowed": "BOOLEAN NOT NULL",
+                "command_id"   : "VARCHAR(255) NOT NULL",
+                "guild_id"     : "VARCHAR(255) NOT NULL",
+                "user_id"      : "VARCHAR(255)",
+                "role_id"      : "VARCHAR(255)",
+                "allowed"      : "BOOLEAN NOT NULL",
             },
         },
     },

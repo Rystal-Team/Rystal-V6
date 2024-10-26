@@ -47,14 +47,14 @@ AUTHGUARD_USE_SQLITE = config["AUTHGUARD_USE_SQLITE"]
 
 type_color = {
     "success": Color.from_rgb(*config["type_color"]["success"]),
-    "error": Color.from_rgb(*config["type_color"]["error"]),
-    "warn": Color.from_rgb(*config["type_color"]["warn"]),
-    "info": Color.from_rgb(*config["type_color"]["info"]),
-    "list": Color.from_rgb(*config["type_color"]["list"]),
+    "error"  : Color.from_rgb(*config["type_color"]["error"]),
+    "warn"   : Color.from_rgb(*config["type_color"]["warn"]),
+    "info"   : Color.from_rgb(*config["type_color"]["info"]),
+    "list"   : Color.from_rgb(*config["type_color"]["list"]),
     "big_win": Color.from_rgb(*config["type_color"]["big_win"]),
-    "win": Color.from_rgb(*config["type_color"]["win"]),
-    "lose": Color.from_rgb(*config["type_color"]["lose"]),
-    "game": Color.from_rgb(*config["type_color"]["game"]),
+    "win"    : Color.from_rgb(*config["type_color"]["win"]),
+    "lose"   : Color.from_rgb(*config["type_color"]["lose"]),
+    "game"   : Color.from_rgb(*config["type_color"]["game"]),
 }
 
 error_log_channel_id = config["error_log_channel_id"]

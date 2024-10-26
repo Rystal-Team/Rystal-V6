@@ -70,9 +70,9 @@ class NoteSystem(commands.Cog):
         ),
     ):
         note_content = {
-            "title": title,
+            "title"      : title,
             "description": description,
-            "state": 30,
+            "state"      : 30,
         }
         await interaction.response.defer()
         await add_note(interaction.user.id, json.dumps(note_content))

@@ -37,6 +37,6 @@ def split_string(input_string, max_length=20):
         return [input_string]
 
     return [
-        input_string[i : i + max_length]
+        input_string[i: i + max_length]
         for i in range(0, len(input_string), max_length)
     ]

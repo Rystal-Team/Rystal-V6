@@ -130,7 +130,7 @@ class RankSystem(commands.Cog):
 
         draw = ImageDraw.Draw(background)
         font_paths = {
-            "title": "./font/GoNotoKurrent-Bold.ttf",
+            "title"      : "./font/GoNotoKurrent-Bold.ttf",
             "description": "./font/GoNotoKurrent-Regular.ttf",
         }
         title_font = ImageFont.truetype(font_paths["title"], 45)

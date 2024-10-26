@@ -41,7 +41,7 @@ async def register_user(user_id: int):
     try:
         statement = {
             "sqlite": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            "mysql": "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            "mysql" : "INSERT INTO users (user_id, level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         }
         db_handler.execute(
             statement,
@@ -76,7 +76,7 @@ async def update_total_xp(user_id, total_xp):
         db_handler.connection.ping(reconnect=True, attempts=3)
     statement = {
         "sqlite": "UPDATE users SET total_xp = ? WHERE user_id = ?",
-        "mysql": "UPDATE users SET total_xp = %s WHERE user_id = %s",
+        "mysql" : "UPDATE users SET total_xp = %s WHERE user_id = %s",
     }
     db_handler.execute(statement, (total_xp, str(user_id)))
 
@@ -98,7 +98,7 @@ async def update_user_data(user_id: int, data):
 
     statement = {
         "sqlite": "UPDATE users SET level = ?, xp = ?, total_xp = ?, points = ?, last_point_claimed = ?, receive_limit_reached = ? , last_point_received = ?, received_today = ? WHERE user_id = ?",
-        "mysql": "UPDATE users SET level = %s, xp = %s, total_xp = %s, points = %s, last_point_claimed = %s, receive_limit_reached = %s, last_point_received = %s, received_today = %s WHERE user_id = %s",
+        "mysql" : "UPDATE users SET level = %s, xp = %s, total_xp = %s, points = %s, last_point_claimed = %s, receive_limit_reached = %s, last_point_received = %s, received_today = %s WHERE user_id = %s",
     }
     db_handler.execute(
         statement,
@@ -133,19 +133,19 @@ async def get_user_data(user_id: int):
         await register_user(user_id)
     statement = {
         "sqlite": "SELECT level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today FROM users WHERE user_id = ?",
-        "mysql": "SELECT level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today FROM users WHERE user_id = %s",
+        "mysql" : "SELECT level, xp, total_xp, points, last_point_claimed, receive_limit_reached, last_point_received, received_today FROM users WHERE user_id = %s",
     }
     db_handler.execute(statement, (user_id,))
     result = db_handler.fetchall()[0]
     return {
-        "level": result[0],
-        "xp": result[1],
-        "totalxp": result[2],
-        "points": result[3],
-        "last_point_claimed": result[4],
+        "level"                : result[0],
+        "xp"                   : result[1],
+        "totalxp"              : result[2],
+        "points"               : result[3],
+        "last_point_claimed"   : result[4],
         "receive_limit_reached": result[5],
-        "last_point_received": result[6],
-        "received_today": result[7],
+        "last_point_received"  : result[6],
+        "received_today"       : result[7],
     }
 
 
@@ -164,7 +164,7 @@ async def get_leaderboard(limit, order_by):
         db_handler.connection.ping(reconnect=True, attempts=3)
     statement = {
         "sqlite": f"SELECT user_id, level, xp, total_xp, points FROM users ORDER BY {order_by} DESC LIMIT ?",
-        "mysql": f"SELECT user_id, level, xp, total_xp, points FROM users ORDER BY {order_by} DESC LIMIT %s",
+        "mysql" : f"SELECT user_id, level, xp, total_xp, points FROM users ORDER BY {order_by} DESC LIMIT %s",
     }
     db_handler.execute(
         statement,
@@ -174,10 +174,10 @@ async def get_leaderboard(limit, order_by):
 
     leaderboard = {
         user[0]: {
-            "level": user[1],
-            "xp": user[2],
+            "level"  : user[1],
+            "xp"     : user[2],
             "totalxp": user[3],
-            "points": user[4],
+            "points" : user[4],
         }
         for user in result
     }

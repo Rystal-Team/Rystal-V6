@@ -55,9 +55,9 @@ def map_state_to_text(guild_lang, state):
         str: The corresponding text for the state.
     """
     state_mapping = {
-        NoteState.UNBEGUN.value: lang[guild_lang]["note_state_unbegun"],
-        NoteState.STALLED.value: lang[guild_lang]["note_state_stalled"],
-        NoteState.ONGOING.value: lang[guild_lang]["note_state_ongoing"],
+        NoteState.UNBEGUN.value : lang[guild_lang]["note_state_unbegun"],
+        NoteState.STALLED.value : lang[guild_lang]["note_state_stalled"],
+        NoteState.ONGOING.value : lang[guild_lang]["note_state_ongoing"],
         NoteState.FINISHED.value: lang[guild_lang]["note_state_finished"],
     }
     return state_mapping.get(state, "Unknown")
@@ -74,9 +74,9 @@ def map_state_to_emoji(state):
         str: The corresponding emoji for the state.
     """
     state_mapping = {
-        NoteState.UNBEGUN.value: "❔",
-        NoteState.STALLED.value: "🛑",
-        NoteState.ONGOING.value: "🕰️",
+        NoteState.UNBEGUN.value : "❔",
+        NoteState.STALLED.value : "🛑",
+        NoteState.ONGOING.value : "🕰️",
         NoteState.FINISHED.value: "✅",
     }
     return state_mapping.get(state, "❔")
