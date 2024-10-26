@@ -102,7 +102,7 @@ class Database:
                 "CREATE TABLE IF NOT EXISTS jukebox_ytcache (video_id TEXT PRIMARY KEY, metadata TEXT, registered_date TEXT);",
                 "CREATE TABLE IF NOT EXISTS jukebox_replay_history (user_id TEXT, played_at TEXT, song TEXT, FOREIGN KEY (user_id) REFERENCES jukebox_secrets (user_id));",
             ],
-            "mysql" : [
+            "mysql": [
                 "CREATE TABLE IF NOT EXISTS jukebox_secrets (user_id VARCHAR(255) PRIMARY KEY, secret TEXT);",
                 "CREATE TABLE IF NOT EXISTS jukebox_ytcache (video_id VARCHAR(255) PRIMARY KEY, metadata TEXT, registered_date VARCHAR(255));",
                 "CREATE TABLE IF NOT EXISTS jukebox_replay_history (user_id VARCHAR(255), played_at VARCHAR(255), song TEXT, FOREIGN KEY (user_id) REFERENCES jukebox_secrets (user_id));",
@@ -127,7 +127,7 @@ class Database:
             user_id = str(user_id)
             query = {
                 "sqlite": "INSERT INTO jukebox_secrets (user_id, secret) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET secret=excluded.secret;",
-                "mysql" : "INSERT INTO jukebox_secrets (user_id, secret) VALUES (%s, %s) ON DUPLICATE KEY UPDATE secret=VALUES(secret);",
+                "mysql": "INSERT INTO jukebox_secrets (user_id, secret) VALUES (%s, %s) ON DUPLICATE KEY UPDATE secret=VALUES(secret);",
             }
             self.cursor.execute(query[self.db_type], (user_id, secret))
             self.connection.commit()
@@ -150,7 +150,7 @@ class Database:
         try:
             query = {
                 "sqlite": "SELECT EXISTS(SELECT 1 FROM jukebox_secrets WHERE user_id = ?)",
-                "mysql" : "SELECT EXISTS(SELECT 1 FROM jukebox_secrets WHERE user_id = %s)",
+                "mysql": "SELECT EXISTS(SELECT 1 FROM jukebox_secrets WHERE user_id = %s)",
             }
             self.cursor.execute(query[self.db_type], (user_id,))
             return self.cursor.fetchone()[0] == 1
@@ -171,7 +171,7 @@ class Database:
         try:
             query = {
                 "sqlite": "SELECT secret FROM jukebox_secrets WHERE user_id = ?",
-                "mysql" : "SELECT secret FROM jukebox_secrets WHERE user_id = %s",
+                "mysql": "SELECT secret FROM jukebox_secrets WHERE user_id = %s",
             }
             self.cursor.execute(query[self.db_type], (user_id,))
             result = self.cursor.fetchone()
@@ -193,7 +193,7 @@ class Database:
             registered_date = datetime.now().isoformat()
             query = {
                 "sqlite": "INSERT INTO jukebox_ytcache (video_id, metadata, registered_date) VALUES (?, ?, ?) ON CONFLICT(video_id) DO UPDATE SET metadata=excluded.metadata, registered_date=excluded.registered_date;",
-                "mysql" : "INSERT INTO jukebox_ytcache (video_id, metadata, registered_date) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE metadata=VALUES(metadata), registered_date=VALUES(registered_date);",
+                "mysql": "INSERT INTO jukebox_ytcache (video_id, metadata, registered_date) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE metadata=VALUES(metadata), registered_date=VALUES(registered_date);",
             }
             self.cursor.execute(
                 query[self.db_type], (video_id, metadata_json, registered_date)
@@ -217,7 +217,7 @@ class Database:
         try:
             query = {
                 "sqlite": "SELECT metadata FROM jukebox_ytcache WHERE video_id = ?",
-                "mysql" : "SELECT metadata FROM jukebox_ytcache WHERE video_id = %s",
+                "mysql": "SELECT metadata FROM jukebox_ytcache WHERE video_id = %s",
             }
             self.cursor.execute(query[self.db_type], (video_id,))
             result = self.cursor.fetchone()
@@ -269,7 +269,7 @@ class Database:
         try:
             query = {
                 "sqlite": "INSERT INTO jukebox_replay_history (user_id, played_at, song) VALUES (?, ?, ?)",
-                "mysql" : "INSERT INTO jukebox_replay_history (user_id, played_at, song) VALUES (%s, %s, %s)",
+                "mysql": "INSERT INTO jukebox_replay_history (user_id, played_at, song) VALUES (%s, %s, %s)",
             }
             self.cursor.execute(query[self.db_type], (user_id, played_at, song))
             self.connection.commit()
@@ -293,7 +293,7 @@ class Database:
             cutoff_date = (datetime.now() - timedelta(days=cutoff)).isoformat()
             query = {
                 "sqlite": "SELECT played_at, song FROM jukebox_replay_history WHERE user_id = ? and played_at >= ? ORDER BY played_at DESC",
-                "mysql" : "SELECT played_at, song FROM jukebox_replay_history WHERE user_id = %s and played_at >= %s ORDER BY played_at DESC",
+                "mysql": "SELECT played_at, song FROM jukebox_replay_history WHERE user_id = %s and played_at >= %s ORDER BY played_at DESC",
             }
             self.cursor.execute(query[self.db_type], (user_id, cutoff_date))
             results = self.cursor.fetchall()
@@ -308,7 +308,7 @@ class Database:
             cutoff_date = (datetime.now() - timedelta(days=days)).isoformat()
             query = {
                 "sqlite": "DELETE FROM jukebox_ytcache WHERE registered_date < ?",
-                "mysql" : "DELETE FROM jukebox_ytcache WHERE registered_date < %s",
+                "mysql": "DELETE FROM jukebox_ytcache WHERE registered_date < %s",
             }
             self.cursor.execute(query[self.db_type], (cutoff_date,))
             self.connection.commit()
