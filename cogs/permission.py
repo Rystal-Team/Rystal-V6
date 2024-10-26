@@ -58,7 +58,7 @@ class PermissionSystem(commands.Cog):
 
     @permission.subcommand(description="View all commands IDs.")
     @auth_guard.check_permissions("permission/list")
-    async def list(self, interaction: nextcord.Interaction):
+    async def view(self, interaction: nextcord.Interaction):
         commands_list = auth_guard.get_commands()
 
         await interaction.response.send_message(
