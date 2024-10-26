@@ -32,15 +32,15 @@ timer = time.time()
 
 ydl = yt_dlp.YoutubeDL(
     {
-        "format": "bestaudio/best",
-        "noplaylist": True,
-        "ignoreerrors": True,
-        "quiet": True,
-        "no_warnings": True,
+        "format"        : "bestaudio/best",
+        "noplaylist"    : True,
+        "ignoreerrors"  : True,
+        "quiet"         : True,
+        "no_warnings"   : True,
         "source_address": "0.0.0.0",
-        "forceip": "4",
-        "skip_download": True,
-        "extract_flat": True,
+        "forceip"       : "4",
+        "skip_download" : True,
+        "extract_flat"  : True,
         "default_search": "auto",
     }
 )

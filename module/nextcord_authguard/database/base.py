@@ -52,7 +52,7 @@ class DatabaseHandler:
         self.cursor = None
         self.create_query = create_query or {
             "sqlite": {},
-            "mysql": {},
+            "mysql" : {},
         }
 
         if db_type == "sqlite":

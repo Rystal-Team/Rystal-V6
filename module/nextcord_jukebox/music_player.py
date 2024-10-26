@@ -45,15 +45,15 @@ from .utils import get_video_id
 yt_dlp.utils.bug_reports_message = lambda: ""
 ytdlp = yt_dlp.YoutubeDL(
     {
-        "format": "bestaudio/best",
-        "noplaylist": True,
-        "ignoreerrors": True,
-        "quiet": True,
-        "no_warnings": True,
+        "format"        : "bestaudio/best",
+        "noplaylist"    : True,
+        "ignoreerrors"  : True,
+        "quiet"         : True,
+        "no_warnings"   : True,
         "source_address": "0.0.0.0",
-        "forceip": "4",
-        "skip_download": True,
-        "extract_flat": True,
+        "forceip"       : "4",
+        "skip_download" : True,
+        "extract_flat"  : True,
         "default_search": "auto",
     }
 )
@@ -164,7 +164,7 @@ class MusicPlayer:
         self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options": "-vn -af loudnorm",
+            "options"       : "-vn -af loudnorm",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
@@ -446,14 +446,14 @@ class MusicPlayer:
         if cached_meta is None:
             video = await self.loop.run_in_executor(None, lambda: Video(video_id))
             meta = {
-                "url": video.url,
-                "title": video.title,
-                "views": video.views,
-                "duration": video.duration,
-                "thumbnail": video.thumbnail,
-                "channel": video.channel,
+                "url"        : video.url,
+                "title"      : video.title,
+                "views"      : video.views,
+                "duration"   : video.duration,
+                "thumbnail"  : video.thumbnail,
+                "channel"    : video.channel,
                 "channel_url": video.channel_url,
-                "thumbnails": video.thumbnails,
+                "thumbnails" : video.thumbnails,
             }
             self.database.cache_video_metadata(video_id, meta)
         else:
@@ -657,7 +657,7 @@ class MusicPlayer:
             tuple: The last song played and the new song to be played.
         """
         first = self.music_queue[: len(self.music_queue) - 2]
-        last = self.music_queue[len(self.music_queue) - 2 :]
+        last = self.music_queue[len(self.music_queue) - 2:]
         last.extend(first)
 
         self.music_queue = last

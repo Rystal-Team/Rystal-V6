@@ -42,9 +42,9 @@ class Reversi:
 
     def serialize(self):
         return {
-            "board": self.board,
+            "board"       : self.board,
             "current_turn": self.current_turn,
-            "history": self.history,
+            "history"     : self.history,
         }
 
     @classmethod
@@ -358,7 +358,7 @@ class Interactor:
 
     def serialize(self):
         return {
-            "game": self.game.serialize(),
+            "game"           : self.game.serialize(),
             "ai_player_black": (
                 self.ai_player_black.serialize() if self.ai_player_black else None
             ),
@@ -395,7 +395,7 @@ class Interactor:
             board_copy[row][col] = "*"
         print("  a b c d e f g h\n +----------------")
         for i, row in enumerate(board_copy):
-            print(f"{i+1}|{' '.join(row)}")
+            print(f"{i + 1}|{' '.join(row)}")
         print()
         image = self.generate_board_image(board_copy)
         return image

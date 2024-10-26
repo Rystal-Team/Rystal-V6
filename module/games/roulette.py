@@ -21,9 +21,8 @@
 #  ------------------------------------------------------------
 #
 
-import random
-from enum import Enum
 import secrets
+from enum import Enum
 
 
 class RouletteResult(Enum):

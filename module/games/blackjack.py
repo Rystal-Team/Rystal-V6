@@ -21,7 +21,6 @@
 #  ------------------------------------------------------------
 #
 
-import random
 from enum import Enum
 
 from module.utils import crypto_shuffle

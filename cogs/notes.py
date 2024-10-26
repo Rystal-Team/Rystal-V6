@@ -33,14 +33,7 @@ from database.guild_handler import get_guild_language
 from database.note_handler import add_note, remove_note
 from database.note_handler import fetch_note, get_notes
 from module.embeds.generic import Embeds
-from module.embeds.noteview import (
-    Note,
-    NoteState,
-    NoteStateView,
-    NotesPagination,
-    map_state_to_text,
-    map_state_to_emoji,
-)
+from module.embeds.noteview import (Note, NoteStateView, NotesPagination, map_state_to_emoji, map_state_to_text)
 
 class_namespace = "note_class_title"
 
@@ -71,9 +64,9 @@ class NoteSystem(commands.Cog):
         ),
     ):
         note_content = {
-            "title": title,
+            "title"      : title,
             "description": description,
-            "state": 30,
+            "state"      : 30,
         }
         await interaction.response.defer()
         await add_note(interaction.user.id, json.dumps(note_content))

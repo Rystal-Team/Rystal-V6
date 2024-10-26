@@ -21,7 +21,6 @@
 #  ------------------------------------------------------------
 #
 
-import random
 import secrets
 
 import nextcord
@@ -334,9 +333,9 @@ class GameSystem(commands.Cog):
 
         message_mapper = {
             RouletteResult.ZEROS: "roulette_won_zeros",
-            RouletteResult.RED: "roulette_won",
+            RouletteResult.RED  : "roulette_won",
             RouletteResult.BLACK: "roulette_won",
-            RouletteResult.LOST: "roulette_lost",
+            RouletteResult.LOST : "roulette_lost",
         }
 
         user_data = await user_handler.get_user_data(user_id)
@@ -397,7 +396,7 @@ class GameSystem(commands.Cog):
                 points=format_number(
                     bet
                     if outcome
-                    in {RouletteResult.RED, RouletteResult.BLACK, RouletteResult.LOST}
+                       in {RouletteResult.RED, RouletteResult.BLACK, RouletteResult.LOST}
                     else bet * 5
                 )
             ),

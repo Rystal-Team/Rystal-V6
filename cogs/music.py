@@ -420,18 +420,18 @@ class Music(commands.Cog, EventManager):
                     [
                         song
                         for song, _ in SongMatcher.match(
-                            await music_player.current_queue(),
-                            query,
-                            case_sens=False,
-                            threshold=0.8,
-                        )
+                        await music_player.current_queue(),
+                        query,
+                        case_sens=False,
+                        threshold=0.8,
+                    )
                     ]
                     if query.replace(" ", "") != ""
                     else await music_player.current_queue()
                 )
 
                 for i, song in enumerate(
-                    subset[(page - 1) * 10 : page * 10], start=(page - 1) * 10
+                    subset[(page - 1) * 10: page * 10], start=(page - 1) * 10
                 ):
                     if song == now_playing and i == 0:
                         continue
@@ -847,9 +847,9 @@ class Music(commands.Cog, EventManager):
         interaction: Interaction, period: str, guild_language: str, result_list
     ):
         period_description = {
-            "Week": "most_played_week",
+            "Week" : "most_played_week",
             "Month": "most_played_month",
-            "Year": "most_played_year",
+            "Year" : "most_played_year",
         }
 
         canvas = create_top_songs_poster(
@@ -923,9 +923,9 @@ class Music(commands.Cog, EventManager):
 
         result_list = {
             "total_replayed": len(replay_history),
-            "total_time": 0,
-            "replays": [],
-            "top_artist": {"name": top_artist, "percentage": top_artist_percentage},
+            "total_time"    : 0,
+            "replays"       : [],
+            "top_artist"    : {"name": top_artist, "percentage": top_artist_percentage},
         }
 
         top_replays = sorted(
@@ -941,10 +941,10 @@ class Music(commands.Cog, EventManager):
             metadata = video_metadata.get(video_id, {})
             result_list["replays"].append(
                 {
-                    "title": metadata.get("title", ""),
-                    "artist": metadata.get("channel", ""),
+                    "title"     : metadata.get("title", ""),
+                    "artist"    : metadata.get("channel", ""),
                     "thumbnails": metadata.get("thumbnails", ""),
-                    "replays": replay_count,
+                    "replays"   : replay_count,
                 }
             )
             result_list["total_time"] += metadata.get("duration", 0) * replay_count

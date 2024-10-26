@@ -22,7 +22,6 @@
 #
 
 import datetime
-import random
 from typing import Optional
 
 import nextcord
