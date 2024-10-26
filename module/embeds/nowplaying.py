@@ -22,7 +22,7 @@
 #
 
 import asyncio
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Callable
 
 import nextcord
@@ -30,7 +30,7 @@ import nextcord
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
-from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying
+from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying, NothingPlaying
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
@@ -82,20 +82,45 @@ class NowPlayingMenu(nextcord.ui.View):
         self.follow_up = None
         self.is_timeout = False
         self.source_url = self.song.source_url
+        self.last_interact = datetime.now()
+        self.__timeout = 180
 
-        super().__init__(timeout=180)
+        super().__init__()
 
         self.loop_task = asyncio.create_task(self.auto_update())
 
     async def auto_update(self):
-        """Automatically update the Now Playing embed every 0.5 seconds."""
+        """Automatically update the Now Playing embed every 5 seconds."""
+        await asyncio.sleep(1)
         while not self.is_timeout:
+            if (datetime.now() - self.last_interact).total_seconds() > self.__timeout:
+                await self.timeout_self()
+                break
             await self.update()
             await asyncio.sleep(0.5)
 
     async def update(self):
         """Update the Now Playing embed and buttons."""
-        self.song = await self.player.now_playing()
+        try:
+            self.song = await self.player.now_playing()
+        except (NothingPlaying, EmptyQueue):
+            embed = Embeds.message(
+                title=lang[await get_guild_language(self.interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(self.interaction.guild.id)][
+                    "nothing_is_playing"
+                ],
+                message_type="warn",
+            )
+            if self.follow_up is not None:
+                await self.interaction.followup.edit_message(
+                    message_id=self.follow_up.id, embed=embed, view=None
+                )
+            else:
+                await self.interaction.followup.send(embed=embed)
+            return
+
         self.title = self.song.title
         self.thumbnail = self.song.thumbnail
 
@@ -154,6 +179,7 @@ class NowPlayingMenu(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered this action.
         """
         await interaction.response.defer()
+        self.last_interact = datetime.now()
         try:
             if self.playing:
                 await self.player.pause()
@@ -208,6 +234,7 @@ class NowPlayingMenu(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered this action.
         """
         await interaction.response.defer()
+        self.last_interact = datetime.now()
         try:
             await self.player.previous()
             await self.update()
@@ -255,6 +282,7 @@ class NowPlayingMenu(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered this action.
         """
         await interaction.response.defer()
+        self.last_interact = datetime.now()
         try:
             await self.player.skip()
             await self.update()
@@ -305,12 +333,12 @@ class NowPlayingMenu(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered this action.
         """
         await interaction.response.defer()
+        self.last_interact = datetime.now()
         await self.update()
 
-    async def on_timeout(self):
-        """Handle timeout event by removing buttons from the view."""
+    async def timeout_self(self):
+        """Timeout the view and stop the auto-update task."""
+        self.is_timeout = True
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )
-
-        self.is_timeout = True
