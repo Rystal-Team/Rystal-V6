@@ -145,7 +145,7 @@ class Settings(commands.Cog):
         await change_guild_settings(interaction.guild.id, "music_silent_mode", toggle)
 
         toggle_represent = {
-            True : "on",
+            True: "on",
             False: "off",
         }
 
@@ -174,7 +174,7 @@ class Settings(commands.Cog):
         await change_guild_settings(interaction.guild.id, "music_auto_leave", toggle)
 
         toggle_represent = {
-            True : "on",
+            True: "on",
             False: "off",
         }
 
@@ -212,9 +212,9 @@ class Settings(commands.Cog):
     ):
         await interaction.response.defer(with_message=True)
         loop_mode = {
-            "Off"   : 1,
+            "Off": 1,
             "Single": 2,
-            "All"   : 3,
+            "All": 3,
         }
 
         await change_guild_settings(
