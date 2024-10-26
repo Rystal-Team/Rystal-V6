@@ -42,9 +42,9 @@ class Reversi:
 
     def serialize(self):
         return {
-            "board"       : self.board,
+            "board": self.board,
             "current_turn": self.current_turn,
-            "history"     : self.history,
+            "history": self.history,
         }
 
     @classmethod
@@ -358,7 +358,7 @@ class Interactor:
 
     def serialize(self):
         return {
-            "game"           : self.game.serialize(),
+            "game": self.game.serialize(),
             "ai_player_black": (
                 self.ai_player_black.serialize() if self.ai_player_black else None
             ),

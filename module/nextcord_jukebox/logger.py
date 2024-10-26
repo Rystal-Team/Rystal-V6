@@ -28,10 +28,10 @@ from termcolor import colored
 
 class Logger:
     LOG_LEVELS = {
-        "DEBUG"   : logging.DEBUG,
-        "INFO"    : logging.INFO,
-        "WARNING" : logging.WARNING,
-        "ERROR"   : logging.ERROR,
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
         "CRITICAL": logging.CRITICAL,
     }
 
@@ -91,10 +91,10 @@ class Logger:
             str: The colored message.
         """
         colors = {
-            "DEBUG"   : "blue",
-            "INFO"    : "green",
-            "WARNING" : "yellow",
-            "ERROR"   : "red",
+            "DEBUG": "blue",
+            "INFO": "green",
+            "WARNING": "yellow",
+            "ERROR": "red",
             "CRITICAL": "magenta",
         }
         return colored(message, colors.get(level, "white"))
