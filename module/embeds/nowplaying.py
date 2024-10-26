@@ -21,6 +21,7 @@
 #  ------------------------------------------------------------
 #
 
+import asyncio
 from datetime import timedelta
 from typing import Callable
 
@@ -83,6 +84,14 @@ class NowPlayingMenu(nextcord.ui.View):
         self.source_url = self.song.source_url
 
         super().__init__(timeout=180)
+
+        self.loop_task = asyncio.create_task(self.auto_update())
+
+    async def auto_update(self):
+        """Automatically update the Now Playing embed every 0.5 seconds."""
+        while not self.is_timeout:
+            await self.update()
+            await asyncio.sleep(0.5)
 
     async def update(self):
         """Update the Now Playing embed and buttons."""
