@@ -142,9 +142,6 @@ class AuthGuard:
                 permissions = self.get_command_permissions(command_id, guild.id)
                 default_perm = get_default_permission(self.default_perm, command_id)
 
-                print(default_perm)
-                print(permissions)
-
                 if default_perm is None or default_perm == []:
                     LogHandler.warning(
                         "Missing default permission for command: " + command_id
