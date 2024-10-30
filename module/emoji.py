@@ -39,6 +39,6 @@ def get_emoji_name(name):
 
 
 def load_dict():
-    with open("config/emojis.yml", "r") as file:
+    with open("config/emojis.yaml", "r") as file:
         global emoji_dict
         emoji_dict = yaml.safe_load(file)
