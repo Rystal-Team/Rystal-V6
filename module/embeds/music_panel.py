@@ -29,5 +29,3 @@ from nextcord.ui import View, button
 class MusicPanel(View):
     def __init__(self):
         super().__init__()
-    
-    
