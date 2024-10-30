@@ -260,3 +260,4 @@ config/config.yaml
 
 default_permission.yaml
 /.VSCodeCounter
+config/emojis.yaml

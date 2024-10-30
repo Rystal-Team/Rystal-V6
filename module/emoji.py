@@ -20,7 +20,8 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-import json
+
+import yaml
 from nextcord import PartialEmoji
 
 emoji_dict = {}
@@ -30,7 +31,7 @@ def get_emoji(name):
     try:
         return PartialEmoji(id=emoji_dict.get(name, None), name=name)
     except Exception as e:
-        raise "Failed to get emoji: " + str(e)
+        raise Exception("Failed to get emoji: " + str(e))
 
 
 def get_emoji_name(name):
@@ -38,6 +39,6 @@ def get_emoji_name(name):
 
 
 def load_dict():
-    with open("config/emojis.json", "r") as file:
+    with open("config/emojis.yml", "r") as file:
         global emoji_dict
-        emoji_dict = json.load(file)
+        emoji_dict = yaml.safe_load(file)
