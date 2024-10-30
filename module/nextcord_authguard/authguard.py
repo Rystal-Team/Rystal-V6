@@ -142,6 +142,9 @@ class AuthGuard:
                 permissions = self.get_command_permissions(command_id, guild.id)
                 default_perm = get_default_permission(self.default_perm, command_id)
 
+                print(default_perm)
+                print(permissions)
+
                 if default_perm is None or default_perm == []:
                     LogHandler.warning(
                         "Missing default permission for command: " + command_id
@@ -153,15 +156,27 @@ class AuthGuard:
                         if (
                             not perm[3] is None
                             and int(perm[3]) == user.id
-                            and perm[5] == 1
+                            and perm[5] == 0
                         ):
-                            return await func(*args, **kwargs)
+                            await EventManager.fire(
+                                "on_permission_denied",
+                                interaction,
+                                permissions,
+                                default_perm,
+                            )
+                            return
                         if (
                             not perm[4] is None
                             and int(perm[4]) in user_roles
-                            and perm[5] == 1
+                            and perm[5] == 0
                         ):
-                            return await func(*args, **kwargs)
+                            await EventManager.fire(
+                                "on_permission_denied",
+                                interaction,
+                                permissions,
+                                default_perm,
+                            )
+                            return
                 if any(
                     [
                         GeneralPermission.ADMIN in default_perm

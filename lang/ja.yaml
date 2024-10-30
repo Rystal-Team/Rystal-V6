@@ -7,8 +7,10 @@ must_be_positive_not_zero: "`{option}` の値は正の数であり、ゼロで�
 
 # title & descriptions
 music_class_title: "🎵 | 音楽モジュール"
+music_class_decorator: "🎵 | "
+music_class_emoji: "🎵"
 music_play_description: "🎵 | 曲を再生！"
-music_skip_description: "🎵 | 音楽をスキップ！"
+music_skip_description: "🎵 | 曲楽をスキップ！"
 music_queue_description: "🎵 | キューを表示！"
 music_shuffle_description: "🎵 | キューをシャッフル！"
 music_loop_description: "🎵 | キューをループ！"
@@ -22,14 +24,20 @@ music_most_played_description: "🎵 | 最も再生された曲を表示！"
 music_flush_cache_description: "🎵 | キャッシュをフラッシュ！"
 
 rank_class_title: "🎖️ | ランキングモジュール"
+rank_class_decorator: "🎖️ | "
+rank_class_emoji: "🎖️"
 rank_card_description: "🎖️ | ユーザーのランクを表示！"
 rank_leaderboard_description: "🎖️ | リーダーボードを表示！"
 
 system_class_title: "🤖 | システム"
+system_class_decorator: "🤖 | "
+system_class_emoji: "🤖"
 system_ping_description: "🤖 | ボットのPingを確認！"
 system_info_description: "🤖 | ボットの情報を表示！"
 
 setting_class_title: "⚙️ | 設定"
+setting_class_decorator: "⚙️ | "
+setting_class_emoji: "⚙️"
 setting_language_description: "⚙️ | ボットの言語を変更！"
 
 setting_music_description: "⚙️ | 音楽設定を変更！"
@@ -41,18 +49,24 @@ setting_game_description: "⚙️ | ゲーム設定を変更！"
 setting_game_announce_channel_description: "⚙️ | ゲーム告知チャンネルを変更！"
 
 note_class_title: "📒 | メモ"
+note_class_decorator: "📒 | "
+note_class_emoji: "📒"
 note_create_description: "📒 | メモを作成！"
 note_list_description: "📒 | すべてのメモを表示！"
 note_view_description: "📒 | メモを表示！"
 note_remove_description: "📒 | メモを削除！"
 
 point_class_title: "⭐️ | ポイントシステム"
+point_class_decorator: "⭐️ | "
+point_class_emoji: "⭐️"
 points_claim_description: "⭐️ | ポイントを獲得！"
 points_give_description: "⭐️ | 他のユーザーにポイントを送信！"
 points_show_description: "⭐️ | 自分のポイントを表示！"
 points_leaderboard_description: "⭐️ | ポイントリーダーボードを表示！"
 
 game_class_title: "🎮 | ゲーム"
+game_class_decorator: "🎮 | "
+game_class_emoji: "🎮"
 game_blackjack_description: "🎮 | ブラックジャックをプレイ！"
 game_dice_description: "🎮 | サイコロを振る！"
 game_coinflip_description: "🎮 | コインフリップをプレイ！"
@@ -62,8 +76,12 @@ game_showjackpot_description: "🎮 | ジャックポットの賞金を表示！
 game_roulette_description: "🎮 | ルーレットをプレイ！"
 
 bug_class_title: "🐞 | バグ報告"
+bug_class_decorator: "🐞 | "
+bug_class_emoji: "🐞"
 
 shop_class_title: "🛒 | ショップ"
+shop_class_decorator: "🛒 | "
+shop_class_emoji: "🛒"
 shop_buy_description: "🛒 | アイテムをショップで購入！"
 shop_catalog_description: "🛒 | ショップのカタログを表示！"
 

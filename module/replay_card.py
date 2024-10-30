@@ -171,6 +171,12 @@ def create_top_songs_poster(
         )
 
     for i, song in enumerate(songs):
+        required_keys = [ "artist", "replays", "thumbnails"]
+
+        if not all(key in song for key in required_keys):
+            print(f"Missing key(s) for song [{song['title']}]: {song}.")
+            continue
+
         timer = time.time()
         y_pos = 260 + i * 90
         song_text = truncate_text(song["title"], fonts["song"], 540)
@@ -183,6 +189,8 @@ def create_top_songs_poster(
 
         draw.text((50, y_pos + 22), str(i + 1), font=fonts["index"], fill="#576175")
         load_timer = time.time()
+
+
         thumbnail = (
             load_image_from_url(get_smallest_thumbnail(song["thumbnails"]))
             .resize((106, 60))
