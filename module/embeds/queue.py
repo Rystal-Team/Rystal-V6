@@ -52,6 +52,7 @@ import nextcord
 
 from config.loader import lang
 from database.guild_handler import get_guild_language
+from module.emoji import get_emoji
 
 
 class Search(nextcord.ui.Modal):
@@ -167,14 +168,16 @@ class Pagination(nextcord.ui.View):
     def update_buttons(self):
         """Updates the state of pagination buttons."""
         if self.index > self.total_pages // 2:
-            self.children[2].emoji = "⏮️"
+            self.children[2].emoji = get_emoji("double_arrow_left")
         else:
-            self.children[2].emoji = "⏭️"
+            self.children[2].emoji = get_emoji("double_arrow_right")
         self.children[0].disabled = self.index in (1, 0)
         self.children[1].disabled = self.total_pages in (self.index, 0)
         self.children[2].disabled = self.total_pages == 0
 
-    @nextcord.ui.button(emoji="◀️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
+    )
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -189,7 +192,9 @@ class Pagination(nextcord.ui.View):
         self.index -= 1
         await self.edit_page()
 
-    @nextcord.ui.button(emoji="▶️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
+    )
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handles the next button click.
@@ -202,7 +207,9 @@ class Pagination(nextcord.ui.View):
         self.index += 1
         await self.edit_page()
 
-    @nextcord.ui.button(emoji="⏭️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("double_arrow_right"), style=nextcord.ButtonStyle.secondary
+    )
     async def end(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handles the end button click.
@@ -218,7 +225,7 @@ class Pagination(nextcord.ui.View):
             self.index = 1
         await self.edit_page()
 
-    @nextcord.ui.button(emoji="🔎", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(emoji=get_emoji("search"), style=nextcord.ButtonStyle.secondary)
     async def search(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handles the search button click.

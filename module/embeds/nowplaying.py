@@ -30,6 +30,7 @@ import nextcord
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
+from module.emoji import get_emoji
 from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying, NothingPlaying
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
@@ -163,11 +164,13 @@ class NowPlayingMenu(nextcord.ui.View):
     async def update_button(self):
         """Update the play/pause button based on the playing state."""
         if self.playing:
-            self.children[0].emoji = "⏸️"
+            self.children[0].emoji = get_emoji("music_pause")
         else:
-            self.children[0].emoji = "▶️"
+            self.children[0].emoji = get_emoji("music_resume")
 
-    @nextcord.ui.button(emoji="▶️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("music_resume"), style=nextcord.ButtonStyle.secondary
+    )
     async def toggle_playing(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -222,7 +225,9 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
 
-    @nextcord.ui.button(emoji="⏪", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("music_previous"), style=nextcord.ButtonStyle.secondary
+    )
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -272,7 +277,9 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
 
-    @nextcord.ui.button(emoji="⏩", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("music_next"), style=nextcord.ButtonStyle.secondary
+    )
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Skip to the next song.
@@ -321,7 +328,9 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
 
-    @nextcord.ui.button(emoji="🔃", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("music_loop"), style=nextcord.ButtonStyle.secondary
+    )
     async def update_embed(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):

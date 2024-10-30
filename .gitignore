@@ -259,3 +259,4 @@ config/config.yaml
 .stignore
 
 default_permission.yaml
+/.VSCodeCounter

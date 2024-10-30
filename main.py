@@ -38,6 +38,7 @@ from dotenv import load_dotenv
 nest_asyncio.apply()
 load_dotenv()
 
+from module.emoji import load_dict
 from nextcord.ext import commands
 from termcolor import colored
 
@@ -71,6 +72,8 @@ handler.setFormatter(
     logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
 )
 logger.addHandler(handler)
+
+load_dict()
 
 
 @bot.event

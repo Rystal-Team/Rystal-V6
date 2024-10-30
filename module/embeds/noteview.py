@@ -29,6 +29,8 @@ import nextcord
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from database.note_handler import fetch_note, remove_note, update_note_state
+from nextcord import utils
+from module.emoji import get_emoji
 
 class_namespace = "note_class_title"
 
@@ -74,12 +76,12 @@ def map_state_to_emoji(state):
         str: The corresponding emoji for the state.
     """
     state_mapping = {
-        NoteState.UNBEGUN.value: "❔",
-        NoteState.STALLED.value: "🛑",
-        NoteState.ONGOING.value: "🕰️",
-        NoteState.FINISHED.value: "✅",
+        NoteState.UNBEGUN.value: get_emoji("note_unbegan"),
+        NoteState.STALLED.value: get_emoji("note_stalled"),
+        NoteState.ONGOING.value: get_emoji("note_ongoing"),
+        NoteState.FINISHED.value: get_emoji("note_finished"),
     }
-    return state_mapping.get(state, "❔")
+    return state_mapping.get(state, get_emoji("note_unbegan"))
 
 
 class Note:
@@ -136,7 +138,7 @@ class NotesEmbed:
 
         for note in notes:
             embed.add_field(
-                name=f"{note.title}【{map_state_to_emoji(note.state)}】",
+                name=f"{map_state_to_emoji(note.state)} {note.title}",
                 value=f"ID: {note.id}",
                 inline=False,
             )
@@ -170,6 +172,7 @@ class NotesPagination(nextcord.ui.View):
         self.notes_per_page = 10
         self.total_pages = (len(self.notes) - 1) // self.notes_per_page + 1
         self.author_id = interaction.user.id
+        self.bot = interaction.client
 
     async def send_initial_message(self):
         """Send the initial message with the first page of notes."""
@@ -195,7 +198,9 @@ class NotesPagination(nextcord.ui.View):
             self.guild_lang,
         )
 
-    @nextcord.ui.button(label="◀️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
+    )
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -220,7 +225,9 @@ class NotesPagination(nextcord.ui.View):
                 ephemeral=True,
             )
 
-    @nextcord.ui.button(label="▶️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
+    )
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handle the next page button click.
@@ -306,13 +313,15 @@ class NoteStateView(nextcord.ui.View):
         )
         embed.add_field(
             name=lang[self.guild_lang]["note_state_title"],
-            value=f"{map_state_to_text(self.guild_lang, note_data['state'])} 【{map_state_to_emoji(note_data['state'])}】",
+            value=f"{map_state_to_emoji(note_data['state'])} {map_state_to_text(self.guild_lang, note_data['state'])}",
             inline=False,
         )
         await self.message.edit(embed=embed, view=self)
         return new_state
 
-    @nextcord.ui.button(label="🛑", style=nextcord.ButtonStyle.red)
+    @nextcord.ui.button(
+        emoji=get_emoji("note_stalled"), style=nextcord.ButtonStyle.secondary
+    )
     async def stalled(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handle the stalled state button click.
@@ -333,7 +342,9 @@ class NoteStateView(nextcord.ui.View):
                 ephemeral=True,
             )
 
-    @nextcord.ui.button(label="🕰️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("note_ongoing"), style=nextcord.ButtonStyle.secondary
+    )
     async def ongoing(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handle the ongoing state button click.
@@ -354,7 +365,9 @@ class NoteStateView(nextcord.ui.View):
                 ephemeral=True,
             )
 
-    @nextcord.ui.button(label="✅", style=nextcord.ButtonStyle.green)
+    @nextcord.ui.button(
+        emoji=get_emoji("note_finished"), style=nextcord.ButtonStyle.secondary
+    )
     async def finished(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -377,7 +390,9 @@ class NoteStateView(nextcord.ui.View):
                 ephemeral=True,
             )
 
-    @nextcord.ui.button(label="🗑️", style=nextcord.ButtonStyle.danger)
+    @nextcord.ui.button(
+        emoji=get_emoji("note_remove"), style=nextcord.ButtonStyle.secondary
+    )
     async def remove(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handle the remove note button click.

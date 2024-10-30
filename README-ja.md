@@ -87,7 +87,7 @@ Sparked Hostをチェックしてください！月額1ドル（約150円）か�
 <a href="https://billing.sparkedhost.com/aff.php?aff=2435"><img src="assets/sparkedhost.png" alt="Sparked Host" style="width:373.875px;height:78px;"/></a>
 
 <div align="center">
-  <p><small>Copyright © 2024 <a href="https://rystal.net">Rystal</a>. All rights reserved.</small></p>
+	<p><small>Emoji Icons by <a href="https://icons8.com">icons8</a></small></p>
+	<p><small>Copyright © 2024 <a href="https://rystal.net">Rystal</a>. All rights reserved.</small></p>
 </div>
 
-<a name="english"></a>

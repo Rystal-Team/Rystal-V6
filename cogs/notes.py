@@ -167,7 +167,7 @@ class NoteSystem(commands.Cog):
         )
         embed.add_field(
             name=lang[guild_lang]["note_state_title"],
-            value=f"{map_state_to_text(guild_lang, note_data['state'])} 【{map_state_to_emoji(note_data['state'])}】",
+            value=f"{map_state_to_emoji(note_data['state'])} {map_state_to_text(guild_lang, note_data['state'])}",
             inline=False,
         )
         view = NoteStateView(note_id, interaction.user.id, guild_lang)
