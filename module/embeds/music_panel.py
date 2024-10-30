@@ -21,9 +21,7 @@
 #  ------------------------------------------------------------
 #
 
-import nextcord
-from nextcord.ext import commands
-from nextcord.ui import View, button
+from nextcord.ui import View
 
 
 class MusicPanel(View):

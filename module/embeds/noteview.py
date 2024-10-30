@@ -29,7 +29,6 @@ import nextcord
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from database.note_handler import fetch_note, remove_note, update_note_state
-from nextcord import utils
 from module.emoji import get_emoji
 
 class_namespace = "note_class_title"
