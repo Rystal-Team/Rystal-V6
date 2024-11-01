@@ -1,9 +1,3 @@
-"""Nextcord-AuthGuard: A simple and easy to use nextcord.py extension for handling discord bot authentication."""
-
-__title__ = "Nextcord-AuthGuard"
-__author__ = "Rystal-Team"
-__license__ = "MIT"
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -27,6 +21,4 @@ __license__ = "MIT"
 #  ------------------------------------------------------------
 
 
-from .logger import Logger
-
-LogHandler = Logger()
+"""A general database handler for Rystal-Team's projects. It supports SQLite and MySQL databases."""

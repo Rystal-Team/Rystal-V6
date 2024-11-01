@@ -302,6 +302,44 @@ class Database:
             LogHandler.error(f"Error fetching replay history: {e}")
             raise e
 
+    def clear_replay_history(self, user_id: str):
+        """
+        Clears the replay history for a user.
+
+        Args:
+            user_id (str): The user ID.
+        """
+        try:
+            query = {
+                "sqlite": "DELETE FROM jukebox_replay_history WHERE user_id = ?",
+                "mysql": "DELETE FROM jukebox_replay_history WHERE user_id = %s",
+            }
+            self.cursor.execute(query[self.db_type], (user_id,))
+            self.connection.commit()
+            LogHandler.info(f"Cleared replay history for {user_id}")
+        except Exception as e:
+            LogHandler.error(f"Error clearing replay history: {e}")
+            raise e
+
+    def clear_video_cache(self, video_id: str):
+        """
+        Clears the cached video metadata for a specific video ID.
+
+        Args:
+            video_id (str): The video ID.
+        """
+        try:
+            query = {
+                "sqlite": "DELETE FROM jukebox_ytcache WHERE video_id = ?",
+                "mysql": "DELETE FROM jukebox_ytcache WHERE video_id = %s",
+            }
+            self.cursor.execute(query[self.db_type], (video_id,))
+            self.connection.commit()
+            LogHandler.info(f"Cleared cache for video {video_id}")
+        except Exception as e:
+            LogHandler.error(f"Error clearing video cache: {e}")
+            raise e
+
     def clear_old_cache(self, days=28):
         """Clears old cached video metadata from the database."""
         try:

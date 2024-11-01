@@ -1,6 +1,6 @@
-"""Nextcord-AuthGuard: A simple and easy to use nextcord.py extension for handling discord bot authentication."""
+"""Nextcord-VoiceRoom: A simple and easy to use nextcord.py extension for handling auto voice channel creations."""
 
-__title__ = "Nextcord-AuthGuard"
+__title__ = "Nextcord-VoiceRoom"
 __author__ = "Rystal-Team"
 __license__ = "MIT"
 
