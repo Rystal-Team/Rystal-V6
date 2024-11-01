@@ -21,7 +21,7 @@
 #  ------------------------------------------------------------
 #
 
-from meta_yt import YouTube, Video, Caption
+from meta_yt import YouTube
 
 yt = YouTube("cat videos")
 print(yt.video.title)
