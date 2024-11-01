@@ -438,7 +438,6 @@ class MusicPlayer:
             Song: The queued song.
         """
         # TODO: self.database.run_cleanup() を呼び出し続けると、ボットの負荷が高くなると思う、だからこれより良い方法を探してください
-        print(colored(text=f"[ADDING] {video_url}", color="cyan"))
         timer = time.time()
         self.database.run_cleanup()
         video_id = await get_video_id(video_url)
