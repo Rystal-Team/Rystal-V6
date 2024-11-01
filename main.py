@@ -47,6 +47,7 @@ from config.loader import bot_owner_id, error_log_channel_id, lang
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
+
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents.default()
 intents.members = True

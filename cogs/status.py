@@ -27,6 +27,8 @@ import time
 
 import nextcord
 import psutil
+import requests
+import yt_dlp
 from nextcord import Interaction
 from nextcord.ext import commands
 from termcolor import colored
@@ -69,9 +71,27 @@ class System(commands.Cog):
             print(
                 colored(
                     text=f"Guild: {guild.name} | Member: {guild.member_count}",
-                    color="white",
+                    color="dark_grey",
                 )
             )
+
+        print(
+            colored(
+                "=============================================================",
+                color="white",
+            )
+        )
+
+        yt_dlp_version = yt_dlp.version.__version__
+        print(colored(f"Installed yt-dlp version: {yt_dlp_version}", color="dark_grey"))
+
+        r = requests.get("https://pypi.org/pypi/yt-dlp/json")
+        latest_yt_dlp_version = r.json()["info"]["version"]
+        print(
+            colored(
+                f"Latest yt-dlp version: {latest_yt_dlp_version}", color="dark_grey"
+            )
+        )
 
         if use_ytdlp:
             print(colored(text="Using YTDLP to extract video data", color="dark_grey"))
@@ -80,6 +100,18 @@ class System(commands.Cog):
                 colored(text="Using Meta-YT to extract video data", color="dark_grey")
             )
         print(colored(text=f"Default language: {default_language}", color="dark_grey"))
+
+        if yt_dlp_version != latest_yt_dlp_version:
+            print(
+                colored(
+                    f"Update yt-dlp to the latest version by running 'pip install -U yt-dlp' to avoid any issues.",
+                    color="red",
+                )
+            )
+        else:
+            print(
+                colored(f"yt-dlp is up to date with the latest version.", color="green")
+            )
 
     @nextcord.slash_command(
         description=lang[default_language]["system_ping_description"]
