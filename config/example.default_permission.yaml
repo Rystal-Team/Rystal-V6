@@ -33,7 +33,7 @@ music:
   remove: "everyone"
   register: "everyone"
   most_played: "everyone"
-  flush_cache: "admin"
+  flush_cache: "owner"
 
 rank:
   card: "everyone"
