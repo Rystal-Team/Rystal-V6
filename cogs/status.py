@@ -71,7 +71,7 @@ class System(commands.Cog):
             print(
                 colored(
                     text=f"Guild: {guild.name} | Member: {guild.member_count}",
-                    color="dark_grey",
+                    color="white",
                 )
             )
 

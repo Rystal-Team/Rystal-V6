@@ -1,3 +1,4 @@
+yt-dlp
 PyYAML==6.0.1
 easy-pil>=0.3.2
 flask>=3.0.3
@@ -18,7 +19,5 @@ websockets~=12.0
 Werkzeug~=3.0.3
 xmltodict>=0.13.0
 youtube-search>=2.1.2
-yt-dlp>=2024.5.27
 Pillow~=10.4.0
-setuptools>=58.0.4
 python-dotenv>=1.0.1
