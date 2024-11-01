@@ -268,7 +268,8 @@ class Music(commands.Cog, EventManager):
                         message_type="success",
                     )
                 )
-        except NoQueryResult:
+        except NoQueryResult as e:
+            print(e)
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
