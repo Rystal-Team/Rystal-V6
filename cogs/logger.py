@@ -23,6 +23,7 @@
 
 import datetime
 import logging
+import json
 
 import nextcord
 from nextcord.ext import commands
@@ -56,12 +57,12 @@ class Logger(commands.Cog):
         )
         embed.add_field(
             name="Channel",
-            value=f"{interaction.channel.name} | {interaction.channel.mention}",
+            value=f"```{interaction.channel.name} | {interaction.channel.mention}```",
             inline=False,
         )
         embed.add_field(
             name="Guild",
-            value=f"{interaction.guild.name} | Owner: {interaction.guild.owner} | Humans: {len(interaction.guild.humans)}",
+            value=f"```{interaction.guild.name} | Owner: {interaction.guild.owner} | Humans: {len(interaction.guild.humans)}```",
             inline=False,
         )
 
@@ -69,7 +70,7 @@ class Logger(commands.Cog):
         if "options" in interaction.data:
             embed.add_field(
                 name="Options",
-                value=f"{str(interaction.data['options'])}",
+                value=f"```json\n{str(json.dumps(interaction.data['options'], indent=4))}```",
                 inline=False,
             )
         await channel.send(embed=embed)
