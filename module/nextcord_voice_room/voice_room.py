@@ -70,7 +70,6 @@ class VoiceRoom:
             member_limit (int): The member limit for the voice channel. Default is 0.
         """
 
-
     async def on_voice_state_update(self, member, before, after):
         """
         Handles the voice state update event.
