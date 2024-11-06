@@ -31,6 +31,15 @@ from .database_create import create_statement
 from .event_manager import EventManager
 from .loader import get_default_permission, load_permission
 from .permission import GeneralPermission
+from typing import Any
+from nextcord import Interaction
+
+
+def get_interaction(*args: Any):
+    for arg in args:
+        if isinstance(arg, Interaction):
+            return arg
+    return None
 
 
 class AuthGuard:
@@ -129,14 +138,13 @@ class AuthGuard:
         Returns:
             function: The decorated function with permission checks.
         """
-        if command_id in self.command_id_list:
-            raise ValueError("Command ID already exists!")
-        self.command_id_list.append(command_id)
+        if command_id not in self.command_id_list:
+            self.command_id_list.append(command_id)
 
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
-                cog, interaction = args[0], args[1]
+                cog, interaction = args[0], get_interaction(*args)
                 user, guild = interaction.user, interaction.guild
                 user_roles = [role.id for role in user.roles]
                 permissions = self.get_command_permissions(command_id, guild.id)
