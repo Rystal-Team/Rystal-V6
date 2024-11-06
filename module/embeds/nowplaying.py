@@ -35,6 +35,7 @@ from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying, NothingPl
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
+from config.perm import auth_guard
 
 class_namespace = "music_class_title"
 
@@ -171,6 +172,8 @@ class NowPlayingMenu(nextcord.ui.View):
     @nextcord.ui.button(
         emoji=get_emoji("music_resume"), style=nextcord.ButtonStyle.secondary
     )
+    @auth_guard.check_permissions("music/pause")
+    @auth_guard.check_permissions("music/resume")
     async def toggle_playing(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -228,6 +231,7 @@ class NowPlayingMenu(nextcord.ui.View):
     @nextcord.ui.button(
         emoji=get_emoji("music_previous"), style=nextcord.ButtonStyle.secondary
     )
+    @auth_guard.check_permissions("music/skip")
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -280,6 +284,7 @@ class NowPlayingMenu(nextcord.ui.View):
     @nextcord.ui.button(
         emoji=get_emoji("music_next"), style=nextcord.ButtonStyle.secondary
     )
+    @auth_guard.check_permissions("music/skip")
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Skip to the next song.
