@@ -155,6 +155,9 @@ class AuthGuard:
                         "Missing default permission for command: " + command_id
                     )
 
+                if user.id == guild.owner.id:
+                    return await func(*args, **kwargs)
+
                 if permissions and permissions is not None and len(permissions) > 0:
                     permissions = permissions or []
                     for perm in permissions:
