@@ -26,7 +26,7 @@ import time
 from datetime import timedelta
 from io import BytesIO
 from typing import Optional
-
+from nextcord import SelectOption
 import nextcord
 from nextcord import File, Interaction, SlashOption
 from nextcord.ext import commands
@@ -37,7 +37,7 @@ from config.perm import auth_guard
 from database.guild_handler import get_guild_language, get_guild_settings
 from module.embeds.generic import Embeds
 from module.embeds.nowplaying import NowPlayingMenu
-from module.embeds.queue import Pagination
+from module.embeds.queue import QueueViewer
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
@@ -408,6 +408,7 @@ class Music(commands.Cog, EventManager):
                 time_elapsed = now_playing.timer.elapsed
                 duration_passed = round(time_elapsed)
                 duration_passed_str = str(timedelta(seconds=duration_passed))
+                options = []
 
                 embed = nextcord.Embed(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -451,8 +452,13 @@ class Music(commands.Cog, EventManager):
                         value=f"⏳ {duration_str} | 👁️ {views_str}",
                         inline=False,
                     )
+                    options.append(
+                        SelectOption(
+                            label=song.title, description=song.channel, value=str(i)
+                        )
+                    )
 
-                total_pages = Pagination.compute_total_pages(len(subset), 10)
+                total_pages = QueueViewer.compute_total_pages(len(subset), 10)
                 footer_text_key = (
                     "queue_footer"
                     if query.replace(" ", "") == ""
@@ -464,7 +470,7 @@ class Music(commands.Cog, EventManager):
                     ].format(page=page, total_pages=total_pages, query=query)
                 )
 
-                return embed, total_pages
+                return embed, total_pages, options
             except NothingPlaying:
                 return (
                     Embeds.message(
@@ -479,8 +485,8 @@ class Music(commands.Cog, EventManager):
                     1,
                 )
 
-        await Pagination(interaction, get_page).navegate()
-        Pagination.compute_total_pages(len(await player.current_queue()), 10)
+        await QueueViewer(interaction, get_page, player).navegate()
+        QueueViewer.compute_total_pages(len(await player.current_queue()), 10)
 
     @music.subcommand(description=lang[default_language]["music_shuffle_description"])
     @auth_guard.check_permissions("music/shuffle")

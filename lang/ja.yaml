@@ -169,6 +169,7 @@ skipped: "**{old}** をスキップしました！"
 music_registered_secret: "シークレットの登録に成功しました。詳細はプライベートメッセージをご確認ください。何も受け取っていない場合は、プライバシー設定で「サーバーメンバーからのダイレクトメッセージを許可」が有効になっていることを確認してください。"
 music_secret: "これが新しいシークレットです\n\n ```{secret}```"
 music_cache_flushed: "キャッシュがリフレッシュされました！"
+music_skip_dropdown_placeholder: "スキップする曲を選択してください..."
 
 # level
 level_up: "{user} がレベル {level} に到達しました！！！"
