@@ -49,7 +49,6 @@ import asyncio
 from typing import Callable, Optional
 
 import nextcord
-from nextcord import SelectOption
 
 from config.loader import lang
 from database.guild_handler import get_guild_language
@@ -101,17 +100,19 @@ class Search(nextcord.ui.Modal):
 
 
 class SkipDropdown(nextcord.ui.Select):
-    def __init__(self, guild_language, player):
+    def __init__(self, queue_viewer, guild_language, player):
         super().__init__(
             placeholder=lang[guild_language]["music_skip_dropdown_placeholder"],
             min_values=1,
             max_values=1,
             options=[],
         )
+        self.queue_viewer = queue_viewer
         self.player = player
 
     async def callback(self, interaction: nextcord.Interaction):
         await self.player.skip(index=int(self.values[0]))
+        await self.queue_viewer.edit_page()
 
 
 class QueueViewer(nextcord.ui.View):
@@ -147,7 +148,7 @@ class QueueViewer(nextcord.ui.View):
         self.guild_language = asyncio.run(get_guild_language(interaction.guild.id))
         self.player = player
 
-        self.dropdown = SkipDropdown(self.guild_language, self.player)
+        self.dropdown = SkipDropdown(self, self.guild_language, self.player)
         self.add_item(self.dropdown)
 
     async def navegate(self):

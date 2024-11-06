@@ -26,9 +26,10 @@ import time
 from datetime import timedelta
 from io import BytesIO
 from typing import Optional
-from nextcord import SelectOption
+
 import nextcord
 from nextcord import File, Interaction, SlashOption
+from nextcord import SelectOption
 from nextcord.ext import commands
 from termcolor import colored
 

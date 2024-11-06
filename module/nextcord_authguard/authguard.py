@@ -21,8 +21,10 @@
 #  ------------------------------------------------------------
 
 from functools import wraps
+from typing import Any
 from uuid import uuid4
 
+from nextcord import Interaction
 from yaml.error import YAMLError
 
 from . import LogHandler
@@ -31,8 +33,6 @@ from .database_create import create_statement
 from .event_manager import EventManager
 from .loader import get_default_permission, load_permission
 from .permission import GeneralPermission
-from typing import Any
-from nextcord import Interaction
 
 
 def get_interaction(*args: Any):

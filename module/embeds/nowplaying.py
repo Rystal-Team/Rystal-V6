@@ -28,6 +28,7 @@ from typing import Callable
 import nextcord
 
 from config.loader import lang, type_color
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 from module.emoji import get_emoji
@@ -35,7 +36,6 @@ from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying, NothingPl
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
-from config.perm import auth_guard
 
 class_namespace = "music_class_title"
 
