@@ -167,13 +167,29 @@ class Pagination(nextcord.ui.View):
 
     def update_buttons(self):
         """Updates the state of pagination buttons."""
-        if self.index > self.total_pages // 2:
-            self.children[2].emoji = get_emoji("double_arrow_left")
-        else:
-            self.children[2].emoji = get_emoji("double_arrow_right")
-        self.children[0].disabled = self.index in (1, 0)
-        self.children[1].disabled = self.total_pages in (self.index, 0)
-        self.children[2].disabled = self.total_pages == 0
+        self.children[0].disabled = self.total_pages in (1, 0) or self.index in (1, 0)
+        self.children[1].disabled = self.total_pages in (1, 0) or self.index in (1, 0)
+        self.children[3].disabled = (
+            self.index == self.total_pages or self.total_pages in (1, 0)
+        )
+        self.children[4].disabled = (
+            self.index == self.total_pages or self.total_pages in (1, 0)
+        )
+
+    @nextcord.ui.button(
+        emoji=get_emoji("double_arrow_left"), style=nextcord.ButtonStyle.secondary
+    )
+    async def start(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        """
+        Handles the end button click.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
+        await interaction.response.defer()
+        self.index = 1
+        await self.edit_page()
 
     @nextcord.ui.button(
         emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
@@ -191,6 +207,24 @@ class Pagination(nextcord.ui.View):
         await interaction.response.defer()
         self.index -= 1
         await self.edit_page()
+
+    @nextcord.ui.button(emoji=get_emoji("search"), style=nextcord.ButtonStyle.secondary)
+    async def search(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        """
+        Handles the search button click.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
+        modal = Search(self)
+        await interaction.response.send_modal(modal)
+
+    async def on_timeout(self):
+        """Handles the timeout event by removing pagination buttons."""
+        await self.interaction.followup.edit_message(
+            message_id=self.follow_up.id, view=None
+        )
 
     @nextcord.ui.button(
         emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
@@ -219,29 +253,8 @@ class Pagination(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
         await interaction.response.defer()
-        if self.index <= self.total_pages // 2:
-            self.index = self.total_pages
-        else:
-            self.index = 1
+        self.index = self.total_pages
         await self.edit_page()
-
-    @nextcord.ui.button(emoji=get_emoji("search"), style=nextcord.ButtonStyle.secondary)
-    async def search(self, button: nextcord.Button, interaction: nextcord.Interaction):
-        """
-        Handles the search button click.
-
-        Args:
-            button (nextcord.Button): The button that was clicked.
-            interaction (nextcord.Interaction): The interaction that triggered the button click.
-        """
-        modal = Search(self)
-        await interaction.response.send_modal(modal)
-
-    async def on_timeout(self):
-        """Handles the timeout event by removing pagination buttons."""
-        await self.interaction.followup.edit_message(
-            message_id=self.follow_up.id, view=None
-        )
 
     @staticmethod
     def compute_total_pages(total_results: int, results_per_page: int) -> int:
