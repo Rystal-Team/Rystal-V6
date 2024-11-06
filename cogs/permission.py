@@ -49,7 +49,8 @@ class PermissionSystem(commands.Cog):
                     "missing_permission"
                 ],
                 message_type="error",
-            )
+            ),
+            ephemeral=True,
         )
 
     @nextcord.slash_command(description="Set the permission for a role.")
