@@ -210,7 +210,7 @@ class Music(commands.Cog, EventManager):
             )
 
             loop_method = LOOPMODE(guild_loop)
-            if player.loop_mode == loop_method:
+            if player.loop_mode != loop_method:
                 await player.change_loop_mode(loop_method)
 
                 if loop_method != LOOPMODE.off:
