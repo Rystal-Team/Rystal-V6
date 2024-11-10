@@ -147,6 +147,7 @@ class QueueViewer(nextcord.ui.View):
         self.index = 1
         self.guild_language = asyncio.run(get_guild_language(interaction.guild.id))
         self.player = player
+        self.is_timeout = False
 
         self.dropdown = SkipDropdown(self, self.guild_language, self.player)
         self.add_item(self.dropdown)
@@ -244,12 +245,6 @@ class QueueViewer(nextcord.ui.View):
         modal = Search(self)
         await interaction.response.send_modal(modal)
 
-    async def on_timeout(self):
-        """Handles the timeout event by removing pagination buttons."""
-        await self.interaction.followup.edit_message(
-            message_id=self.follow_up.id, view=None
-        )
-
     @nextcord.ui.button(
         emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
     )
@@ -279,6 +274,14 @@ class QueueViewer(nextcord.ui.View):
         await interaction.response.defer()
         self.index = self.total_pages
         await self.edit_page()
+
+    async def on_timeout(self):
+        """Handles the timeout event by removing pagination buttons."""
+        is_timeout = True
+
+        await self.interaction.followup.edit_message(
+            message_id=self.follow_up.id, view=None
+        )
 
     @staticmethod
     def compute_total_pages(total_results: int, results_per_page: int) -> int:

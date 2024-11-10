@@ -66,7 +66,9 @@ class_namespace = "music_class_title"
 class Music(commands.Cog, EventManager):
     def __init__(self, bot):
         self.bot = bot
-        self.now_playing_menus = []
+        self.now_playing_menus = {}
+        self.queue_menus = {}
+
         if USE_SQLITE:
             self.manager = PlayerManager(bot, db_type="sqlite", db_path=SQLITE_PATH)
         else:
@@ -127,11 +129,19 @@ class Music(commands.Cog, EventManager):
 
     @EventManager.listener
     async def track_start(self, player, interaction: Interaction, before, after):
-        for menu in self.now_playing_menus:
-            if menu.is_timeout:
-                self.now_playing_menus.remove(menu)
-            else:
-                await menu.update()
+        if interaction.guild.id in self.now_playing_menus:
+            for menu in list(self.now_playing_menus[interaction.guild.id]):
+                if menu.is_timeout:
+                    self.now_playing_menus[interaction.guild.id].remove(menu)
+                else:
+                    await menu.update()
+
+        if interaction.guild.id in self.queue_menus:
+            for menu in list(self.queue_menus[interaction.guild.id]):
+                if menu.is_timeout:
+                    self.queue_menus[interaction.guild.id].remove(menu)
+                else:
+                    await menu.edit_page()
 
         if (
             await get_guild_settings(interaction.guild.id, "music_silent_mode")
@@ -488,8 +498,10 @@ class Music(commands.Cog, EventManager):
                     1,
                 )
 
-        await QueueViewer(interaction, get_page, player).navegate()
+        queue_viewer = QueueViewer(interaction, get_page, player)
+        await queue_viewer.navegate()
         QueueViewer.compute_total_pages(len(await player.current_queue()), 10)
+        self.queue_menus.setdefault(interaction.guild.id, []).append(queue_viewer)
 
     @music.subcommand(description=lang[default_language]["music_shuffle_description"])
     @auth_guard.check_permissions("music/shuffle")
@@ -608,7 +620,7 @@ class Music(commands.Cog, EventManager):
             )
 
             await menu.update()
-            self.now_playing_menus.append(menu)
+            self.now_playing_menus.setdefault(interaction.guild.id, []).append(menu)
 
         except (NothingPlaying, EmptyQueue):
             await interaction.followup.send(
