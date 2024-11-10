@@ -455,7 +455,9 @@ class Music(commands.Cog, EventManager):
                     )
                     options.append(
                         SelectOption(
-                            label=song.title, description=song.channel, value=str(i)
+                            label=song.title,
+                            description=song.channel,
+                            value=str(current_queue.index(song)),
                         )
                     )
 
