@@ -93,7 +93,7 @@ music_most_played_period_description: "最も再生された曲を表示する�
 music_remove_index_description: "削除する曲のインデックス。-1はすべて削除。"
 music_loop_mode_description: "設定するループモード。"
 music_play_shuffle_added_description: "追加されたプレイリストをシャッフル。"
-music_play_query_description: "曲を検索するクエリ。（プレイリストのURLも可）"
+music_play_query_description: "曲を検索する検索。（プレイリストのURLも可）"
 
 rank_leaderboard_include_description: "リーダーボードに含めるユーザーの数。"
 rank_card_member_description: "ランクを表示するメンバー。"
@@ -171,6 +171,9 @@ music_secret: "これが新しいシークレットです\n\n ```{secret}```"
 music_cache_flushed: "キャッシュがリフレッシュされました！"
 music_skip_dropdown_placeholder: "スキップする曲を選択してください..."
 
+music_queue_no_result: "結果が見つかりませんでした！"
+music_queue_no_result_description: "別の検索で再試行してください。"
+
 # level
 level_up: "{user} がレベル {level} に到達しました！！！"
 level_text: "レベル"
@@ -188,11 +191,11 @@ command_slowdown: "スピードを落として、再度試してください！"
 interaction_author_only: "このアクションはインタラクションの作者のみに利用可能です！"
 
 # queue search query
-queue_serach_query: "検索クエリ（すべて表示するには空白にしてください）"
-queue_query: "クエリ"
+queue_serach_query: "検索（すべて表示するには空白にしてください）"
+queue_query: "検索"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"
-queue_footer_with_query: "{page}/{total_pages} | クエリ: {query}"
+queue_footer_with_query: "{page}/{total_pages} | 検索: {query}"
 
 # music poster
 music_poster_title: "Rystal Music"

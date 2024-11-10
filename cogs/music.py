@@ -420,6 +420,7 @@ class Music(commands.Cog, EventManager):
                 duration_passed = round(time_elapsed)
                 duration_passed_str = str(timedelta(seconds=duration_passed))
                 options = []
+                no_result = True
 
                 embed = nextcord.Embed(
                     title=lang[await get_guild_language(interaction.guild.id)][
@@ -468,6 +469,20 @@ class Music(commands.Cog, EventManager):
                             label=song.title,
                             description=song.channel,
                             value=str(current_queue.index(song)),
+                        )
+                    )
+                    no_result = False
+
+                if no_result:
+                    options.append(
+                        SelectOption(
+                            label=lang[await get_guild_language(interaction.guild.id)][
+                                "music_queue_no_result"
+                            ],
+                            description=lang[
+                                await get_guild_language(interaction.guild.id)
+                            ]["music_queue_no_result_description"],
+                            value="no_result",
                         )
                     )
 

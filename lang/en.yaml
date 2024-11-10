@@ -153,6 +153,9 @@ music_secret: "Your new secret is:\n\n ```{secret}```"
 music_cache_flushed: "Cache flushed successfully!"
 music_skip_dropdown_placeholder: "Select a song to skip to"
 
+music_queue_no_result: "No results found!"
+music_queue_no_result_description: "Please try again with a different query."
+
 # level
 level_up: "{user} has reached level {level}!!!"
 level_text: "Level"

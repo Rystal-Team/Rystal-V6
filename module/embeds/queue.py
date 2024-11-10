@@ -111,8 +111,9 @@ class SkipDropdown(nextcord.ui.Select):
         self.player = player
 
     async def callback(self, interaction: nextcord.Interaction):
-        await self.player.skip(index=int(self.values[0]))
-        await self.queue_viewer.edit_page()
+        if not self.values[0] == "no_result":
+            await self.player.skip(index=int(self.values[0]))
+            await self.queue_viewer.edit_page()
 
 
 class QueueViewer(nextcord.ui.View):
@@ -186,6 +187,7 @@ class QueueViewer(nextcord.ui.View):
             return
 
         self.update_buttons()
+        print(emb.to_dict())
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, embed=emb, view=self
         )
