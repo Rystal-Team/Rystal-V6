@@ -148,7 +148,6 @@ resumed_queue: "Queue resumed!"
 skipped_from: "Skipped from **{old}** to **{new}**!"
 skipped: "Skipped **{old}**!"
 
-music_registered_secret: "You have successfully registered a secret. Please check your private messages for details. If you haven't received a message, make sure 'Allow direct messages from server members' is enabled in your privacy settings."
 music_secret: "Your new secret is:\n\n ```{secret}```"
 music_cache_flushed: "Cache flushed successfully!"
 music_skip_dropdown_placeholder: "Select a song to skip to"

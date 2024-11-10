@@ -187,7 +187,6 @@ class QueueViewer(nextcord.ui.View):
             return
 
         self.update_buttons()
-        print(emb.to_dict())
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, embed=emb, view=self
         )

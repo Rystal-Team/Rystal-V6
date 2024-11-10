@@ -861,22 +861,11 @@ class Music(commands.Cog, EventManager):
                     class_namespace
                 ],
                 message=lang[await get_guild_language(interaction.guild.id)][
-                    "music_registered_secret"
-                ],
-                message_type="success",
-            )
-        )
-
-        await interaction.user.send(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(interaction.guild.id)][
-                    class_namespace
-                ],
-                message=lang[await get_guild_language(interaction.guild.id)][
                     "music_secret"
                 ].format(secret=secret),
                 message_type="success",
-            )
+            ),
+            ephemeral=True,
         )
 
     @staticmethod
