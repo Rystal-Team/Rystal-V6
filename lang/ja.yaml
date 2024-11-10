@@ -93,7 +93,7 @@ music_most_played_period_description: "最も再生された曲を表示する�
 music_remove_index_description: "削除する曲のインデックス。-1はすべて削除。"
 music_loop_mode_description: "設定するループモード。"
 music_play_shuffle_added_description: "追加されたプレイリストをシャッフル。"
-music_play_query_description: "曲を検索する検索。（プレイリストのURLも可）"
+music_play_query_description: "曲を検索。（プレイリストのURLも可）"
 
 rank_leaderboard_include_description: "リーダーボードに含めるユーザーの数。"
 rank_card_member_description: "ランクを表示するメンバー。"
