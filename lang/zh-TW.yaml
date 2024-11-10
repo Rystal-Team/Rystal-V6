@@ -19,6 +19,7 @@ music_stop_description: "🎵 | 停止音樂！"
 music_remove_description: "🎵 | 從隊列中刪除歌曲！"
 music_register_description: "🎵 | 為 RPC 客戶端註冊/重新生成密鑰！"
 music_most_played_description: "🎵 | 顯示最常播放的歌曲！"
+music_flush_cache_description: "🎵 | 清除音樂緩存！"
 
 rank_class_title: "🎖️ | 排行榜模組"
 rank_card_description: "🎖️ | 顯示用戶排名！"
@@ -66,12 +67,14 @@ shop_class_title: "🛒 | 商店"
 shop_buy_description: "🛒 | 在商店購買物品！"
 shop_catalog_description: "🛒 | 顯示商店目錄！"
 
+permission_class_title: "🔒 | 權限"
+
 # option descriptions
 music_skip_index_description: "跳過的歌曲索引。"
 music_most_played_period_description: "顯示最常播放歌曲的時間範圍。"
 music_remove_index_description: "要刪除的歌曲索引。-1 代表刪除所有。"
 music_loop_mode_description: "設定循環模式。"
-music_play_shuffle_description: "新增歌曲/播放列表後隨機播放隊列。"
+music_play_shuffle_added_description: "隨機播放新增的歌曲清單。"
 music_play_query_description: "搜尋歌曲的查詢。（也可以是播放列表的 URL）"
 
 rank_leaderboard_include_description: "排行榜中要包含的用戶數量。"
@@ -147,6 +150,11 @@ skipped: "跳過了 **{old}**！"
 
 music_registered_secret: "您已成功註冊秘密。請查看您的私訊以獲取詳細資訊。如果您沒有收到消息，請確保在隱私設置中啟用了「允許來自伺服器成員的直接消息」。"
 music_secret: "您的新秘密是：\n\n ```{secret}```"
+music_cache_flushed: "音樂緩存已清除！"
+music_skip_dropdown_placeholder: "選擇要跳過的歌曲..."
+
+music_queue_no_results: "沒有找到結果！"
+music_queue_no_result_description: "請嘗試使用其他關鍵字"
 
 # level
 level_up: "{user} 已達到 {level} 級！！！"
@@ -187,6 +195,8 @@ coinflip_lose: "抱歉，您輸掉了 {points} 積分。\n----------------------
 cooldown_message: "您每 20 分鐘只能領取一次積分。請在 {minutes} 分鐘 {seconds} 秒後再試。"
 points_given: "您已將 {amount} 積分給予 {recipient}！"
 receive_not_allowed: "{recipient} 不允許接收積分。"
+recipient_limit_reached: "{recipient} 已達到每日接收積分的上限。 請在{hours}小時 {minutes}分鐘 {seconds}秒 後再試。"
+higher_than_receive_limit: "{recipient} 的每日接收積分上限為 {limit} 積分。"
 points_show_user: "{user} 擁有 {points} 積分！"
 points_show_self: "您擁有 {points} 積分！"
 points_leaderboard_header: "⭐️ | 積分排行榜 - 前 {include}"
