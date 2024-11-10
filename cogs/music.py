@@ -852,7 +852,7 @@ class Music(commands.Cog, EventManager):
         self,
         interaction: Interaction,
     ):
-        await interaction.response.defer(with_message=True)
+        await interaction.response.defer(with_message=True, ephemeral=True)
         secret = await self.manager.database.register(str(interaction.user.id))
 
         await interaction.followup.send(
@@ -865,7 +865,6 @@ class Music(commands.Cog, EventManager):
                 ].format(secret=secret),
                 message_type="success",
             ),
-            ephemeral=True,
         )
 
     @staticmethod
