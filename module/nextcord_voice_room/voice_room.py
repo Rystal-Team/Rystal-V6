@@ -21,7 +21,6 @@
 #  ------------------------------------------------------------
 #
 
-import nextcord
 
 from .database.base import DatabaseHandler
 from .database_create import create_statement
