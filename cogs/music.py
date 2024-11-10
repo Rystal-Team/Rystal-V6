@@ -202,6 +202,43 @@ class Music(commands.Cog, EventManager):
             return
 
         try:
+            guild_loop = (
+                await get_guild_settings(
+                    interaction.guild.id, "music_default_loop_mode"
+                )
+                or 1
+            )
+
+            loop_method = LOOPMODE(guild_loop)
+            if player.loop_mode == loop_method:
+                await player.change_loop_mode(loop_method)
+
+                if loop_method != LOOPMODE.off:
+                    message_key = (
+                        "enabled_loop_single"
+                        if loop_method == LOOPMODE.single
+                        else (
+                            "enabled_loop_queue"
+                            if loop_method == LOOPMODE.all
+                            else "disabled_loop"
+                        )
+                    )
+                    message = lang[await get_guild_language(interaction.guild.id)][
+                        message_key
+                    ]
+                    if loop_method == LOOPMODE.single:
+                        now_playing = await player.now_playing()
+                        message = message.format(title=now_playing.name)
+                    await interaction.followup.send(
+                        embed=Embeds.message(
+                            title=lang[await get_guild_language(interaction.guild.id)][
+                                class_namespace
+                            ],
+                            message=message,
+                            message_type="success",
+                        )
+                    )
+
             playlist_id = await get_playlist_id(query)
             if playlist_id and not player.fetching_stream:
                 await interaction.followup.send(
@@ -244,41 +281,6 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            guild_loop = (
-                await get_guild_settings(
-                    interaction.guild.id, "music_default_loop_mode"
-                )
-                or 1
-            )
-
-            loop_method = LOOPMODE(guild_loop)
-            await player.change_loop_mode(loop_method)
-
-            if loop_method != LOOPMODE.off:
-                message_key = (
-                    "enabled_loop_single"
-                    if loop_method == LOOPMODE.single
-                    else (
-                        "enabled_loop_queue"
-                        if loop_method == LOOPMODE.all
-                        else "disabled_loop"
-                    )
-                )
-                message = lang[await get_guild_language(interaction.guild.id)][
-                    message_key
-                ]
-                if loop_method == LOOPMODE.single:
-                    now_playing = await player.now_playing()
-                    message = message.format(title=now_playing.name)
-                await interaction.followup.send(
-                    embed=Embeds.message(
-                        title=lang[await get_guild_language(interaction.guild.id)][
-                            class_namespace
-                        ],
-                        message=message,
-                        message_type="success",
-                    )
-                )
         except NoQueryResult as e:
             print(e)
             await interaction.followup.send(
