@@ -104,13 +104,13 @@ class System(commands.Cog):
         if yt_dlp_version != latest_yt_dlp_version:
             print(
                 colored(
-                    f"Update yt-dlp to the latest version by running 'pip install -U yt-dlp' to avoid any issues.",
+                    "Update yt-dlp to the latest version by running 'pip install -U yt-dlp' to avoid any issues.",
                     color="red",
                 )
             )
         else:
             print(
-                colored(f"yt-dlp is up to date with the latest version.", color="green")
+                colored("yt-dlp is up to date with the latest version.", color="green")
             )
 
     @nextcord.slash_command(
