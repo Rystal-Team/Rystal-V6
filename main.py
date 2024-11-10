@@ -39,13 +39,13 @@ nest_asyncio.apply()
 load_dotenv()
 
 from module.emoji import load_dict
+from module.embeds.generic import Embeds
 from nextcord.ext import commands
 from termcolor import colored
 
 from config.loader import bot_owner_id, error_log_channel_id, lang
 
 from database.guild_handler import get_guild_language
-from module.embeds.generic import Embeds
 
 
 TOKEN = os.getenv("TOKEN")
