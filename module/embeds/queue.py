@@ -1,27 +1,3 @@
-"""
-This module defines classes for handling search and pagination in a Nextcord bot.
-
-Classes:
-    Search: A modal for inputting search queries.
-    QueueViewer: A view for handling pagination of results in a Nextcord bot.
-
-Methods:
-    Search.__init__(self, page_view): Initializes the Search modal with a reference to the page view.
-    Search.callback(self, interaction: nextcord.Interaction): Handles the search query input and updates the page view.
-
-    QueueViewer.__init__(self, interaction: nextcord.Interaction, get_page: Callable): Initializes the QueueViewer view.
-    QueueViewer.navegate(self): Navigates to the initial page and sends the first message.
-    QueueViewer.edit_page(self): Edits the current page based on the search query and page index.
-    QueueViewer.update_buttons(self): Updates the state of pagination buttons.
-
-    QueueViewer.previous(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the previous button click.
-    QueueViewer.next(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the next button click.
-    QueueViewer.end(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the end button click.
-    QueueViewer.search(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the search button click.
-    QueueViewer.on_timeout(self): Handles the timeout event by removing pagination buttons.
-    QueueViewer.compute_total_pages(total_results: int, results_per_page: int) -> int: Computes the total number of pages.
-"""
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -278,7 +254,7 @@ class QueueViewer(nextcord.ui.View):
 
     async def on_timeout(self):
         """Handles the timeout event by removing pagination buttons."""
-        is_timeout = True
+        self.is_timeout = True
 
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
