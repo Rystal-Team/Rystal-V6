@@ -100,7 +100,7 @@ class Music(commands.Cog, EventManager):
                         "not_in_voice"
                     ],
                     message_type="warn",
-                )
+                ),
             )
         except VoiceChannelMismatch:
             await interaction.followup.send(
@@ -414,6 +414,8 @@ class Music(commands.Cog, EventManager):
         async def get_page(page: int, query=""):
             # TODO: クエリ内のスコアに基づいて曲を表示する
             music_player = await self.ensure_voice_state(self.bot, interaction)
+            if not music_player:
+                return
 
             try:
                 now_playing = await music_player.now_playing()
