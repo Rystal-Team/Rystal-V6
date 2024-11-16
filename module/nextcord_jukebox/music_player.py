@@ -292,9 +292,6 @@ class MusicPlayer:
             except Exception as e:
                 if str(e) == "Not connected to voice.":
                     return
-                LogHandler.error(
-                    f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}"
-                )
                 raise e
 
     async def _pop_queue(self, index: int = 1, append: bool = False):
