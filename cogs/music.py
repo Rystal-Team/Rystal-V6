@@ -513,6 +513,17 @@ class Music(commands.Cog, EventManager):
                         message_type="warn",
                     ),
                     1,
+                    [
+                        SelectOption(
+                            label=lang[await get_guild_language(interaction.guild.id)][
+                                "music_queue_no_result"
+                            ],
+                            description=lang[
+                                await get_guild_language(interaction.guild.id)
+                            ]["music_queue_no_result_description"],
+                            value="no_result",
+                        )
+                    ],
                 )
 
         queue_viewer = QueueViewer(interaction, get_page, player)
