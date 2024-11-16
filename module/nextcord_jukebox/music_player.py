@@ -290,6 +290,8 @@ class MusicPlayer:
                         "track_start", self, self.interaction, last, new
                     )
             except Exception as e:
+                if str(e) == "Not connected to voice.":
+                    return
                 LogHandler.error(
                     f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}"
                 )
@@ -426,6 +428,78 @@ class MusicPlayer:
             )
         return
 
+    async def _process_songs(self, video_ids, cache_metas):
+        songs = []
+        for video_id in video_ids:
+            song = Song(**cache_metas[video_id])
+            songs.append(song)
+            self.music_queue.append(song)
+
+            if not self.paused and self.music_queue and not self._now_playing:
+                await self._play_func(None, self.music_queue[0])
+        return songs
+
+    async def _process_missing_songs(self, missing_ids):
+        songs = []
+        for video_id in missing_ids:
+            video = await self.loop.run_in_executor(None, lambda: Video(str(video_id)))
+            meta = {
+                "url": video.url,
+                "title": video.title,
+                "views": video.views,
+                "duration": video.duration,
+                "thumbnail": video.thumbnail,
+                "channel": video.channel,
+                "channel_url": video.channel_url,
+                "thumbnails": video.thumbnails,
+            }
+            self.database.cache_video_metadata(video_id, meta)
+            song = Song(**meta)
+            songs.append(song)
+            self.music_queue.append(song)
+
+            if not self.paused and self.music_queue and not self._now_playing:
+                await self._play_func(None, self.music_queue[0])
+        return songs
+
+    @pre_check()
+    async def _queue_bulk(
+        self, video_urls: list, shuffle: bool = False
+    ) -> tuple[list[Song], Song]:
+        """
+        Queues a list of songs.
+
+        Args:
+            video_urls (list): A list of video URLs to queue.
+
+        Returns:
+            tuple: The queued songs, and the first song in the queue.
+        """
+        timer = time.time()
+        self.database.run_cleanup()
+
+        video_ids = [await get_video_id(url) for url in video_urls]
+        cache_metas = self.database.get_bulk_video_metadata(video_ids)
+
+        cached_ids = set(cache_metas.keys())
+        missing_ids = set(video_ids) - cached_ids
+
+        if shuffle:
+            random.shuffle(list(cached_ids))
+            random.shuffle(list(missing_ids))
+
+        print(
+            colored(f"[BULK QUEUE] Missing {len(missing_ids)} songs", color="magenta")
+        )
+
+        songs = await self._process_songs(cached_ids, cache_metas)
+        songs += await self._process_missing_songs(missing_ids)
+
+        print(colored(f"[BULK ADDED] {len(songs)} songs", color="magenta"))
+        print(colored(f"Time taken: {time.time() - timer}", color="dark_grey"))
+
+        return songs, songs[0]
+
     @pre_check()
     async def _queue_single(self, video_url: str) -> Song:
         """
@@ -510,16 +584,18 @@ class MusicPlayer:
                 playlist = await asyncio.to_thread(Playlist, query)
                 await EventManager.fire("loading_playlist", self, interaction, None)
 
-                shuffled_playlist = (
+                after_playlist = (
                     random.sample(list(playlist.video_urls), len(playlist.video_urls))
                     if shuffle_added
                     else list(playlist.video_urls)
                 )
-                for url in shuffled_playlist:
-                    song = await self.loop.create_task(self._queue_single(url))
-                    await EventManager.fire("loading_playlist", self, interaction, song)
-                result = playlist
 
+                _, song = await self.loop.create_task(
+                    self._queue_bulk(after_playlist, shuffle=shuffle_added)
+                )
+                await EventManager.fire("loading_playlist", self, interaction, song)
+
+                result = playlist
             else:
                 yt = await asyncio.to_thread(YouTube, query)
                 if not yt or not yt.video:

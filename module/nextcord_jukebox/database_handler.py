@@ -239,11 +239,11 @@ class Database:
         Returns:
             dict: A dictionary with video IDs as keys and metadata as values.
         """
-        video_ids_tuple = tuple(video_ids)
+        video_ids_tuple = tuple(str(video_id) for video_id in video_ids)
         metadata_dict = {}
         try:
             placeholders = ",".join(
-                ["?" if self.db_type == "sqlite" else "%s"] * len(video_ids)
+                ["?" if self.db_type == "sqlite" else "%s"] * len(video_ids_tuple)
             )
             query = f"SELECT video_id, metadata FROM jukebox_ytcache WHERE video_id IN ({placeholders})"
             self.cursor.execute(query, video_ids_tuple)
