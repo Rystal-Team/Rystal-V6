@@ -8,7 +8,6 @@ must_be_positive_not_zero: "`{大佬，{option}` 數目一定要唔係零嘅正�
 
 # embed titles
 music_class_title: "🎵 | 音樂模塊"
-level_class_title: "🎖️ | 等級模塊"
 system_class_title: "🤖 | 系統"
 setting_class_title: "⚙️ | 設定"
 note_class_title: "📒 | 筆記"
@@ -59,7 +58,6 @@ resumed_queue: "播放清單又返嚟柒啦!"
 skipped_from: "已經由 **{old}** 大躍進到 **{new}**!"
 skipped: "司機以經飛咗 **{old}** 站!"
 
-music_registered_secret: "你註冊咗個秘密，唔該睇吓私人訊息。冇嘅你抵死。"
 music_secret: "呢個係你啲秘密(暫時未收齊賄款唔公開住)\n ```{secret}```"
 
 # level

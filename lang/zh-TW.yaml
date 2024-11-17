@@ -148,12 +148,10 @@ resumed_queue: "隊列已恢復播放！"
 skipped_from: "從 **{old}** 跳過到 **{new}**！"
 skipped: "跳過了 **{old}**！"
 
-music_registered_secret: "您已成功註冊秘密。請查看您的私訊以獲取詳細資訊。如果您沒有收到消息，請確保在隱私設置中啟用了「允許來自伺服器成員的直接消息」。"
 music_secret: "您的新秘密是：\n\n ```{secret}```"
 music_cache_flushed: "音樂緩存已清除！"
 music_skip_dropdown_placeholder: "選擇要跳過的歌曲..."
 
-music_queue_no_results: "沒有找到結果！"
 music_queue_no_result_description: "請嘗試使用其他關鍵字"
 
 # level
@@ -245,7 +243,6 @@ jackpot_won: "恭喜！您贏得了大獎！"
 jackpot_lost: "抱歉，您輸掉了大獎。祝您好運！"
 jackpot_mega_score: "Mega Score！1.5 倍的大獎！"
 jackpot_deficient_score: "恭喜！您贏得了大獎！但是，它是 deficient score（0.8 倍）。您贏得了 {points} 積分。"
-jackpot_point_won: "贏得的積分："
 jackpot_point_lost: "輸掉的積分："
 game_your_points: "您的積分："
 jackpot_total_points: "總積分："

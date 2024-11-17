@@ -58,7 +58,6 @@ music_skip_index_description: "要跳过的歌曲索引。"
 music_most_played_period_description: "显示最常播放的歌曲的时间段。"
 music_remove_index_description: "要删除的歌曲索引。使用-1删除所有歌曲。"
 music_loop_mode_description: "设置的循环模式。"
-music_play_shuffle_description: "添加歌曲/播放列表后打乱队列。"
 music_play_query_description: "搜索歌曲的查询。（也可使用播放列表URL）"
 
 rank_leaderboard_include_description: "要包含在排行榜中的用户数。"
@@ -126,7 +125,6 @@ resumed_queue: "队列已恢复！"
 skipped_from: "已从 **{old}** 跳过到 **{new}** ！"
 skipped: "已跳过 **{old}** ！"
 
-music_registered_secret: "密钥注册成功。请检查私信以获取详细信息。如果未收到任何消息，请确保在隐私设置中启用了“允许服务器成员向您发送直接消息”。"
 music_secret: "这是你的新密钥\n ```{secret}```"
 
 # level
