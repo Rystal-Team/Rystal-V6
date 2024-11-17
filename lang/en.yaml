@@ -9,6 +9,7 @@ must_be_positive_not_zero: "`{option}` value must be positive and greater than z
 music_class_title: "🎵 | Music Module"
 music_play_description: "🎵 | Play a song!"
 music_skip_description: "🎵 | Skip the current song!"
+music_previous_description: "🎵 | Play the previous song!"
 music_queue_description: "🎵 | Show the music queue!"
 music_shuffle_description: "🎵 | Shuffle the queue!"
 music_loop_description: "🎵 | Loop the queue!"

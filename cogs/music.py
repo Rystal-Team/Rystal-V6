@@ -335,6 +335,64 @@ class Music(commands.Cog, EventManager):
             )
             return
 
+    @music.subcommand(description=lang[default_language]["music_previous_description"])
+    @auth_guard.check_permissions("music/previous")
+    async def previous(self, interaction: Interaction):
+        await interaction.response.defer()
+        player = await self.ensure_voice_state(self.bot, interaction)
+        if not player:
+            return
+        try:
+            old, new = await player.previous()
+            if not new is None:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "skipped_from"
+                        ].format(old=old.name, new=new.name),
+                        message_type="success",
+                    )
+                )
+            else:
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "skipped"
+                        ].format(old=old.name),
+                        message_type="success",
+                    )
+                )
+        except EmptyQueue:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
+                    message_type="warn",
+                )
+            )
+        except LoadingStream:
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "command_slowdown"
+                    ],
+                    message_type="warn",
+                ),
+            )
+
     @music.subcommand(description=lang[default_language]["music_skip_description"])
     @auth_guard.check_permissions("music/skip")
     async def skip(
