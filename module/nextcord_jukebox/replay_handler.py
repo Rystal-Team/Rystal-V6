@@ -60,7 +60,7 @@ class ReplayHandler(EventManager):
             after: The state after the track started.
         """
         for member in player.members:
-            if member == player.bot or member is None:
+            if member.id == player.bot.id or member.id is None:
                 continue
             now_playing = await player.now_playing()
             video_id = await get_video_id(now_playing.url)
@@ -78,7 +78,7 @@ class ReplayHandler(EventManager):
             player: The player instance.
             member: The member who joined the voice channel.
         """
-        if member == player.bot or member is None:
+        if member.id == player.bot.id or member.id is None:
             return
         try:
             now_playing = await player.now_playing()
