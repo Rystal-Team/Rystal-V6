@@ -61,76 +61,26 @@ ytdlp = yt_dlp.YoutubeDL(
 
 class MusicPlayer:
     """
-    A class to handle music playback within a voice channel for a Discord bot.
-
-    This class provides functionalities to manage and control music playback, including queuing songs, managing playback state, and handling voice channel connections.
+    A class representing a music player.
 
     Attributes:
-        loop (Optional[asyncio.BaseEventLoop]): The event loop used for async operations.
-        voice (Optional[nextcord.VoiceClient]): The voice client connected to the voice channel.
-        interaction (Interaction): The interaction object associated with the user request.
+        loop (asyncio.AbstractEventLoop): The event loop for the player.
+        voice (nextcord.VoiceClient): The voice client instance.
+        interaction (Interaction): The interaction object containing information about the user and the guild.
         bot: The bot instance to which this player is attached.
-        loop_mode (LOOPMODE): The current loop mode for the player.
-        _now_playing (Optional[Song]): The currently playing song.
-        paused (bool): Whether the playback is currently paused.
+        loop_mode (LOOPMODE): The loop mode of the player.
+        _now_playing (Song): The currently playing song.
+        paused (bool): Whether the player is paused.
         removed (bool): Whether the player has been removed.
         leave_when_empty (bool): Whether to leave the voice channel when the queue is empty.
-        manager: The player manager instance managing this player.
-        database: The database instance used for caching video metadata.
-        music_queue (list[Song]): The queue of songs to be played.
+        manager (PlayerManager): The player manager instance managing this player.
+        database: The database instance for caching video metadata.
+        music_queue (list): The queue of songs to play.
         _fetching_stream (bool): Whether a stream is currently being fetched.
-        _appending (bool): Whether songs are currently being appended to the queue.
-        _asyncio_lock (asyncio.Lock): A lock to prevent concurrent access issues.
+        _appending (bool): Whether songs are being appended to the queue.
+        _asyncio_lock (asyncio.Lock): An asyncio lock for handling concurrency.
         _members (list): The list of members currently in the voice channel.
-        ffmpeg_opts (dict): Options for FFmpeg processing.
-
-    Methods:
-        _attempt_reconnect(max_retries=5, delay=1):
-            Attempts to reconnect to the voice channel if disconnected.
-        on_voice_state_update(member, before, after):
-            Handles voice state updates to manage member join/leave events and bot reconnection.
-        _play_func(last: Union[Song, None], new: Song):
-            Plays a new song and updates the now playing state.
-        _pop_queue(index: int = 1, append: bool = False):
-            Removes a specified number of songs from the queue.
-        _next_func(index: int = 1):
-            Moves to the next song in the queue.
-        _after_func(error: Union[None, Exception] = None):
-            Callback function for after a song finishes playing.
-        _pre_check(check_playing: bool = False, check_nowplaying: bool = False,
-                   check_fetching_stream: bool = False, check_queue: bool = False,
-                   check_connection: bool = True) -> Optional[bool]:
-            Performs pre-checks before executing certain methods.
-        pre_check(*d_args, **d_kwargs) -> Callable:
-            A decorator for methods that require pre-checks before execution.
-        cleanup():
-            Cleans up the player by clearing the queue and disconnecting from the voice channel.
-        _queue_single(video_url: str) -> Song:
-            Queues a single song from a video URL.
-        queue(interaction: Interaction, query: str):
-            Queues a song or playlist based on a search query.
-        connect(interaction: Interaction) -> Optional[bool]:
-            Connects the bot to a voice channel if not already connected.
-        change_loop_mode(mode: LOOPMODE) -> LOOPMODE:
-            Changes the loop mode for the player.
-        resume(forced=False):
-            Resumes playback of the currently paused song.
-        pause(forced=False):
-            Pauses playback of the currently playing song.
-        skip(index: int = 1):
-            Skips the current song and optionally advances in the queue.
-        previous(index: int = 1):
-            Moves to the previous song in the queue.
-        shuffle():
-            Shuffles the order of songs in the queue.
-        now_playing() -> Song:
-            Returns the currently playing song.
-        current_queue() -> list:
-            Returns the current queue of songs.
-        stop(disconnect=True) -> bool:
-            Stops playback and optionally disconnects from the voice channel.
-        remove(index=0) -> Optional[Song]:
-            Removes a song from the queue based on its index.
+        ffmpeg_opts (dict): Options for FFmpeg.
     """
 
     def __init__(
