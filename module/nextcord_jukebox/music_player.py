@@ -669,15 +669,12 @@ class MusicPlayer:
         return last, new
 
     @pre_check(check_queue=True)
-    async def previous(self, index: int = 1):
+    async def previous(self):
         """
-        Skips the current song.
-
-        Args:
-            index (int, optional): The number of songs to skip. Defaults to 1.
+        Moves the current song to the end of the queue and plays the previous song.
 
         Returns:
-            tuple: The last song played and the new song to be played.
+            tuple: The previous song played and the new song to be played.
         """
         first = self.music_queue[: len(self.music_queue) - 2]
         last = self.music_queue[len(self.music_queue) - 2 :]
@@ -688,10 +685,11 @@ class MusicPlayer:
         if not len(self.music_queue) > 1:
             self.music_queue.append(self.music_queue[0])
 
+        previous_song = self.music_queue[0]
         new = self.music_queue[1]
 
         self.voice.stop()
-        return last, new
+        return previous_song, new
 
     @pre_check(check_queue=True)
     async def shuffle(self):
