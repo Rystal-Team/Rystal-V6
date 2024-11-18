@@ -429,8 +429,9 @@ class MusicPlayer:
         video_ids = [await get_video_id(url) for url in video_urls]
         cache_metas = self.database.get_bulk_video_metadata(video_ids)
 
-        cached_ids = list(set(cache_metas.keys()))
-        missing_ids = list(set(video_ids) - cached_ids)
+        cached_ids = set(cache_metas.keys())
+        missing_ids = list((set(video_ids) - cached_ids))
+        cached_ids = list(cached_ids)
 
         if shuffle:
             random.shuffle(cached_ids)
