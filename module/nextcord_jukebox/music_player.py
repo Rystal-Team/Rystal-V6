@@ -556,6 +556,7 @@ class MusicPlayer:
             raise InvalidPlaylist from e
 
         except Exception as e:
+            LogHandler.error(f"Failed to queue song: {e}")
             raise NoQueryResult from e
 
         finally:
