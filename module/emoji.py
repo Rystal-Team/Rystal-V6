@@ -23,22 +23,53 @@
 
 import yaml
 from nextcord import PartialEmoji
+from config.loader import use_custom_emojis
 
 emoji_dict = {}
 
 
 def get_emoji(name):
-    try:
-        return PartialEmoji(id=emoji_dict.get(name, None), name=name)
-    except Exception as e:
-        raise Exception("Failed to get emoji: " + str(e))
+    """
+    Retrieve an emoji by name.
+
+    Args:
+        name (str): The name of the emoji to retrieve.
+
+    Returns:
+        PartialEmoji or None: The PartialEmoji object if custom emojis are used and found, otherwise None.
+    """
+    if use_custom_emojis:
+        try:
+            return PartialEmoji(id=emoji_dict.get(name), name=name)
+        except Exception as e:
+            raise Exception(f"Failed to get emoji: {e}")
+    return emoji_dict.get(name)
 
 
 def get_emoji_name(name):
-    return f"<:{name}:{emoji_dict.get(name, None)}>"
+    """
+    Get the formatted emoji name.
+
+    Args:
+        name (str): The name of the emoji.
+
+    Returns:
+        str: The formatted emoji name.
+    """
+    return f"<:{name}:{emoji_dict.get(name)}>"
 
 
 def load_dict():
-    with open("config/emojis.yaml", "r") as file:
-        global emoji_dict
+    """
+    Load the emoji dictionary from a YAML file.
+
+    The file path is determined based on whether custom emojis are used.
+
+    Raises:
+        FileNotFoundError: If the specified file does not exist.
+        yaml.YAMLError: If there is an error parsing the YAML file.
+    """
+    global emoji_dict
+    file_path = "config/emojis.yaml" if use_custom_emojis else "config/emoji_map.yaml"
+    with open(file_path, "r", encoding="utf-8") as file:
         emoji_dict = yaml.safe_load(file)
