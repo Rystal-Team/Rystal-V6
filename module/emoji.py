@@ -23,6 +23,7 @@
 
 import yaml
 from nextcord import PartialEmoji
+
 from config.loader import use_custom_emojis
 
 emoji_dict = {}

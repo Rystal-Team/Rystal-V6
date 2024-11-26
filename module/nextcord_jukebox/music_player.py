@@ -26,7 +26,6 @@ import datetime
 import random
 import time
 import urllib.error
-from random import shuffle
 from typing import Callable, Optional, Union
 from urllib import parse
 
