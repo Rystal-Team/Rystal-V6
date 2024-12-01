@@ -102,6 +102,24 @@ class SongMatcher:
         dist = cls.lev_dist(q_term, t_term)
         return cls.calc_score(dist, max_len)
 
+    import re
+
+    @classmethod
+    def normalize_text(cls, text):
+        """
+        Normalizes the text by replacing various types of spaces and punctuation with a standard space.
+
+        Args:
+            text (str): The text to normalize.
+
+        Returns:
+            str: The normalized text.
+        """
+        text = re.sub(r"[・\s]+", " ", text)
+        text = re.sub(r"[^\w\s]", "", text)
+        text = re.sub(r"\s+", " ", text).strip()
+        return text
+
     @classmethod
     def match(cls, song_queue, query, case_sens=True, threshold=0.8, debug=False):
         """
@@ -117,17 +135,16 @@ class SongMatcher:
         Returns:
             list of tuple: A list of tuples containing matched songs and their scores.
         """
-        highest_score = 0
         if not case_sens:
             query = query.lower()
 
-        query = re.sub(r"[^\w\s]", "", query)
+        query = cls.normalize_text(query)
         q_terms = cls.split(query)
         results = []
 
         for song in song_queue:
-            song_title = re.sub(r"[^\w\s]", "", song.name)
-            song_channel = song.channel
+            song_title = cls.normalize_text(song.name)
+            song_channel = cls.normalize_text(song.channel)
 
             title_proc = song_title.lower() if not case_sens else song_title
             channel_proc = song_channel.lower() if not case_sens else song_channel
@@ -141,7 +158,9 @@ class SongMatcher:
             for q_term in q_terms:
                 highest_score = 0
 
-                if q_term in title_proc or q_term in channel_proc:
+                if re.search(rf"\b{re.escape(q_term)}\b", title_proc) or re.search(
+                    rf"\b{re.escape(q_term)}\b", channel_proc
+                ):
                     highest_score = 1
                     match_found = True
                     break
@@ -202,6 +221,25 @@ if __name__ == "__main__":
             name="【歌衣メイカ爆誕祭2024】W/X/Y／歌衣メイカ × アステル・レダ",
             channel="歌衣メイカ",
         ),
+        Song(
+            name="【Original MV&Inst】可愛くてごめん/HoneyWorks 歌ってみた【Covered by 七海うらら】",
+            channel="七海うらら",
+        ),
+        Song(
+            name="【アステル4周年LIVE】でんでんぱっしょん／アステル・レダ × 奏手イヅル × 影山シエン × 夜十神封魔 × 羽継烏有 × 緋崎ガンマ〈AI 高画質化〉",
+            channel="アステル・レダ",
+        ),
+        Song(
+            name="Masayoshi Oishi - SHINDA! [Official Video]", channel="Oishi Masayoshi"
+        ),
+        Song(
+            name="【MV】常夜鬼譚／竜胆尊【オリジナル曲】",
+            channel="竜胆 尊 / Rindou Mikoto",
+        ),
+        Song(
+            name="Alice in Musicland ・*✧Special Edition",
+            channel="VOCALOID",
+        ),
     ]
 
     queries = [
@@ -215,6 +253,7 @@ if __name__ == "__main__":
         "アステル レダ",
         "アステルレダ",
         "w/x/y",
+        "alice in musicland",
     ]
 
     for q in queries:
