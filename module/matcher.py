@@ -115,8 +115,8 @@ class SongMatcher:
         Returns:
             str: The normalized text.
         """
-        text = re.sub(r"[・\s]+", " ", text)
-        text = re.sub(r"[^\w\s]", "", text)
+        text = re.sub(r"[『』【】\[\]()・]", "", text)
+        text = re.sub(r"[^\w\sぁ-んァ-ン一-龯]", "", text)
         text = re.sub(r"\s+", " ", text).strip()
         return text
 
@@ -158,13 +158,12 @@ class SongMatcher:
             for q_term in q_terms:
                 highest_score = 0
 
-                if re.search(rf"\b{re.escape(q_term)}\b", title_proc) or re.search(
-                    rf"\b{re.escape(q_term)}\b", channel_proc
-                ):
+                if q_term in title_proc or q_term in channel_proc:
                     highest_score = 1
                     match_found = True
                     break
 
+                # Compare against split terms
                 for t_term in combined_terms:
                     sim_score = cls.term_sim(q_term, t_term)
                     highest_score = max(highest_score, sim_score)
@@ -240,6 +239,10 @@ if __name__ == "__main__":
             name="Alice in Musicland ・*✧Special Edition",
             channel="VOCALOID",
         ),
+        Song(
+            name="四月は君の嘘『オレンジ』 / Kaga Sumire＆Nazuna (Cover)",
+            channel="Kaga Sumire",
+        ),
     ]
 
     queries = [
@@ -254,6 +257,7 @@ if __name__ == "__main__":
         "アステルレダ",
         "w/x/y",
         "alice in musicland",
+        "オレンジ",
     ]
 
     for q in queries:
