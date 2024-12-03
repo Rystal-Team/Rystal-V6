@@ -23,6 +23,8 @@ setting:
 music:
   play: "everyone"
   skip: "everyone"
+  move: "everyone"
+  previous: "everyone"
   queue: "everyone"
   shuffle: "everyone"
   loop: "everyone"
