@@ -102,8 +102,6 @@ class SongMatcher:
         dist = cls.lev_dist(q_term, t_term)
         return cls.calc_score(dist, max_len)
 
-    import re
-
     @classmethod
     def normalize_text(cls, text):
         """
