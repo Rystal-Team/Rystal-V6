@@ -460,6 +460,76 @@ class Music(commands.Cog, EventManager):
                 ),
             )
 
+    @music.subcommand(description=lang[default_language]["music_move_description"])
+    @auth_guard.check_permissions("music/move")
+    async def move(
+        self,
+        interaction: Interaction,
+        current_index: int = nextcord.SlashOption(
+            name="current_index",
+            description=lang[default_language]["music_move_current_index_description"],
+            required=True,
+        ),
+        new_index: int = nextcord.SlashOption(
+            name="new_index",
+            description=lang[default_language]["music_move_new_index_description"],
+            required=True,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+
+        player = await self.ensure_voice_state(self.bot, interaction)
+        if not player:
+            return
+
+        try:
+            queue_length = len(player.music_queue)
+            if (
+                current_index < 0
+                or current_index >= queue_length
+                or new_index < 0
+                or new_index >= queue_length
+            ):
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "invalid_index"
+                        ],
+                        message_type="warn",
+                    )
+                )
+                return
+
+            song = player.music_queue.pop(current_index)
+            player.music_queue.insert(new_index, song)
+
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "moved_song"
+                    ].format(title=song.name, new_index=new_index),
+                    message_type="success",
+                )
+            )
+        except (NotPlaying, EmptyQueue):
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
+                    message_type="warn",
+                )
+            )
+
     @music.subcommand(description=lang[default_language]["music_queue_description"])
     @auth_guard.check_permissions("music/queue")
     async def queue(self, interaction: Interaction):
