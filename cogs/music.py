@@ -657,7 +657,7 @@ class Music(commands.Cog, EventManager):
                 )
 
         queue_viewer = QueueViewer(interaction, get_page, player)
-        await queue_viewer.navegate()
+        await queue_viewer.navigate()
         QueueViewer.compute_total_pages(len(await player.current_queue()), 10)
         self.queue_menus.setdefault(interaction.guild.id, []).append(queue_viewer)
 

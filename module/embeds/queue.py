@@ -129,7 +129,7 @@ class QueueViewer(nextcord.ui.View):
         self.dropdown = SkipDropdown(self, self.guild_language, self.player)
         self.add_item(self.dropdown)
 
-    async def navegate(self):
+    async def navigate(self):
         """Navigates to the initial page and sends the first message."""
         emb, self.total_pages, options = await self.get_page(self.index)
         self.dropdown.options = options
