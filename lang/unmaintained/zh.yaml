@@ -143,7 +143,7 @@ not_implemented: "此命令尚未实现！"
 command_slowdown: "请减速并稍后再试！"
 
 # queue search query
-queue_serach_query: "搜索查询（留空以显示全部）"
+queue_search_query: "搜索查询（留空以显示全部）"
 queue_query: "查询"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

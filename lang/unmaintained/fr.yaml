@@ -74,7 +74,7 @@ not_implemented: "Cette commande n'est pas encore implémentée !"
 command_slowdown: "Veuillez ralentir et réessayer plus tard !"
 
 # queue search query
-queue_serach_query: "Requête de recherche (laisser vide pour tout afficher)"
+queue_search_query: "Requête de recherche (laisser vide pour tout afficher)"
 queue_query: "Requête"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

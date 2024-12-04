@@ -76,7 +76,7 @@ not_implemented: "呢個指令未整好，做乜鳩闖入地盤？"
 command_slowdown: "你可唔可以唔好咁撚快啊，慢慢嚟!"
 
 # queue search query
-queue_serach_query: "搵索引 (留空出全部)"
+queue_search_query: "搵索引 (留空出全部)"
 queue_query: "索引"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

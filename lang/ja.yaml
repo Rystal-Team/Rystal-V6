@@ -195,7 +195,7 @@ command_slowdown: "スピードを落として、再度試してください！"
 interaction_author_only: "このアクションはインタラクションの作者のみに利用可能です！"
 
 # queue search query
-queue_serach_query: "検索（すべて表示するには空白にしてください）"
+queue_search_query: "検索（すべて表示するには空白にしてください）"
 queue_query: "検索"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

@@ -74,7 +74,7 @@ not_implemented: "Dieser Befehl ist noch nicht implementiert!"
 command_slowdown: "Bitte langsamer machen und später erneut versuchen!"
 
 # queue search query
-queue_serach_query: "Suchanfrage (leer lassen, um alles anzuzeigen)"
+queue_search_query: "Suchanfrage (leer lassen, um alles anzuzeigen)"
 queue_query: "Abfrage"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

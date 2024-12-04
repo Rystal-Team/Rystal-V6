@@ -74,7 +74,7 @@ not_implemented: "이 명령어는 아직 구현되지 않았습니다!"
 command_slowdown: "속도를 줄이고 나중에 다시 시도해 주세요!"
 
 # queue search query
-queue_serach_query: "검색 쿼리 (모든 항목을 보려면 비워 두세요)"
+queue_search_query: "검색 쿼리 (모든 항목을 보려면 비워 두세요)"
 queue_query: "쿼리"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

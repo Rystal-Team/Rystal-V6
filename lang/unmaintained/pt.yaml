@@ -74,7 +74,7 @@ not_implemented: "Este comando ainda não está implementado!"
 command_slowdown: "Por favor, desacelere e tente novamente mais tarde!"
 
 # queue search query
-queue_serach_query: "Consulta de Pesquisa (deixe em branco para mostrar tudo)"
+queue_search_query: "Consulta de Pesquisa (deixe em branco para mostrar tudo)"
 queue_query: "Consulta"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

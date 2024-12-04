@@ -158,7 +158,7 @@ command_slowdown: "slow tf down who tf u think u are"
 interaction_author_only: "u no owner so piss off"
 
 # queue search query
-queue_serach_query: "search query (leave empty to show all)"
+queue_search_query: "search query (leave empty to show all)"
 queue_query: "thing"
 queue_search: "🔎?"
 queue_footer: "{page}/{total_pages}"

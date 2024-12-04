@@ -171,7 +171,7 @@ command_slowdown: "請稍後再試，請放慢速度！"
 interaction_author_only: "此操作僅對互動作者可用！"
 
 # queue search query
-queue_serach_query: "搜索查詢（留空以顯示所有）"
+queue_search_query: "搜索查詢（留空以顯示所有）"
 queue_query: "查詢"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

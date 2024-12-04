@@ -177,7 +177,7 @@ command_slowdown: "Please slow down and try again later!"
 interaction_author_only: "This action is only available to the interaction author!"
 
 # queue search query
-queue_serach_query: "Search Query (Leave empty to show all)"
+queue_search_query: "Search Query (Leave empty to show all)"
 queue_query: "Query"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

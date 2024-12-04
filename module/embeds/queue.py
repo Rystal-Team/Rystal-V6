@@ -57,7 +57,7 @@ class Search(nextcord.ui.Modal):
         self.search_query = nextcord.ui.TextInput(
             label=lang[page_view.guild_language]["queue_query"],
             style=nextcord.TextInputStyle.paragraph,
-            placeholder=lang[page_view.guild_language]["queue_serach_query"],
+            placeholder=lang[page_view.guild_language]["queue_search_query"],
             required=False,
             max_length=100,
         )
