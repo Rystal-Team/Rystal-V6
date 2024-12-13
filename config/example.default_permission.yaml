@@ -8,8 +8,9 @@
 # - "disabled": no one can use the command
 # To allow multiple permissions, separate them with a comma. For example: "owner,admin"
 
-ping: "everyone"
-info: "everyone"
+status:
+  ping: "everyone"
+  info: "everyone"
 
 setting:
   game:
