@@ -238,7 +238,7 @@ roulette_won: "Congratulations! You won {points} points!"
 roulette_lost: "Sorry, you lost {points} points."
 
 jackpot_game_title: "🎰 | Jackpot"
-game_jackpot_rules: "### To win, all three columns on the spinner must display the same shape and color.\n
+game_jackpot_rules: "### To win, all four columns on the spinner must display the same shape and color.\n
 The spinner can show these shapes and colors: 🟥 🟧 🟨 🟩 🟦 🟪 🟫❤️ 🧡 💛 💚 💙 💜🤎 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🃏\n\n
 - Black Circles (⚫) can represent any color or shape, including itself (⚫), but not a White Circle.\n\n
 - White Circles (⚪) can represent any color or shape, including itself (⚪), but not a Black Circle.\n\n
@@ -246,7 +246,7 @@ If 🃏 appears in any column, you will lose the jackpot.\n\n
 A 25% tax will be deducted from the jackpot if you win.\n\n
 If you win with wildcards (White Circles (⚪) or Black Circles (⚫) along with other colored shapes), a 0.8x multiplier (before tax) will be applied to your score.\n
 Lost points will be added to the jackpot prize.\n\n
-If all three columns show either White Circles (⚪) or Black Circles (⚫), you will win the Mega Score, which grants a 1.5x multiplier to your prize.\n\n
+If all four columns show either White Circles (⚪) or Black Circles (⚫), you will win the Mega Score, which grants a 1.5x multiplier to your prize.\n\n
 Note: You need 1,000 points to play this game."
 jackpot_won: "Congratulations! You won the jackpot!"
 jackpot_lost: "Sorry, you lost the jackpot. Better luck next time!"
