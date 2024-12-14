@@ -106,6 +106,9 @@ note_remove_id_description: "The ID of the note to remove."
 
 shop_buy_item_id_description: "The ID of the item to buy."
 
+music_lyrics_description: "Display the lyrics of the song currently playing"
+lyrics_lang_description: "Display all available options for lyrics auto translation"
+
 # status
 cpu: "CPU Usage: {cpu}%"
 ram: "RAM: {ram_used}/{ram_total} GB"
@@ -271,3 +274,12 @@ note_state_ongoing: "Ongoing"
 note_state_finished: "Finished"
 note_view_details: "### {title}\n\nDescription: {message}"
 note_state_title: "State"
+
+#lyrics
+lyrics_title: "Lyrics"
+music_lang_list_footer: "Page {page} of {total_pages}\n{data}"
+lyrics_translate_dropdown_placeholder: 'Select a language'
+lyrics_dropdown_option_translated: 'Auto-translated'
+lyrics_language_name_translated: '{language} - {language_code} (Auto-translated)'
+lyrics_language_name_provided: '{language} - {language_code}'
+lyrics_no_subtitles: 'No subtitles available'
