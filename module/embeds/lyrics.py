@@ -203,7 +203,7 @@ class TranslateDropdown(nextcord.ui.Select):
         song (Song): The song object.
         link (str): The source URL of the lyrics.
     """
-    
+
     def __init__(self, viewer, guild_language, player, song, link):
         super().__init__(
             placeholder=lang[guild_language]["lyrics_translate_dropdown_placeholder"],
