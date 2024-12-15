@@ -1181,7 +1181,7 @@ class Music(commands.Cog, EventManager):
             self,
             interaction: Interaction,
     ):
-        await interaction.response.defer(with_message=True)
+        await interaction.response.defer()
 
         player = await self.ensure_voice_state(self.bot, interaction)
         if not player:

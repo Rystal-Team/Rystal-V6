@@ -107,38 +107,25 @@ class LyricsEmbed:
         self.thumbnail = self.song.thumbnail
         self.captions.clear()
 
-        for i in range(-2, 3):
-            f = self.data[self.last_line + i]
-            line = re.sub("\n", " ", f["text"]).strip()
-            if i == 0:
-                self.captions.append(f'**{line}**')
-            else:
-                self.captions.append(f'-# {line}')
-
-            """try:
+        try:
+            for i in range(-2, 3):
                 f = self.data[self.last_line + i]
                 line = re.sub("\n", " ", f["text"]).strip()
                 if i == 0:
                     self.captions.append(f'**{line}**')
                 else:
+                    if self.last_line == 0 and i < 0:
+                        continue
                     self.captions.append(f'-# {line}')
-                    if self.last_line != 0:
-                        if i > 0:
-                            self.captions.append(f'-# {line}')
 
-                    if self.last_line != len(self.data):
-                        if i < 0:
-                            self.captions.append(f'-# {line}')
-            except KeyError:
-                pass"""
+        except IndexError:
+            pass
 
         time_elapsed = self.song.timer.elapsed
 
         if time_elapsed < self.data[self.last_line]["end"]:
-            print(f'stayed, start: {self.data[self.last_line]["start"]} elapsed: {time_elapsed} end: {self.data[self.last_line]["end"]} datatime.datatime.time.now(): {datetime.now()}')
             pass
         else:
-            print(f'passed, start: {self.data[self.last_line]["start"]} elapsed: {time_elapsed} end: {self.data[self.last_line]["end"]} datatime.datatime.time.now(): {datetime.now()}')
             self.next_update = self.data[self.last_line + 1]
             self.last_line += 1
 
@@ -197,7 +184,10 @@ class TranslateDropdown(nextcord.ui.Select):
             captions = await fetch_lyrics(link=self.link, language_code=self.values[0])
         else:
             self.values[0] = self.values[0][:-1]
-            captions = await fetch_lyrics(link=self.link, language_code=self.values[0], translate=True)
+            try:
+                captions = await fetch_lyrics(link=self.link, language_code=self.values[0], translate=True)
+            except Exception as e:
+                raise e
 
         menu = LyricsEmbed(
             interaction,
