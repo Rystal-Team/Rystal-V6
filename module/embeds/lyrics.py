@@ -105,9 +105,7 @@ class LyricsEmbed:
         self.loop_task = asyncio.create_task(self.auto_update())
 
     async def auto_update(self):
-        """
-        Automatically updates the embed with the current lyrics.
-        """
+        """Automatically updates the embed with the current lyrics."""
         await asyncio.sleep(1)
         while not self.is_timeout:
             if not self.song == await self.player.now_playing() or self.is_timeout:
@@ -117,9 +115,7 @@ class LyricsEmbed:
             await asyncio.sleep(0.1)
 
     async def update(self):
-        """
-        Updates the embed with the current lyrics.
-        """
+        """Updates the embed with the current lyrics."""
         try:
             self.song = await self.player.now_playing()
         except (NothingPlaying, EmptyQueue):
@@ -189,9 +185,7 @@ class LyricsEmbed:
             )
 
     async def timeout_self(self):
-        """
-        Timeout the view and stop the auto-update task.
-        """
+        """Timeout the view and stop the auto-update task."""
         self.is_timeout = True
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
@@ -209,7 +203,7 @@ class TranslateDropdown(nextcord.ui.Select):
         song (Song): The song object.
         link (str): The source URL of the lyrics.
     """
-    
+
     def __init__(self, viewer, guild_language, player, song, link):
         super().__init__(
             placeholder=lang[guild_language]["lyrics_translate_dropdown_placeholder"],
@@ -316,9 +310,7 @@ class LyricsLangEmbed(nextcord.ui.View):
         self.add_item(self.dropdown)
 
     async def send_initial_message(self):
-        """
-        Sends the initial message with the available languages.
-        """
+        """Sends the initial message with the available languages."""
         self.available_sub = await get_available_languages(link=self.link)
         if self.available_sub:
             embed = await self.create_embed(True)
@@ -404,9 +396,7 @@ class LyricsLangEmbed(nextcord.ui.View):
     async def previous(
         self, button: nextcord.ui.Button, interaction: nextcord.Interaction
     ):
-        """
-        Callback for the previous button.
-        """
+        """Callback for the previous button."""
         await interaction.response.defer()
         if interaction.user.id == self.author_id:
             if self.index > 0:
@@ -426,9 +416,7 @@ class LyricsLangEmbed(nextcord.ui.View):
         emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
     )
     async def next(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        """
-        Callback for the next button.
-        """
+        """Callback for the next button."""
         await interaction.response.defer()
         if interaction.user.id == self.author_id:
             if self.index < self.total_pages - 1:
@@ -445,29 +433,21 @@ class LyricsLangEmbed(nextcord.ui.View):
             )
 
     async def update_message(self):
-        """
-        Updates the message with the current page.
-        """
+        """Updates the message with the current page."""
         embed = await self.create_embed(True)
         self.update_buttons()
         self.update_dropdown()
         await self.message.edit(embed=embed, view=self)
 
     def update_buttons(self):
-        """
-        Updates the buttons based on the current page.
-        """
+        """Updates the buttons based on the current page."""
         self.children[0].disabled = self.index == 0
         self.children[1].disabled = self.index == self.total_pages - 1
 
     def update_dropdown(self):
-        """
-        Updates the dropdown with the current options.
-        """
+        """Updates the dropdown with the current options."""
         self.dropdown.options = self.options
 
     async def on_timeout(self):
-        """
-        Callback for when the view times out.
-        """
+        """Callback for when the view times out."""
         await self.message.edit(view=None)
