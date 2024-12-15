@@ -1173,13 +1173,11 @@ class Music(commands.Cog, EventManager):
             )
         )
 
-    @music.subcommand(
-        description=lang[default_language]["music_lyrics_description"]
-    )
+    @music.subcommand(description=lang[default_language]["music_lyrics_description"])
     @auth_guard.check_permissions("music/lyrics")
     async def lyrics(
-            self,
-            interaction: Interaction,
+        self,
+        interaction: Interaction,
     ):
         await interaction.response.defer()
 
@@ -1191,10 +1189,7 @@ class Music(commands.Cog, EventManager):
             song = await player.now_playing()
 
             embed = LyricsLangEmbed(
-                interaction,
-                player=player,
-                song=song,
-                link=song.url
+                interaction, player=player, song=song, link=song.url
             )
 
             await embed.send_initial_message()

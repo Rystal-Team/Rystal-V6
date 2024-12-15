@@ -112,11 +112,11 @@ class LyricsEmbed:
                 f = self.data[self.last_line + i]
                 line = re.sub("\n", " ", f["text"]).strip()
                 if i == 0:
-                    self.captions.append(f'**{line}**')
+                    self.captions.append(f"**{line}**")
                 else:
                     if self.last_line == 0 and i < 0:
                         continue
-                    self.captions.append(f'-# {line}')
+                    self.captions.append(f"-# {line}")
 
         except IndexError:
             pass
@@ -129,7 +129,7 @@ class LyricsEmbed:
             self.next_update = self.data[self.last_line + 1]
             self.last_line += 1
 
-        self.joined = '\n'.join(self.captions)
+        self.joined = "\n".join(self.captions)
 
         embed = nextcord.Embed(
             title=self.title,
@@ -160,13 +160,12 @@ class LyricsEmbed:
 
 
 class TranslateDropdown(nextcord.ui.Select):
-    def __init__(self, viewer,  guild_language, player, song, link):
+    def __init__(self, viewer, guild_language, player, song, link):
         super().__init__(
             placeholder=lang[guild_language]["lyrics_translate_dropdown_placeholder"],
             min_values=1,
             max_values=1,
             options=[],
-
         )
         self.viewer = viewer
         self.link = link
@@ -185,7 +184,9 @@ class TranslateDropdown(nextcord.ui.Select):
         else:
             self.values[0] = self.values[0][:-1]
             try:
-                captions = await fetch_lyrics(link=self.link, language_code=self.values[0], translate=True)
+                captions = await fetch_lyrics(
+                    link=self.link, language_code=self.values[0], translate=True
+                )
             except Exception as e:
                 raise e
 
@@ -207,7 +208,7 @@ class LyricsLangEmbed(nextcord.ui.View):
         interaction: nextcord.Interaction,
         player: MusicPlayer,
         song: Song,
-        link: str
+        link: str,
     ):
         super().__init__(timeout=None)
         self.guild_lang = asyncio.run(get_guild_language(interaction.guild.id))
@@ -225,7 +226,9 @@ class LyricsLangEmbed(nextcord.ui.View):
         self.player = player
         self.song = song
 
-        self.dropdown = TranslateDropdown(self, self.guild_lang, self.player, self.song, self.link)
+        self.dropdown = TranslateDropdown(
+            self, self.guild_lang, self.player, self.song, self.link
+        )
         self.add_item(self.dropdown)
 
     async def send_initial_message(self):
@@ -247,7 +250,7 @@ class LyricsLangEmbed(nextcord.ui.View):
             for i in self.available_sub:
                 if i:
                     joined.append(
-                        lang[self.guild_lang]['lyrics_language_name_provided'].format(
+                        lang[self.guild_lang]["lyrics_language_name_provided"].format(
                             language=i,
                             language_code=self.available_sub[i],
                         )
@@ -260,16 +263,17 @@ class LyricsLangEmbed(nextcord.ui.View):
                     )
             for i in self.data:
                 joined.append(
-                    lang[self.guild_lang]['lyrics_language_name_translated'].format(
-                        language=i,
-                        language_code=self.data[i]
+                    lang[self.guild_lang]["lyrics_language_name_translated"].format(
+                        language=i, language_code=self.data[i]
                     )
                 )
                 options.append(
                     SelectOption(
                         label=i.capitalize(),
-                        description=lang[self.guild_lang]['lyrics_dropdown_option_translated'],
-                        value=f'{self.data[i]}*',
+                        description=lang[self.guild_lang][
+                            "lyrics_dropdown_option_translated"
+                        ],
+                        value=f"{self.data[i]}*",
                     )
                 )
 
@@ -279,10 +283,10 @@ class LyricsLangEmbed(nextcord.ui.View):
             options = options[start:end]
 
             self.options = options
-            data = '\n'.join(sliced)
+            data = "\n".join(sliced)
 
             embed = nextcord.Embed(
-                title=lang[self.guild_lang]['lyrics_title'],
+                title=lang[self.guild_lang]["lyrics_title"],
                 description=lang[self.guild_lang]["music_lang_list_footer"].format(
                     page=self.index + 1, total_pages=self.total_pages, data=data
                 ),
@@ -292,9 +296,9 @@ class LyricsLangEmbed(nextcord.ui.View):
             return embed
         else:
             embed = nextcord.Embed(
-                title=lang[self.guild_lang]['lyrics_title'],
+                title=lang[self.guild_lang]["lyrics_title"],
                 description=lang[self.guild_lang]["lyrics_no_subtitles"],
-                color=type_color["error"]
+                color=type_color["error"],
             )
 
             return embed
@@ -302,7 +306,9 @@ class LyricsLangEmbed(nextcord.ui.View):
     @nextcord.ui.button(
         emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
     )
-    async def previous(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+    async def previous(
+        self, button: nextcord.ui.Button, interaction: nextcord.Interaction
+    ):
         await interaction.response.defer()
         if interaction.user.id == self.author_id:
             if self.index > 0:

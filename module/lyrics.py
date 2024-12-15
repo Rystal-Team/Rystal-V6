@@ -28,7 +28,11 @@ from langdetect import detect
 
 async def get_available_languages(link: str):
     captions = YouTube(link).video.get_captions()
-    return {caption.language: caption.language_code for caption in captions} if captions else {}
+    return (
+        {caption.language: caption.language_code for caption in captions}
+        if captions
+        else {}
+    )
 
 
 async def fetch_lyrics(link: str, language_code: str, translate: bool = False):
@@ -47,24 +51,22 @@ async def fetch_lyrics(link: str, language_code: str, translate: bool = False):
     if not translate:
         return data[language_code]
     else:
-        detected_language = detect(yt.video.metadata['videoDetails']['title'])
-        print(f'Detected language: {detected_language}')
+        detected_language = detect(yt.video.metadata["videoDetails"]["title"])
+        print(f"Detected language: {detected_language}")
         for line in data[detected_language]:
-            base_transcript.append(line['text'])
+            base_transcript.append(line["text"])
 
         try:
             translation = GoogleTranslator(
-                source=detected_language,
-                target=language_code
+                source=detected_language, target=language_code
             ).translate_batch(base_transcript)
         except KeyError:
             translation = GoogleTranslator(
-                source=str(list(data.keys())[0]),
-                target=language_code
+                source=str(list(data.keys())[0]), target=language_code
             ).translate_batch(base_transcript)
 
         for index, line in enumerate(data[detected_language]):
-            data[detected_language][index]['text'] = translation[index]
+            data[detected_language][index]["text"] = translation[index]
             lyrics = data[detected_language]
 
         return lyrics
