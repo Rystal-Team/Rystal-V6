@@ -1189,7 +1189,7 @@ class Music(commands.Cog, EventManager):
             song = await player.now_playing()
 
             embed = LyricsLangEmbed(
-                interaction, player=player, song=song, link=song.url
+                interaction, player=player, song=song, link=song.url, bot=self.bot
             )
 
             await embed.send_initial_message()
