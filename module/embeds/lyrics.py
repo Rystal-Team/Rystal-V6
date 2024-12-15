@@ -381,14 +381,13 @@ class LyricsLangEmbed(nextcord.ui.View):
             )
 
             return embed
-        else:
-            embed = nextcord.Embed(
-                title=lang[self.guild_lang]["lyrics_title"],
-                description=lang[self.guild_lang]["lyrics_no_subtitles"],
-                color=type_color["error"],
-            )
+        embed = nextcord.Embed(
+            title=lang[self.guild_lang]["lyrics_title"],
+            description=lang[self.guild_lang]["lyrics_no_subtitles"],
+            color=type_color["error"],
+        )
 
-            return embed
+        return embed
 
     @nextcord.ui.button(
         emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
