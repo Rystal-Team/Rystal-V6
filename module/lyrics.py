@@ -24,48 +24,47 @@
 from meta_yt import YouTube
 from deep_translator import GoogleTranslator
 from langdetect import detect
-import time
-
-yt = YouTube("https://www.youtube.com/watch?v=impSuIygMiQ&ab_channel=THEFIRSTTAKE")
-captions = yt.video.get_captions()
-print(captions)
-
-data = {}
-base_transcript = []
-lyrics = {}
 
 
-if captions:
+async def get_available_languages(link: str):
+    captions = YouTube(link).video.get_captions()
+    return {caption.language: caption.language_code for caption in captions} if captions else {}
+
+
+async def fetch_lyrics(link: str, language_code: str, translate: bool = False):
+    data = {}
+    base_transcript = []
+    lyrics = {}
+
+    yt = YouTube(link)
+    captions = yt.video.get_captions()
+
     for caption in captions:
-        print(f'language: {caption.language}, language code: {caption.language_code}')
-        print(caption.url)
         data[caption.language_code] = []
         for line in caption.transcript:
             data[caption.language_code].append(line)
 
-        print(data[caption.language_code])
-else:
-    print("No captions available")
-    exit()
+    if not translate:
+        return data[language_code]
+    else:
+        detected_language = detect(yt.video.metadata['videoDetails']['title'])
+        print(f'Detected language: {detected_language}')
+        for line in data[detected_language]:
+            base_transcript.append(line['text'])
 
-detected_language = detect(yt.video.metadata['videoDetails']['title'])
-print(f'detected as {detected_language}')
+        try:
+            translation = GoogleTranslator(
+                source=detected_language,
+                target=language_code
+            ).translate_batch(base_transcript)
+        except KeyError:
+            translation = GoogleTranslator(
+                source=str(list(data.keys())[0]),
+                target=language_code
+            ).translate_batch(base_transcript)
 
-"""for line in data[detected_language]:
-    base_transcript.append(line['text'])
-print(base_transcript)"""
+        for index, line in enumerate(data[detected_language]):
+            data[detected_language][index]['text'] = translation[index]
+            lyrics = data[detected_language]
 
-"""create_timer = time.time()
-target = "zh-TW"
-
-try:
-    translation = GoogleTranslator(source=detected_language, target=target).translate_batch(base_transcript)
-except KeyError:
-    translation = GoogleTranslator(source=str(list(data.keys())[0]), target=target).translate_batch(base_transcript)
-
-for index, line in enumerate(data[detected_language]):
-    data[detected_language][index]['text'] = translation[index]
-    lyrics = data[detected_language]
-
-print(f'translated in {time.time() - create_timer} seconds')
-"""
+        return lyrics

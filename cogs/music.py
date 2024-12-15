@@ -39,6 +39,7 @@ from database.guild_handler import get_guild_language, get_guild_settings
 from module.embeds.generic import Embeds
 from module.embeds.nowplaying import NowPlayingMenu
 from module.embeds.queue import QueueViewer
+from module.embeds.lyrics import LyricsLangEmbed
 from module.matcher import SongMatcher
 from module.nextcord_jukebox.enums import LOOPMODE
 from module.nextcord_jukebox.event_manager import EventManager
@@ -68,6 +69,7 @@ class Music(commands.Cog, EventManager):
         self.bot = bot
         self.now_playing_menus = {}
         self.queue_menus = {}
+        self.lyrics_menus = {}
 
         if USE_SQLITE:
             self.manager = PlayerManager(bot, db_type="sqlite", db_path=SQLITE_PATH)
@@ -1170,6 +1172,44 @@ class Music(commands.Cog, EventManager):
                 message_type="success",
             )
         )
+
+    @music.subcommand(
+        description=lang[default_language]["music_lyrics_description"]
+    )
+    @auth_guard.check_permissions("music/lyrics")
+    async def lyrics(
+            self,
+            interaction: Interaction,
+    ):
+        await interaction.response.defer()
+
+        player = await self.ensure_voice_state(self.bot, interaction)
+        if not player:
+            return
+
+        try:
+            song = await player.now_playing()
+
+            embed = LyricsLangEmbed(
+                interaction,
+                player=player,
+                song=song,
+                link=song.url
+            )
+
+            await embed.send_initial_message()
+        except (NothingPlaying, EmptyQueue):
+            await interaction.followup.send(
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
+                    message_type="warn",
+                )
+            )
 
 
 async def setup(bot):
