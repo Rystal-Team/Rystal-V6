@@ -27,6 +27,15 @@ from langdetect import detect
 
 
 async def get_available_languages(link: str):
+    """
+    Get available languages for captions from a YouTube video
+
+    Args:
+        link (str): YouTube video link
+
+    Returns:
+        dict: Available languages
+    """
     captions = YouTube(link).video.get_captions()
     return (
         {caption.language: caption.language_code for caption in captions}
@@ -36,6 +45,17 @@ async def get_available_languages(link: str):
 
 
 async def fetch_lyrics(link: str, language_code: str, translate: bool = False):
+    """
+    Fetch lyrics from a YouTube video
+
+    Args:
+        link (str): YouTube video link
+        language_code (str): Language code
+        translate (bool, optional): Translate the lyrics. Defaults to False.
+
+    Returns:
+        dict: Lyrics
+    """
     data = {}
     base_transcript = []
     lyrics = {}

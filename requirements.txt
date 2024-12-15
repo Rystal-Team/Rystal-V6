@@ -23,3 +23,5 @@ Pillow~=10.4.0
 python-dotenv>=1.0.1
 deep-translator>=1.11.4
 langdetect>=1.0.9
+deep_translator>=1.11.4
+langdetect>=1.0.9
