@@ -20,7 +20,6 @@
 #  THE SOFTWARE.
 #  ------------------------------------------------------------
 #
-from datetime import datetime
 
 # TODO: fix ping + shorten embed to 5 lines ty
 
