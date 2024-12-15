@@ -112,7 +112,7 @@ class LyricsEmbed:
                 await self.timeout_self()
                 break
             await self.update()
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.02)
 
     async def update(self):
         """Updates the embed with the current lyrics."""
