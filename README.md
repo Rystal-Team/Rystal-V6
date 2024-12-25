@@ -25,7 +25,7 @@
 
 </div>
 
-## 🌟 Key Features
+## ✨ Key Features
 
 - Music Player
     - Player works without any remote server setup such as lavalink/wavelink
