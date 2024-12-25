@@ -25,7 +25,7 @@
 
 </div>
 
-## 主な機能
+## 🌟 主な機能
 
 - 音楽プレイヤー
     - lavalink/wavelinkなどのリモートサーバー設定なしでプレイヤーが動作
@@ -44,7 +44,7 @@
     - ジャックポット
     - ルーレット
 
-## スクリーンショット
+## 📸 スクリーンショット
 
 <details>
 <summary><h2>表示</h2></summary>
@@ -55,7 +55,7 @@
 ![screenshot](assets/screenshot_4.png)
 </details>
 
-## セットアップ
+## ⚙️ セットアップ
 
 [リリース](https://github.com/Rystal-Team/Rystal-V6/releases)
 から最新の[リリース](https://github.com/Rystal-Team/Rystal-V6/releases/latest)をダウンロードしてください。
@@ -70,7 +70,7 @@
 にリネームして必要なトークンを入力してください。<br>
 ボットのカスタマイズは`config/example.config.yaml`にあります。コピーを作成し、それを`config.yaml`にリネームして続行してください。
 
-## 使用技術
+## 🚀 使用技術
 
 このボットは以下の技術で構築され、動作しています
 
@@ -78,7 +78,7 @@
 - [![Python](https://img.shields.io/badge/python-ffffff?style=for-the-badge&logo=python&logoColor=3670A0)](https://www.python.org/)
 - [![FFMpeg](https://img.shields.io/badge/ffmpeg-ffffff?style=for-the-badge&logo=ffmpeg&logoColor=388e3c)](https://ffmpeg.org/)
 
-## ホスティングプロバイダーを探している？
+## 🌐 ホスティングプロバイダーを探している？
 
 Sparked Hostをチェックしてください！月額1ドル（約150円）から！<br>
 

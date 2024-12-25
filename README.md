@@ -25,7 +25,7 @@
 
 </div>
 
-## Key Features
+## 🌟 Key Features
 
 - Music Player
     - Player works without any remote server setup such as lavalink/wavelink
@@ -44,7 +44,7 @@
     - Jackpot
     - Roulette
 
-## Screenshots
+## 📸 Screenshots
 
 <details>
 <summary><h2>Show</h2></summary>
@@ -55,7 +55,7 @@
 ![screenshot](assets/screenshot_4.png)
 </details>
 
-## Setup
+## ⚙️ Setup
 
 Download the latest [release](https://github.com/Rystal-Team/Rystal-V6/releases/latest)
 from [Releases](https://github.com/Rystal-Team/Rystal-V6/releases).
@@ -70,7 +70,7 @@ tokens.<br>
 Customisations for the bot can be found in `config/example.config.yaml`, make a copy of it and rename it
 to `config.yaml` to continue.
 
-## Built With
+## 🚀 Built With
 
 This Bot is built with and powered by the followings
 
@@ -78,7 +78,7 @@ This Bot is built with and powered by the followings
 - [![Python](https://img.shields.io/badge/python-ffffff?style=for-the-badge&logo=python&logoColor=3670A0)](https://www.python.org/)
 - [![FFMpeg](https://img.shields.io/badge/ffmpeg-ffffff?style=for-the-badge&logo=ffmpeg&logoColor=388e3c)](https://ffmpeg.org/)
 
-## Cannot find a hosting provider?
+## 🌐 Cannot find a hosting provider?
 
 Check out Sparked Host! As cheap as $1 per month!<br>
 
