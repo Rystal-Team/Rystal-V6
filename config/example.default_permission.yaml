@@ -37,6 +37,7 @@ music:
   register: "everyone"
   most_played: "everyone"
   flush_cache: "owner"
+  lyrics: "everyone"
 
 rank:
   card: "everyone"
