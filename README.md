@@ -62,7 +62,8 @@ from [Releases](https://github.com/Rystal-Team/Rystal-V6/releases).
 
 To run the bot you simply have to install requirements in `requirements.txt`
 with `pip install -r <path-to>/requirements.txt`.<br>
-**If you experienced this error `no module named 'pkg_resources'`, please install `setuptools`
+> [!TIP]
+> If you experienced this error `no module named 'pkg_resources'`, please install `setuptools`
 with `pip instll setuptools`*
 
 The main config file is `.env`, make a copy of `.env.example` and rename it into `.env` and enter the required

@@ -62,9 +62,8 @@
 
 ボットを実行するには、`requirements.txt`にある要件を`pip install -r <path-to>/requirements.txt`
 でインストールするだけです。<br>
-**Pterodactylのようなコンテナでは、`setuptools`
-が既に含まれているため、インストール時に問題が発生する可能性があります。その場合は、`container-requirements.txt`
-を使用するか、`requirements.txt`から`setuptools`を削除してください。*
+> [!TIP]
+> このエラー `no module named 'pkg_resources'` が発生した場合は、`pip install setuptools` を使用して `setuptools` をインストールしてください。
 
 メインの設定ファイルは`.env`です。`.env.example`のコピーを作成し、それを`.env`
 にリネームして必要なトークンを入力してください。<br>
