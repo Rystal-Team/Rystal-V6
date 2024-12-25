@@ -30,6 +30,7 @@ import nextcord
 import re
 
 from nextcord import SelectOption
+from nextcord.ext.commands import Bot
 from config.loader import lang, type_color
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
@@ -64,6 +65,7 @@ class LyricsEmbed:
         last_line (int): The index of the last line of lyrics.
         next_update (float): The time for the next update.
         loop_task (asyncio.Task): The task for auto-updating the embed.
+        bot (Bot): The bot object.
     """
 
     def __init__(
@@ -73,6 +75,7 @@ class LyricsEmbed:
         song: Song,
         data: list,
         link: str,
+        bot: Bot,
         thumbnail: str = None,
     ):
         """
@@ -85,6 +88,7 @@ class LyricsEmbed:
             data (list): The list of lyrics data.
             link (str): The source URL of the lyrics.
             thumbnail (str, optional): The thumbnail URL of the song. Defaults to None.
+            bot (Bot, optional): The bot object. Defaults
         """
         self.interaction = interaction
         self.player = player
@@ -99,6 +103,7 @@ class LyricsEmbed:
         self.joined = None
         self.last_line = 0
         self.next_update = 0.0
+        self.bot = bot
 
         super().__init__()
 
@@ -112,7 +117,7 @@ class LyricsEmbed:
                 await self.timeout_self()
                 break
             await self.update()
-            await asyncio.sleep(0.02)
+            await asyncio.sleep(0.01)
 
     async def update(self):
         """Updates the embed with the current lyrics."""
@@ -154,9 +159,10 @@ class LyricsEmbed:
         except IndexError:
             pass
 
-        time_elapsed = self.song.timer.elapsed
-
-        if time_elapsed < self.data[self.last_line]["end"]:
+        if (
+            self.song.timer.elapsed + self.bot.latency
+            < self.data[self.last_line + 1]["start"]
+        ):
             pass
         else:
             self.next_update = self.data[self.last_line + 1]
@@ -202,9 +208,18 @@ class TranslateDropdown(nextcord.ui.Select):
         player (MusicPlayer): The music player object.
         song (Song): The song object.
         link (str): The source URL of the lyrics.
+        bot (Bot): The bot object.
     """
 
-    def __init__(self, viewer, guild_language, player, song, link):
+    def __init__(
+        self,
+        viewer,
+        guild_language,
+        player,
+        song,
+        link,
+        bot: Bot,
+    ):
         super().__init__(
             placeholder=lang[guild_language]["lyrics_translate_dropdown_placeholder"],
             min_values=1,
@@ -213,9 +228,9 @@ class TranslateDropdown(nextcord.ui.Select):
         )
         self.viewer = viewer
         self.link = link
-
         self.player = player
         self.song = song
+        self.bot = bot
 
     async def callback(self, interaction: nextcord.Interaction):
         """
@@ -245,6 +260,7 @@ class TranslateDropdown(nextcord.ui.Select):
             song=self.song,
             data=captions,
             link=self.link,
+            bot=self.bot,
         )
 
         await menu.update()
@@ -279,6 +295,7 @@ class LyricsLangEmbed(nextcord.ui.View):
         player: MusicPlayer,
         song: Song,
         link: str,
+        bot: Bot,
     ):
         """
         Initializes the LyricsLangEmbed object with the given attributes.
@@ -303,9 +320,10 @@ class LyricsLangEmbed(nextcord.ui.View):
         self.link = link
         self.player = player
         self.song = song
+        self.bot = bot
 
         self.dropdown = TranslateDropdown(
-            self, self.guild_lang, self.player, self.song, self.link
+            self, self.guild_lang, self.player, self.song, self.link, self.bot
         )
         self.add_item(self.dropdown)
 
