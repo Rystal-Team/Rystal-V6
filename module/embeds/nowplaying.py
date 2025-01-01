@@ -210,7 +210,6 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
-            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -264,7 +263,6 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
-            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
@@ -315,7 +313,6 @@ class NowPlayingMenu(nextcord.ui.View):
                 message_id=self.follow_up.id, view=None
             )
         except Exception as e:
-            print(e)
             await self.interaction.followup.edit_message(
                 message_id=self.follow_up.id,
                 embed=Embeds.message(
