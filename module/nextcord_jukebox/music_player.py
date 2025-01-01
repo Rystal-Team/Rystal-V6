@@ -589,7 +589,7 @@ class MusicPlayer:
                     await EventManager.fire(
                         "loading_playlist", self, interaction, songs[0]
                     )
-                    result = songs
+                    result = playlist
                 failed_songs.extend(failed)
             else:
                 try:
