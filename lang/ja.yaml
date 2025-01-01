@@ -170,6 +170,7 @@ resumed_queue: "キューを再開しました！"
 skipped_from: "**{old}** から **{new}** へスキップしました！"
 skipped: "**{old}** をスキップしました！"
 moved_song: "**{title}** を位置 `{new_index}` に移動しました！"
+failed_to_queue_songs: "### 以下の楽曲をキューに追加できませんでした:\n{songs}"
 
 music_secret: "これが新しいシークレットです\n\n ```{secret}```"
 music_cache_flushed: "キャッシュがリフレッシュされました！"

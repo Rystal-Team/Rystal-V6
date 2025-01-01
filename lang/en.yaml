@@ -155,6 +155,7 @@ resumed_queue: "Queue resumed!"
 skipped_from: "Skipped from **{old}** to **{new}**!"
 skipped: "Skipped **{old}**!"
 moved_song: "Moved **{title}** to position `{new_index}`!"
+failed_to_queue_songs: "### Failed to queue the following songs:\n{songs}"
 
 music_secret: "Your new secret is:\n\n ```{secret}```"
 music_cache_flushed: "Cache flushed successfully!"
