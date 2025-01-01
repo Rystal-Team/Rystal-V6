@@ -412,22 +412,32 @@ class MusicPlayer:
     @pre_check()
     async def _queue_bulk(
         self, video_urls: list, shuffle: bool = False
-    ) -> tuple[list[Song], Song]:
+    ) -> tuple[list[Song], list[str]]:
         """
-        Queues a list of songs.
+        Queues multiple songs.
 
         Args:
             video_urls (list): A list of video URLs to queue.
+            shuffle (bool, optional): Whether to shuffle the added songs. Defaults to False.
 
         Returns:
-            tuple: The queued songs, and the first song in the queue.
+            tuple: A tuple containing the processed songs and the failed songs.
         """
         timer = time.time()
         self.database.run_cleanup()
+        failed_songs = []
+        processed_songs = []
 
-        video_ids = [await get_video_id(url) for url in video_urls]
+        video_ids = []
+        for url in video_urls:
+            try:
+                video_id = await get_video_id(url)
+                video_ids.append(video_id)
+            except Exception as e:
+                failed_songs.append(url)
+                LogHandler.error(f"Failed to process URL {url}: {e}")
+
         cache_metas = self.database.get_bulk_video_metadata(video_ids)
-
         cached_ids = set(cache_metas.keys())
         missing_ids = list((set(video_ids) - cached_ids))
         cached_ids = list(cached_ids)
@@ -436,17 +446,49 @@ class MusicPlayer:
             random.shuffle(cached_ids)
             random.shuffle(missing_ids)
 
-        print(
-            colored(f"[BULK QUEUE] Missing {len(missing_ids)} songs", color="magenta")
-        )
+        for video_id in cached_ids:
+            try:
+                song = Song(**cache_metas[video_id])
+                processed_songs.append(song)
+                self.music_queue.append(song)
 
-        songs = await self._process_songs(cached_ids, cache_metas)
-        songs += await self._process_missing_songs(missing_ids)
+                if not self.paused and self.music_queue and not self._now_playing:
+                    await self._play_func(None, self.music_queue[0])
+            except Exception as e:
+                failed_songs.append(video_id)
+                LogHandler.error(f"Failed to process cached song {video_id}: {e}")
 
-        print(colored(f"[BULK ADDED] {len(songs)} songs", color="magenta"))
+        for video_id in missing_ids:
+            try:
+                video = await self.loop.run_in_executor(
+                    None, lambda: Video(str(video_id))
+                )
+                meta = {
+                    "url": video.url,
+                    "title": video.title,
+                    "views": video.views,
+                    "duration": video.duration,
+                    "thumbnail": video.thumbnail,
+                    "channel": video.channel,
+                    "channel_url": video.channel_url,
+                    "thumbnails": video.thumbnails,
+                }
+                self.database.cache_video_metadata(video_id, meta)
+                song = Song(**meta)
+                processed_songs.append(song)
+                self.music_queue.append(song)
+
+                if not self.paused and self.music_queue and not self._now_playing:
+                    await self._play_func(None, self.music_queue[0])
+            except Exception as e:
+                failed_songs.append(video_id)
+                LogHandler.error(f"Failed to process missing song {video_id}: {e}")
+
+        print(colored(f"[BULK ADDED] {len(processed_songs)} songs", color="magenta"))
+        print(colored(f"[BULK FAILED] {len(failed_songs)} songs", color="red"))
         print(colored(f"Time taken: {time.time() - timer}", color="dark_grey"))
 
-        return songs, songs[0]
+        return processed_songs, failed_songs
 
     @pre_check()
     async def _queue_single(self, video_url: str) -> Song:
@@ -524,7 +566,9 @@ class MusicPlayer:
             NoQueryResult: If no results are found for the given query.
         """
         self._fetching_stream = True
+
         result = None
+        failed_songs = []
         self.loop = self.loop or interaction.guild.voice_client.loop
 
         try:
@@ -538,30 +582,33 @@ class MusicPlayer:
                     else list(playlist.video_urls)
                 )
 
-                _, song = await self.loop.create_task(
+                songs, failed = await self.loop.create_task(
                     self._queue_bulk(after_playlist, shuffle=shuffle_added)
                 )
-                await EventManager.fire("loading_playlist", self, interaction, song)
-
-                result = playlist
+                if songs:
+                    await EventManager.fire(
+                        "loading_playlist", self, interaction, songs[0]
+                    )
+                    result = songs
+                failed_songs.extend(failed)
             else:
-                yt = await asyncio.to_thread(YouTube, query)
-                if not yt or not yt.video:
-                    raise NoQueryResult
-                result = await self._queue_single(yt.video.url)
-
-        except urllib.error.HTTPError as e:
-            LogHandler.error(f"Failed to fetch playlist: {e}")
-            raise InvalidPlaylist from e
+                try:
+                    yt = await asyncio.to_thread(YouTube, query)
+                except Exception as e:
+                    failed_songs.append(query)
+                else:
+                    try:
+                        result = await self._queue_single(yt.video.url)
+                    except Exception as e:
+                        failed_songs.append(yt.video.title or query)
+                        LogHandler.error(f"Failed to queue song: {e}")
 
         except Exception as e:
-            LogHandler.error(f"Failed to queue song: {e}")
-            raise NoQueryResult from e
-
+            LogHandler.error(f"Queue operation failed: {e}")
         finally:
             self._fetching_stream = False
 
-        return result if result else None
+        return result, failed_songs
 
     @pre_check(check_connection=False)
     async def connect(self, interaction: Interaction) -> Optional[bool]:

@@ -255,10 +255,10 @@ class Music(commands.Cog, EventManager):
                     )
                 )
 
-            feed = await self.bot.loop.create_task(
+            result, failed_songs = await self.bot.loop.create_task(
                 player.queue(interaction, query, shuffle_added=shuffle_added)
             )
-            if playlist_id:
+            if playlist_id and result:
                 await interaction.channel.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -266,11 +266,11 @@ class Music(commands.Cog, EventManager):
                         ],
                         message=lang[await get_guild_language(interaction.guild.id)][
                             "queued_playlist"
-                        ].format(playlist=feed.title),
+                        ].format(playlist=result.title),
                         message_type="success",
                     ),
                 )
-            else:
+            elif result:
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][
@@ -278,13 +278,26 @@ class Music(commands.Cog, EventManager):
                         ],
                         message=lang[await get_guild_language(interaction.guild.id)][
                             "queued_song"
-                        ].format(title=feed.name),
+                        ].format(title=result.name),
                         message_type="success",
                     )
                 )
 
+            if failed_songs:
+                failed_msg = "\n".join([f"• {song}" for song in failed_songs])
+                await interaction.followup.send(
+                    embed=Embeds.message(
+                        title=lang[await get_guild_language(interaction.guild.id)][
+                            class_namespace
+                        ],
+                        message=lang[await get_guild_language(interaction.guild.id)][
+                            "failed_to_queue_songs"
+                        ].format(songs=failed_msg),
+                        message_type="warn",
+                    )
+                )
+
         except NoQueryResult as e:
-            print(e)
             await interaction.followup.send(
                 embed=Embeds.message(
                     title=lang[await get_guild_language(interaction.guild.id)][
