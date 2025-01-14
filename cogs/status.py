@@ -24,6 +24,8 @@
 import datetime
 import platform
 import time
+from datetime import datetime
+
 
 import nextcord
 import psutil
@@ -87,6 +89,15 @@ class System(commands.Cog):
 
         r = requests.get("https://pypi.org/pypi/yt-dlp/json")
         latest_yt_dlp_version = r.json()["info"]["version"]
+
+        yt_dlp_version = datetime.strptime(yt_dlp_version, "%Y.%m.%d").strftime(
+            "%Y.%m.%d"
+        )
+
+        latest_yt_dlp_version = datetime.strptime(
+            latest_yt_dlp_version, "%Y.%m.%d"
+        ).strftime("%Y.%m.%d")
+
         print(
             colored(
                 f"Latest yt-dlp version: {latest_yt_dlp_version}", color="dark_grey"
