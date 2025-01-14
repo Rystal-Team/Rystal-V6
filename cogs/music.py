@@ -790,6 +790,7 @@ class Music(commands.Cog, EventManager):
                 playing=not player.paused,
                 player=player,
                 song=song,
+                bot=self.bot,
             )
 
             await menu.update()

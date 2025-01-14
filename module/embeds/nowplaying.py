@@ -36,6 +36,7 @@ from module.nextcord_jukebox.exceptions import EmptyQueue, NotPlaying, NothingPl
 from module.nextcord_jukebox.music_player import MusicPlayer
 from module.nextcord_jukebox.song import Song
 from module.progressBar import progressBar
+from module.embeds.lyrics import LyricsLangEmbed
 
 class_namespace = "music_class_title"
 
@@ -348,6 +349,63 @@ class NowPlayingMenu(nextcord.ui.View):
         await interaction.response.defer()
         self.last_interact = datetime.now()
         await self.update()
+
+    @nextcord.ui.button(emoji=get_emoji("lyrics"), style=nextcord.ButtonStyle.secondary)
+    @auth_guard.check_permissions("music/lyrics")
+    async def request_lyrics(
+        self, button: nextcord.Button, interaction: nextcord.Interaction
+    ):
+        """
+        Request the lyrics of the currently playing song.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered this action.
+        """
+        await interaction.response.defer()
+        self.last_interact = datetime.now()
+        try:
+
+            song = await self.player.now_playing()
+
+            embed = LyricsLangEmbed(
+                interaction, player=self.player, song=song, link=song.url, bot=self.bot
+            )
+
+            await embed.send_initial_message()
+        except (NotPlaying, EmptyQueue):
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id,
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "nothing_is_playing"
+                    ],
+                    message_type="warn",
+                ),
+            )
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id, view=None
+            )
+        except Exception as e:
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id,
+                embed=Embeds.message(
+                    title=lang[await get_guild_language(self.interaction.guild.id)][
+                        class_namespace
+                    ],
+                    message=lang[await get_guild_language(self.interaction.guild.id)][
+                        "unknown_error"
+                    ],
+                    message_type="error",
+                ),
+            )
+
+            await self.interaction.followup.edit_message(
+                message_id=self.follow_up.id, view=None
+            )
 
     async def timeout_self(self):
         """Timeout the view and stop the auto-update task."""
