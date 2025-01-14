@@ -51,6 +51,7 @@ class NowPlayingMenu(nextcord.ui.View):
         player: MusicPlayer,
         playing: bool,
         song: Song,
+        bot: nextcord.Client,
         thumbnail: str = None,
         on_toggle: Callable = None,
         on_next: Callable = None,
@@ -81,6 +82,7 @@ class NowPlayingMenu(nextcord.ui.View):
         self.on_previous = on_previous
         self.thumbnail = thumbnail
         self.song = song
+        self.bot = bot
         self.follow_up = None
         self.is_timeout = False
         self.source_url = self.song.source_url
