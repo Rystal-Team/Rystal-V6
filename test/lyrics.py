@@ -21,56 +21,51 @@
 #  ------------------------------------------------------------
 #
 
-import json
-import os
+from meta_yt import YouTube
+from deep_translator import GoogleTranslator
+from langdetect import detect
+import time
 
-from lyricsgenius import Genius
+yt = YouTube("https://www.youtube.com/watch?v=impSuIygMiQ&ab_channel=THEFIRSTTAKE")
+captions = yt.video.get_captions()
+print(captions)
 
-genius = Genius(os.getenv("GENIUS_APIKEY"))
-
-
-class Song:
-    def __init__(self, title, lyrics, thumbnail, url):
-        self._title = title
-        self._lyrics = lyrics
-        self._thumbnail = thumbnail
-        self._url = url
-
-    @property
-    def title(self) -> str:
-        return self._title
-
-    @property
-    def lyrics(self) -> str:
-        return self._lyrics
-
-    @property
-    def thumbnail(self) -> str:
-        return self._thumbnail
-
-    @property
-    def url(self) -> str:
-        return self._url
+data = {}
+base_transcript = []
+lyrics = {}
 
 
-class Searcher:
-    async def search_song(term):
-        return_dump = []
-        result = genius.search_songs(term)
+if captions:
+    for caption in captions:
+        print(f'language: {caption.language}, language code: {caption.language_code}')
+        print(caption.url)
+        data[caption.language_code] = []
+        for line in caption.transcript:
+            data[caption.language_code].append(line)
 
-        with open(".json", "w") as f:
-            json.dump(result, f)
+        print(data[caption.language_code])
+else:
+    print("No captions available")
+    exit()
 
-        for song in result["hits"]:
-            print(song)
-            if song["type"] == "song":
-                song_object = Song(
-                    song["result"]["title"],
-                    genius.lyrics(song["result"]["id"]),
-                    song["result"]["song_art_image_url"],
-                    song["result"]["url"],
-                )
+detected_language = detect(yt.video.metadata['videoDetails']['title'])
+print(f'detected as {detected_language}')
 
-                return_dump.append(song_object)
+"""for line in data[detected_language]:
+    base_transcript.append(line['text'])
+print(base_transcript)"""
 
-        return return_dump
+"""create_timer = time.time()
+target = "zh-TW"
+
+try:
+    translation = GoogleTranslator(source=detected_language, target=target).translate_batch(base_transcript)
+except KeyError:
+    translation = GoogleTranslator(source=str(list(data.keys())[0]), target=target).translate_batch(base_transcript)
+
+for index, line in enumerate(data[detected_language]):
+    data[detected_language][index]['text'] = translation[index]
+    lyrics = data[detected_language]
+
+print(f'translated in {time.time() - create_timer} seconds')
+"""

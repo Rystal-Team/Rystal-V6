@@ -37,7 +37,6 @@ def create_top_songs_poster(
     description: str,
     detail_texts: Optional[List[str]] = None,
 ) -> np.ndarray:
-
     def draw_text(img, text, position, font_path, font_size, color, center=False):
         font = ImageFont.truetype(font_path, font_size)
         pil_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -338,7 +337,7 @@ poster = create_top_songs_poster(
     description,
     detail_texts=["41時間+", "1871曲再生しました", "18% アステル・レダ"],
 )
-print(f"Created poster, {time.time()-create_timer}ms")
+print(f"Created poster, {time.time() - create_timer}ms")
 cv2.imshow("Poster", poster)
 cv2.imwrite("poster.png", poster)
 cv2.waitKey(0)

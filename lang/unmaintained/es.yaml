@@ -6,7 +6,6 @@ must_be_positive: "¡El valor de `{option}` debe ser positivo!"
 
 # embed titles
 music_class_title: "🎵 | Módulo de Música"
-level_class_title: "🎖️ | Módulo de Niveles"
 system_class_title: "🤖 | Sistema"
 setting_class_title: "⚙️ | Configuración"
 note_class_title: "📒 | Nota"
@@ -57,7 +56,6 @@ resumed_queue: "¡Cola reanudada!"
 skipped_from: "¡Saltado de **{old}** a **{new}**!"
 skipped: "¡Saltado **{old}**!"
 
-music_registered_secret: "Has registrado un secreto con éxito. Por favor, revisa tus mensajes privados para más detalles. Si no has recibido nada, asegúrate de que 'permitir mensajes directos de miembros del servidor' esté activado en tu configuración de privacidad."
 music_secret: "Este es tu nuevo secreto\n ```{secret}```"
 
 # level
@@ -76,7 +74,7 @@ not_implemented: "¡Este comando aún no está implementado!"
 command_slowdown: "¡Por favor, desacelera y vuelve a intentarlo más tarde!"
 
 # queue search query
-queue_serach_query: "Consulta de búsqueda (Déjalo vacío para mostrar todo)"
+queue_search_query: "Consulta de búsqueda (Déjalo vacío para mostrar todo)"
 queue_query: "Consulta"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

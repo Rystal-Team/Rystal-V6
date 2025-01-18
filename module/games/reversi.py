@@ -23,6 +23,7 @@
 
 import copy
 import random
+import secrets
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -301,10 +302,10 @@ class AIPlayer:
             return None
 
         if self.difficulty == "easy":
-            return random.choice(valid_moves)
+            return secrets.choice(valid_moves)
         if self.difficulty == "medium":
             return (
-                random.choice(valid_moves)
+                secrets.choice(valid_moves)
                 if random.random() < 0.5
                 else max(valid_moves, key=self.evaluate_move)
             )
@@ -394,7 +395,7 @@ class Interactor:
             board_copy[row][col] = "*"
         print("  a b c d e f g h\n +----------------")
         for i, row in enumerate(board_copy):
-            print(f"{i+1}|{' '.join(row)}")
+            print(f"{i + 1}|{' '.join(row)}")
         print()
         image = self.generate_board_image(board_copy)
         return image

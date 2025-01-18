@@ -76,7 +76,7 @@ class RPCHandler(EventManager):
             before: The state before the event.
             after: The state after the event.
         """
-        for member in player._members:
+        for member in player.members:
             if member == player.bot or member is None:
                 continue
             user_secret: Optional[str] = await self.database.get_user_secret(member.id)
@@ -90,6 +90,7 @@ class RPCHandler(EventManager):
                             "title": after.title,
                             "url": after.url,
                             "channel": after.channel,
+                            "thumbnail": after.thumbnail,
                         },
                     },
                 )
@@ -105,7 +106,7 @@ class RPCHandler(EventManager):
             player: The player instance.
             interaction: The interaction instance.
         """
-        for member in player._members:
+        for member in player.members:
             if member == player.bot or member is None or member == "None":
                 continue
             user_secret: Optional[str] = await self.database.get_user_secret(member.id)
@@ -150,6 +151,7 @@ class RPCHandler(EventManager):
                         "title": now_playing.title,
                         "url": now_playing.url,
                         "channel": now_playing.channel,
+                        "thumbnail": now_playing.thumbnail,
                     },
                 },
             )

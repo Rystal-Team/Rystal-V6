@@ -25,7 +25,6 @@ import asyncio
 import datetime
 import random
 import time
-import urllib.error
 from typing import Callable, Optional, Union
 from urllib import parse
 
@@ -61,76 +60,26 @@ ytdlp = yt_dlp.YoutubeDL(
 
 class MusicPlayer:
     """
-    A class to handle music playback within a voice channel for a Discord bot.
-
-    This class provides functionalities to manage and control music playback, including queuing songs, managing playback state, and handling voice channel connections.
+    A class representing a music player.
 
     Attributes:
-        loop (Optional[asyncio.BaseEventLoop]): The event loop used for async operations.
-        voice (Optional[nextcord.VoiceClient]): The voice client connected to the voice channel.
-        interaction (Interaction): The interaction object associated with the user request.
+        loop (asyncio.AbstractEventLoop): The event loop for the player.
+        voice (nextcord.VoiceClient): The voice client instance.
+        interaction (Interaction): The interaction object containing information about the user and the guild.
         bot: The bot instance to which this player is attached.
-        loop_mode (LOOPMODE): The current loop mode for the player.
-        _now_playing (Optional[Song]): The currently playing song.
-        paused (bool): Whether the playback is currently paused.
+        loop_mode (LOOPMODE): The loop mode of the player.
+        _now_playing (Song): The currently playing song.
+        paused (bool): Whether the player is paused.
         removed (bool): Whether the player has been removed.
         leave_when_empty (bool): Whether to leave the voice channel when the queue is empty.
-        manager: The player manager instance managing this player.
-        database: The database instance used for caching video metadata.
-        music_queue (list[Song]): The queue of songs to be played.
+        manager (PlayerManager): The player manager instance managing this player.
+        database: The database instance for caching video metadata.
+        music_queue (list): The queue of songs to play.
         _fetching_stream (bool): Whether a stream is currently being fetched.
-        _appending (bool): Whether songs are currently being appended to the queue.
-        _asyncio_lock (asyncio.Lock): A lock to prevent concurrent access issues.
+        _appending (bool): Whether songs are being appended to the queue.
+        _asyncio_lock (asyncio.Lock): An asyncio lock for handling concurrency.
         _members (list): The list of members currently in the voice channel.
-        ffmpeg_opts (dict): Options for FFmpeg processing.
-
-    Methods:
-        _attempt_reconnect(max_retries=5, delay=1):
-            Attempts to reconnect to the voice channel if disconnected.
-        _on_voice_state_update(member, before, after):
-            Handles voice state updates to manage member join/leave events and bot reconnection.
-        _play_func(last: Union[Song, None], new: Song):
-            Plays a new song and updates the now playing state.
-        _pop_queue(index: int = 1, append: bool = False):
-            Removes a specified number of songs from the queue.
-        _next_func(index: int = 1):
-            Moves to the next song in the queue.
-        _after_func(error: Union[None, Exception] = None):
-            Callback function for after a song finishes playing.
-        _pre_check(check_playing: bool = False, check_nowplaying: bool = False,
-                   check_fetching_stream: bool = False, check_queue: bool = False,
-                   check_connection: bool = True) -> Optional[bool]:
-            Performs pre-checks before executing certain methods.
-        pre_check(*d_args, **d_kwargs) -> Callable:
-            A decorator for methods that require pre-checks before execution.
-        cleanup():
-            Cleans up the player by clearing the queue and disconnecting from the voice channel.
-        _queue_single(video_url: str) -> Song:
-            Queues a single song from a video URL.
-        queue(interaction: Interaction, query: str):
-            Queues a song or playlist based on a search query.
-        connect(interaction: Interaction) -> Optional[bool]:
-            Connects the bot to a voice channel if not already connected.
-        change_loop_mode(mode: LOOPMODE) -> LOOPMODE:
-            Changes the loop mode for the player.
-        resume(forced=False):
-            Resumes playback of the currently paused song.
-        pause(forced=False):
-            Pauses playback of the currently playing song.
-        skip(index: int = 1):
-            Skips the current song and optionally advances in the queue.
-        previous(index: int = 1):
-            Moves to the previous song in the queue.
-        shuffle():
-            Shuffles the order of songs in the queue.
-        now_playing() -> Song:
-            Returns the currently playing song.
-        current_queue() -> list:
-            Returns the current queue of songs.
-        stop(disconnect=True) -> bool:
-            Stops playback and optionally disconnects from the voice channel.
-        remove(index=0) -> Optional[Song]:
-            Removes a song from the queue based on its index.
+        ffmpeg_opts (dict): Options for FFmpeg.
     """
 
     def __init__(
@@ -164,7 +113,7 @@ class MusicPlayer:
         self._asyncio_lock = asyncio.Lock()
         self._members = []
         self.ffmpeg_opts = ffmpeg_opts or {
-            "options": "-vn",
+            "options": "-vn -af loudnorm",
             "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 0",
         }
 
@@ -191,7 +140,7 @@ class MusicPlayer:
                 await asyncio.sleep(delay)
         return False
 
-    async def _on_voice_state_update(self, member, before, after):
+    async def on_voice_state_update(self, member, before, after):
         """
         Handles voice state updates to manage member join/leave events and bot reconnection.
 
@@ -290,9 +239,8 @@ class MusicPlayer:
                         "track_start", self, self.interaction, last, new
                     )
             except Exception as e:
-                LogHandler.error(
-                    f"Failed to play track (If this is due to player not in voice because it gets disconnected when queuing, you can ignore this): {e}"
-                )
+                if str(e) == "Not connected to voice.":
+                    return
                 raise e
 
     async def _pop_queue(self, index: int = 1, append: bool = False):
@@ -390,6 +338,7 @@ class MusicPlayer:
 
         return True
 
+    @staticmethod
     def pre_check(*d_args, **d_kwargs) -> Callable:
         """
         A decorator for methods requiring pre-checks.
@@ -424,6 +373,121 @@ class MusicPlayer:
                 message=f"Failed to perform cleanup disconnect. {type(e).__name__}: {str(e)}"
             )
         return
+
+    async def _process_songs(self, video_ids, cache_metas):
+        songs = []
+        for video_id in video_ids:
+            song = Song(**cache_metas[video_id])
+            songs.append(song)
+            self.music_queue.append(song)
+
+            if not self.paused and self.music_queue and not self._now_playing:
+                await self._play_func(None, self.music_queue[0])
+        return songs
+
+    async def _process_missing_songs(self, missing_ids):
+        songs = []
+        for video_id in missing_ids:
+            video = await self.loop.run_in_executor(None, lambda: Video(str(video_id)))
+            meta = {
+                "url": video.url,
+                "title": video.title,
+                "views": video.views,
+                "duration": video.duration,
+                "thumbnail": video.thumbnail,
+                "channel": video.channel,
+                "channel_url": video.channel_url,
+                "thumbnails": video.thumbnails,
+            }
+            self.database.cache_video_metadata(video_id, meta)
+            song = Song(**meta)
+            songs.append(song)
+            self.music_queue.append(song)
+
+            if not self.paused and self.music_queue and not self._now_playing:
+                await self._play_func(None, self.music_queue[0])
+        return songs
+
+    @pre_check()
+    async def _queue_bulk(
+        self, video_urls: list, shuffle: bool = False
+    ) -> tuple[list[Song], list[str]]:
+        """
+        Queues multiple songs.
+
+        Args:
+            video_urls (list): A list of video URLs to queue.
+            shuffle (bool, optional): Whether to shuffle the added songs. Defaults to False.
+
+        Returns:
+            tuple: A tuple containing the processed songs and the failed songs.
+        """
+        timer = time.time()
+        self.database.run_cleanup()
+        failed_songs = []
+        processed_songs = []
+
+        video_ids = []
+        for url in video_urls:
+            try:
+                video_id = await get_video_id(url)
+                video_ids.append(video_id)
+            except Exception as e:
+                failed_songs.append(url)
+                LogHandler.error(f"Failed to process URL {url}: {e}")
+
+        cache_metas = self.database.get_bulk_video_metadata(video_ids)
+        cached_ids = set(cache_metas.keys())
+        missing_ids = list((set(video_ids) - cached_ids))
+        cached_ids = list(cached_ids)
+
+        if shuffle:
+            random.shuffle(cached_ids)
+            random.shuffle(missing_ids)
+
+        for video_id in cached_ids:
+            try:
+                song = Song(**cache_metas[video_id])
+                processed_songs.append(song)
+                self.music_queue.append(song)
+
+                if not self.paused and self.music_queue and not self._now_playing:
+                    await self._play_func(None, self.music_queue[0])
+            except Exception as e:
+                failed_songs.append(video_id)
+                LogHandler.error(f"Failed to process cached song {video_id}: {e}")
+
+        for video_id in missing_ids:
+            try:
+                video = await self.loop.run_in_executor(
+                    None, lambda: Video(str(video_id))
+                )
+                meta = {
+                    "url": video.url,
+                    "title": video.title,
+                    "views": video.views,
+                    "duration": video.duration,
+                    "thumbnail": video.thumbnail,
+                    "channel": video.channel,
+                    "channel_url": video.channel_url,
+                    "thumbnails": video.thumbnails,
+                }
+                self.database.cache_video_metadata(video_id, meta)
+                song = Song(**meta)
+                processed_songs.append(song)
+                self.music_queue.append(song)
+
+                if not self.paused and self.music_queue and not self._now_playing:
+                    await self._play_func(None, self.music_queue[0])
+            except Exception as e:
+                failed_songs.append(video_id)
+                LogHandler.error(f"Failed to process missing song {video_id}: {e}")
+
+        print(colored(f"[BULK ADDED] {len(processed_songs)} songs", color="magenta"))
+        print(colored(f"[BULK FAILED] {len(failed_songs)} songs", color="red"))
+        print(colored(f"Time taken: {time.time() - timer}", color="dark_grey"))
+
+        return processed_songs, failed_songs
 
     @pre_check()
     async def _queue_single(self, video_url: str) -> Song:
@@ -484,13 +548,15 @@ class MusicPlayer:
         return "list" in query_params
 
     @pre_check(check_fetching_stream=True)
-    async def queue(self, interaction: Interaction, query: str):
+    async def queue(
+        self, interaction: Interaction, query: str, shuffle_added: bool = False
+    ):
         """
         Queues a song or playlist based on the given query.
 
         Args:
-            interaction (Interaction): The interaction object containing information about the user and the guild.
-            query (str): The search query or URL to queue.
+            interaction (Interaction): Contains information about the user and the guild.
+            query (str): Search query or URL to queue.
 
         Returns:
             Union[Playlist, Song]: The queued playlist or song.
@@ -499,38 +565,49 @@ class MusicPlayer:
             NoQueryResult: If no results are found for the given query.
         """
         self._fetching_stream = True
+
         result = None
+        failed_songs = []
+        self.loop = self.loop or interaction.guild.voice_client.loop
 
-        if self.is_valid_playlist_url(query):
-            try:
+        try:
+            if self.is_valid_playlist_url(query):
                 playlist = await asyncio.to_thread(Playlist, query)
-                if playlist:
-                    await EventManager.fire("loading_playlist", self, interaction, None)
-                    for url in playlist.video_urls:
-                        song = await self.loop.create_task(self._queue_single(url))
-                        await EventManager.fire(
-                            "loading_playlist", self, interaction, song
-                        )
-                    result = playlist
-            except urllib.error.HTTPError as e:
-                LogHandler.error(f"Failed to fetch playlist: {e}")
-                self._fetching_stream = False
-                raise InvalidPlaylist from e
-        else:
-            try:
-                yt = await asyncio.to_thread(YouTube, query)
-            except Exception as e:
-                self._fetching_stream = False
-                raise NoQueryResult from e
-            if not yt:
-                self._fetching_stream = False
-                raise NoQueryResult
-            if yt.video and yt:
-                result = await self._queue_single(yt.video.url)
+                await EventManager.fire("loading_playlist", self, interaction, None)
 
-        self._fetching_stream = False
-        if result:
-            return result
+                after_playlist = (
+                    random.sample(list(playlist.video_urls), len(playlist.video_urls))
+                    if shuffle_added
+                    else list(playlist.video_urls)
+                )
+
+                songs, failed = await self.loop.create_task(
+                    self._queue_bulk(after_playlist, shuffle=shuffle_added)
+                )
+                if songs:
+                    await EventManager.fire(
+                        "loading_playlist", self, interaction, songs[0]
+                    )
+                    result = playlist
+                failed_songs.extend(failed)
+            else:
+                try:
+                    yt = await asyncio.to_thread(YouTube, query)
+                except Exception as e:
+                    failed_songs.append(query)
+                else:
+                    try:
+                        result = await self._queue_single(yt.video.url)
+                    except Exception as e:
+                        failed_songs.append(yt.video.title or query)
+                        LogHandler.error(f"Failed to queue song: {e}")
+
+        except Exception as e:
+            LogHandler.error(f"Queue operation failed: {e}")
+        finally:
+            self._fetching_stream = False
+
+        return result, failed_songs
 
     @pre_check(check_connection=False)
     async def connect(self, interaction: Interaction) -> Optional[bool]:
@@ -640,15 +717,12 @@ class MusicPlayer:
         return last, new
 
     @pre_check(check_queue=True)
-    async def previous(self, index: int = 1):
+    async def previous(self):
         """
-        Skips the current song.
-
-        Args:
-            index (int, optional): The number of songs to skip. Defaults to 1.
+        Moves the current song to the end of the queue and plays the previous song.
 
         Returns:
-            tuple: The last song played and the new song to be played.
+            tuple: The previous song played and the new song to be played.
         """
         first = self.music_queue[: len(self.music_queue) - 2]
         last = self.music_queue[len(self.music_queue) - 2 :]
@@ -659,10 +733,11 @@ class MusicPlayer:
         if not len(self.music_queue) > 1:
             self.music_queue.append(self.music_queue[0])
 
+        previous_song = self.music_queue[0]
         new = self.music_queue[1]
 
         self.voice.stop()
-        return last, new
+        return previous_song, new
 
     @pre_check(check_queue=True)
     async def shuffle(self):
@@ -744,3 +819,13 @@ class MusicPlayer:
             song = self.music_queue.pop(index)
 
         return song
+
+    @property
+    def fetching_stream(self):
+        """bool: Whether a stream is currently being fetched."""
+        return self._fetching_stream
+
+    @property
+    def members(self):
+        """list: The list of members currently in the voice channel."""
+        return self._members

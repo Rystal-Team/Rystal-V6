@@ -33,7 +33,18 @@ create_statements = {
             "columns": {"user_id": "TEXT PRIMARY KEY", "notes": "TEXT"},
         },
         "users": {
-            "create": "CREATE TABLE IF NOT EXISTS users (user_id TEXT PRIMARY KEY, level INTEGER, xp INTEGER, total_xp INTEGER, points INTEGER, last_point_claimed TEXT)",
+            "create": """CREATE TABLE IF NOT EXISTS users(
+            user_id TEXT PRIMARY KEY,
+            level INTEGER,
+            xp INTEGER,
+            total_xp INTEGER,
+            points INTEGER,
+            last_point_claimed TEXT,
+            receive_limit_reached BOOLEAN,
+            last_point_received TEXT,
+            received_today INTEGER
+            )
+            """,
             "columns": {
                 "user_id": "TEXT PRIMARY KEY",
                 "level": "INTEGER",
@@ -41,6 +52,9 @@ create_statements = {
                 "total_xp": "INTEGER",
                 "points": "INTEGER",
                 "last_point_claimed": "TEXT",
+                "receive_limit_reached": "BOOLEAN",
+                "last_point_received": "TEXT",
+                "received_today": "INTEGER",
             },
         },
         "guild": {
@@ -52,7 +66,7 @@ create_statements = {
                     music_auto_leave BOOLEAN,
                     music_default_loop_mode INTEGER,
                     jackpot_total INTEGER,
-                    jackpot_announce_channel INTEGER
+                    game_announce_channel INTEGER
                 )
             """,
             "columns": {
@@ -62,7 +76,7 @@ create_statements = {
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INTEGER",
                 "jackpot_total": "INTEGER",
-                "jackpot_announce_channel": "INTEGER",
+                "game_announce_channel": "INTEGER",
             },
         },
         "game_sessions": {
@@ -93,7 +107,19 @@ create_statements = {
             "columns": {"user_id": "VARCHAR(255) PRIMARY KEY", "notes": "JSON"},
         },
         "users": {
-            "create": "CREATE TABLE IF NOT EXISTS users (user_id VARCHAR(255) PRIMARY KEY, level INT, xp INT, total_xp INT, points INT, last_point_claimed DATETIME)",
+            "create": """
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id VARCHAR(255) PRIMARY KEY,
+                    level INT,
+                    xp INT,
+                    total_xp INT,
+                    points INT,
+                    last_point_claimed DATETIME,
+                    receive_limit_reached BOOLEAN,
+                    last_point_received TEXT,
+                    received_today INTEGER
+                    )
+                    """,
             "columns": {
                 "user_id": "VARCHAR(255) PRIMARY KEY",
                 "level": "INT",
@@ -101,6 +127,9 @@ create_statements = {
                 "total_xp": "INT",
                 "points": "INT",
                 "last_point_claimed": "DATETIME",
+                "receive_limit_reached": "BOOLEAN",
+                "last_point_received": "TEXT",
+                "received_today": "INTEGER",
             },
         },
         "guild": {
@@ -112,7 +141,7 @@ create_statements = {
                     music_auto_leave BOOLEAN,
                     music_default_loop_mode INT,
                     jackpot_total INT,
-                    jackpot_announce_channel INT
+                    game_announce_channel INT
                 )
             """,
             "columns": {
@@ -122,7 +151,7 @@ create_statements = {
                 "music_auto_leave": "BOOLEAN",
                 "music_default_loop_mode": "INT",
                 "jackpot_total": "INT",
-                "jackpot_announce_channel": "INT",
+                "game_announce_channel": "INT",
             },
         },
         "game_sessions": {
@@ -143,7 +172,6 @@ create_statements = {
         },
     },
 }
-existing_tables = []
 
 if USE_SQLITE:
     db_handler = DatabaseHandler(

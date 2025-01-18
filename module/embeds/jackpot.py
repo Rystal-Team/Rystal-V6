@@ -24,10 +24,11 @@
 import nextcord
 
 from config.loader import lang, type_color
+from module.utils import format_number
 
 
 def create_jackpot_embed(
-    won, result, jackpot_total, user_points, mega_score, guild_lang
+    won, result, jackpot_total, user_points, mega_score, deficient_score, guild_lang
 ):
     """
     Creates an embed for the jackpot game.
@@ -41,9 +42,19 @@ def create_jackpot_embed(
             lang[guild_lang]["jackpot_lost"]
             if not won
             else (
-                lang[guild_lang]["jackpot_mega_score"]
+                lang[guild_lang]["jackpot_mega_score"].format(
+                    points=format_number(jackpot_total)
+                )
                 if mega_score
-                else lang[guild_lang]["jackpot_won"]
+                else (
+                    lang[guild_lang]["jackpot_deficient_score"].format(
+                        points=format_number(jackpot_total)
+                    )
+                    if deficient_score
+                    else lang[guild_lang]["jackpot_won"].format(
+                        points=format_number(jackpot_total)
+                    )
+                )
             )
         ),
         color=(
@@ -60,21 +71,25 @@ def create_jackpot_embed(
     )
     if won:
         embed.add_field(
-            name=lang[guild_lang]["jackpot_won"], value=str(jackpot_total), inline=False
+            name=lang[guild_lang]["jackpot_won"],
+            value=format_number(jackpot_total),
+            inline=False,
         )
     else:
         embed.add_field(
-            name=lang[guild_lang]["jackpot_point_lost"], value="1000", inline=False
+            name=lang[guild_lang]["jackpot_point_lost"],
+            value=format_number(1000),
+            inline=False,
         )
     embed.add_field(
-        name=lang[guild_lang]["jackpot_your_points"],
-        value=str(user_points),
+        name=lang[guild_lang]["game_your_points"],
+        value=format_number(user_points),
         inline=False,
     )
     if not won:
         embed.add_field(
             name=lang[guild_lang]["jackpot_total_points"],
-            value=str(jackpot_total),
+            value=format_number(jackpot_total),
             inline=False,
         )
 

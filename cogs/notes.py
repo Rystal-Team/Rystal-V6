@@ -28,11 +28,18 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, type_color
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from database.note_handler import add_note, remove_note
 from database.note_handler import fetch_note, get_notes
 from module.embeds.generic import Embeds
-from module.embeds.noteview import Note, NoteState, NoteStateView, NotesPagination
+from module.embeds.noteview import (
+    Note,
+    NoteStateView,
+    NotesPagination,
+    map_state_to_emoji,
+    map_state_to_text,
+)
 
 class_namespace = "note_class_title"
 
@@ -49,6 +56,7 @@ class NoteSystem(commands.Cog):
         return
 
     @note.subcommand(description=lang[default_language]["note_create_description"])
+    @auth_guard.check_permissions("note/create")
     async def create(
         self,
         interaction: Interaction,
@@ -82,6 +90,7 @@ class NoteSystem(commands.Cog):
         )
 
     @note.subcommand(description=lang[default_language]["note_list_description"])
+    @auth_guard.check_permissions("note/list")
     async def list(
         self,
         interaction: Interaction,
@@ -118,6 +127,7 @@ class NoteSystem(commands.Cog):
         await pagination.send_initial_message()
 
     @note.subcommand(description=lang[default_language]["note_view_description"])
+    @auth_guard.check_permissions("note/view")
     async def view(
         self,
         interaction: Interaction,
@@ -148,15 +158,6 @@ class NoteSystem(commands.Cog):
         note_data = json.loads(note_data)
         guild_lang = await get_guild_language(interaction.guild.id)
 
-        def map_state_to_text(state):
-            state_mapping = {
-                NoteState.UNBEGUN.value: lang[guild_lang]["note_state_unbegun"],
-                NoteState.STALLED.value: lang[guild_lang]["note_state_stalled"],
-                NoteState.ONGOING.value: lang[guild_lang]["note_state_ongoing"],
-                NoteState.FINISHED.value: lang[guild_lang]["note_state_finished"],
-            }
-            return state_mapping.get(state, "Unknown")
-
         embed = nextcord.Embed(
             title=lang[guild_lang][class_namespace],
             description=lang[guild_lang]["note_view_details"].format(
@@ -166,7 +167,7 @@ class NoteSystem(commands.Cog):
         )
         embed.add_field(
             name=lang[guild_lang]["note_state_title"],
-            value=map_state_to_text(note_data["state"]),
+            value=f"{map_state_to_emoji(note_data['state'])} {map_state_to_text(guild_lang, note_data['state'])}",
             inline=False,
         )
         view = NoteStateView(note_id, interaction.user.id, guild_lang)
@@ -176,6 +177,7 @@ class NoteSystem(commands.Cog):
         view.message = message
 
     @note.subcommand(description=lang[default_language]["note_remove_description"])
+    @auth_guard.check_permissions("note/remove")
     async def remove(
         self,
         interaction: Interaction,

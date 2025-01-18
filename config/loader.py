@@ -35,11 +35,16 @@ SQLITE_PATH = config["SQLITE_PATH"]
 status_text = config["status_text"]
 default_language = config["default_language"]
 multi_lang = config["multi_lang"]
+use_custom_emojis = config["use_custom_emojis"]
 use_informal_lang = config["use_informal_lang"]
 included_unmaintained_lang = config["included_unmaintained_lang"]
 use_ytdlp = config["use_ytdlp"]
 theme_color = config["theme_color"]
 max_note = config["max_note"]
+point_receive_limit = config["point_receive_limit"]
+
+AUTHGUARD_SQLITE_PATH = config["AUTHGUARD_SQLITE_PATH"]
+AUTHGUARD_USE_SQLITE = config["AUTHGUARD_USE_SQLITE"]
 
 type_color = {
     "success": Color.from_rgb(*config["type_color"]["success"]),
@@ -102,7 +107,6 @@ for lang_dir in lang_dirs:
 for language in lang:
     lang_list.append(lang[language]["name"])
     lang_mapping[lang[language]["name"]] = language
-
 
 with open("config/banland.yaml", "r", encoding="utf8") as file:
     banland = yaml.safe_load(file)

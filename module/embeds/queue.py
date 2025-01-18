@@ -1,27 +1,3 @@
-"""
-This module defines classes for handling search and pagination in a Nextcord bot.
-
-Classes:
-    Search: A modal for inputting search queries.
-    Pagination: A view for handling pagination of results in a Nextcord bot.
-
-Methods:
-    Search.__init__(self, page_view): Initializes the Search modal with a reference to the page view.
-    Search.callback(self, interaction: nextcord.Interaction): Handles the search query input and updates the page view.
-
-    Pagination.__init__(self, interaction: nextcord.Interaction, get_page: Callable): Initializes the Pagination view.
-    Pagination.navegate(self): Navigates to the initial page and sends the first message.
-    Pagination.edit_page(self): Edits the current page based on the search query and page index.
-    Pagination.update_buttons(self): Updates the state of pagination buttons.
-
-    Pagination.previous(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the previous button click.
-    Pagination.next(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the next button click.
-    Pagination.end(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the end button click.
-    Pagination.search(self, button: nextcord.Button, interaction: nextcord.Interaction): Handles the search button click.
-    Pagination.on_timeout(self): Handles the timeout event by removing pagination buttons.
-    Pagination.compute_total_pages(total_results: int, results_per_page: int) -> int: Computes the total number of pages.
-"""
-
 #  ------------------------------------------------------------
 #  Copyright (c) 2024 Rystal-Team
 #
@@ -52,6 +28,7 @@ import nextcord
 
 from config.loader import lang
 from database.guild_handler import get_guild_language
+from module.emoji import get_emoji
 
 
 class Search(nextcord.ui.Modal):
@@ -59,7 +36,7 @@ class Search(nextcord.ui.Modal):
     A modal for inputting search queries.
 
     Attributes:
-        page_view (Pagination): The pagination view associated with this search modal.
+        page_view (QueueViewer): The pagination view associated with this search modal.
         search_query (nextcord.ui.TextInput): The text input field for the search query.
     """
 
@@ -68,7 +45,7 @@ class Search(nextcord.ui.Modal):
         Initializes the Search modal with a reference to the page view.
 
         Args:
-            page_view (Pagination): The pagination view associated with this search modal.
+            page_view (QueueViewer): The pagination view associated with this search modal.
         """
         super().__init__(
             lang[page_view.guild_language]["queue_search"],
@@ -80,7 +57,7 @@ class Search(nextcord.ui.Modal):
         self.search_query = nextcord.ui.TextInput(
             label=lang[page_view.guild_language]["queue_query"],
             style=nextcord.TextInputStyle.paragraph,
-            placeholder=lang[page_view.guild_language]["queue_serach_query"],
+            placeholder=lang[page_view.guild_language]["queue_search_query"],
             required=False,
             max_length=100,
         )
@@ -98,7 +75,24 @@ class Search(nextcord.ui.Modal):
         await self.page_view.edit_page()
 
 
-class Pagination(nextcord.ui.View):
+class SkipDropdown(nextcord.ui.Select):
+    def __init__(self, queue_viewer, guild_language, player):
+        super().__init__(
+            placeholder=lang[guild_language]["music_skip_dropdown_placeholder"],
+            min_values=1,
+            max_values=1,
+            options=[],
+        )
+        self.queue_viewer = queue_viewer
+        self.player = player
+
+    async def callback(self, interaction: nextcord.Interaction):
+        if not self.values[0] == "no_result":
+            await self.player.skip(index=int(self.values[0]))
+            await self.queue_viewer.edit_page()
+
+
+class QueueViewer(nextcord.ui.View):
     """
     A view for handling pagination of results in a Nextcord bot.
 
@@ -112,14 +106,16 @@ class Pagination(nextcord.ui.View):
         guild_language (str): The language of the guild.
     """
 
-    def __init__(self, interaction: nextcord.Interaction, get_page: Callable):
+    def __init__(self, interaction: nextcord.Interaction, get_page: Callable, player):
         """
-        Initializes the Pagination view.
+        Initializes the QueueViewer view.
 
         Args:
             interaction (nextcord.Interaction): The interaction that initiated the pagination.
             get_page (Callable): The function to get the page data.
         """
+        super().__init__(timeout=180)
+
         self.interaction = interaction
         self.follow_up = None
         self.get_page = get_page
@@ -127,12 +123,16 @@ class Pagination(nextcord.ui.View):
         self.total_pages: Optional[int] = None
         self.index = 1
         self.guild_language = asyncio.run(get_guild_language(interaction.guild.id))
+        self.player = player
+        self.is_timeout = False
 
-        super().__init__(timeout=180)
+        self.dropdown = SkipDropdown(self, self.guild_language, self.player)
+        self.add_item(self.dropdown)
 
-    async def navegate(self):
+    async def navigate(self):
         """Navigates to the initial page and sends the first message."""
-        emb, self.total_pages = await self.get_page(self.index)
+        emb, self.total_pages, options = await self.get_page(self.index)
+        self.dropdown.options = options
         if self.total_pages == 1:
             follow_up_msg: nextcord.Message = await self.interaction.followup.send(
                 embed=emb
@@ -147,7 +147,10 @@ class Pagination(nextcord.ui.View):
 
     async def edit_page(self):
         """Edits the current page based on the search query and page index."""
-        emb, self.total_pages = await self.get_page(self.index, query=self.search_query)
+        emb, self.total_pages, options = await self.get_page(
+            self.index, query=self.search_query
+        )
+        self.dropdown.options = options
 
         if self.index == 0 and self.total_pages != 0:
             self.index = 1
@@ -166,15 +169,33 @@ class Pagination(nextcord.ui.View):
 
     def update_buttons(self):
         """Updates the state of pagination buttons."""
-        if self.index > self.total_pages // 2:
-            self.children[2].emoji = "⏮️"
-        else:
-            self.children[2].emoji = "⏭️"
-        self.children[0].disabled = self.index in (1, 0)
-        self.children[1].disabled = self.total_pages in (self.index, 0)
-        self.children[2].disabled = self.total_pages == 0
+        self.children[0].disabled = self.total_pages in (1, 0) or self.index in (1, 0)
+        self.children[1].disabled = self.total_pages in (1, 0) or self.index in (1, 0)
+        self.children[3].disabled = (
+            self.index == self.total_pages or self.total_pages in (1, 0)
+        )
+        self.children[4].disabled = (
+            self.index == self.total_pages or self.total_pages in (1, 0)
+        )
 
-    @nextcord.ui.button(emoji="◀️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("double_arrow_left"), style=nextcord.ButtonStyle.secondary
+    )
+    async def start(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        """
+        Handles the end button click.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
+        await interaction.response.defer()
+        self.index = 1
+        await self.edit_page()
+
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_left"), style=nextcord.ButtonStyle.secondary
+    )
     async def previous(
         self, button: nextcord.Button, interaction: nextcord.Interaction
     ):
@@ -189,7 +210,21 @@ class Pagination(nextcord.ui.View):
         self.index -= 1
         await self.edit_page()
 
-    @nextcord.ui.button(emoji="▶️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(emoji=get_emoji("search"), style=nextcord.ButtonStyle.secondary)
+    async def search(self, button: nextcord.Button, interaction: nextcord.Interaction):
+        """
+        Handles the search button click.
+
+        Args:
+            button (nextcord.Button): The button that was clicked.
+            interaction (nextcord.Interaction): The interaction that triggered the button click.
+        """
+        modal = Search(self)
+        await interaction.response.send_modal(modal)
+
+    @nextcord.ui.button(
+        emoji=get_emoji("arrow_right"), style=nextcord.ButtonStyle.secondary
+    )
     async def next(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handles the next button click.
@@ -202,7 +237,9 @@ class Pagination(nextcord.ui.View):
         self.index += 1
         await self.edit_page()
 
-    @nextcord.ui.button(emoji="⏭️", style=nextcord.ButtonStyle.blurple)
+    @nextcord.ui.button(
+        emoji=get_emoji("double_arrow_right"), style=nextcord.ButtonStyle.secondary
+    )
     async def end(self, button: nextcord.Button, interaction: nextcord.Interaction):
         """
         Handles the end button click.
@@ -212,26 +249,13 @@ class Pagination(nextcord.ui.View):
             interaction (nextcord.Interaction): The interaction that triggered the button click.
         """
         await interaction.response.defer()
-        if self.index <= self.total_pages // 2:
-            self.index = self.total_pages
-        else:
-            self.index = 1
+        self.index = self.total_pages
         await self.edit_page()
-
-    @nextcord.ui.button(emoji="🔎", style=nextcord.ButtonStyle.blurple)
-    async def search(self, button: nextcord.Button, interaction: nextcord.Interaction):
-        """
-        Handles the search button click.
-
-        Args:
-            button (nextcord.Button): The button that was clicked.
-            interaction (nextcord.Interaction): The interaction that triggered the button click.
-        """
-        modal = Search(self)
-        await interaction.response.send_modal(modal)
 
     async def on_timeout(self):
         """Handles the timeout event by removing pagination buttons."""
+        self.is_timeout = True
+
         await self.interaction.followup.edit_message(
             message_id=self.follow_up.id, view=None
         )

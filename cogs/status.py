@@ -24,14 +24,19 @@
 import datetime
 import platform
 import time
+from datetime import datetime
+
 
 import nextcord
 import psutil
+import requests
+import yt_dlp
 from nextcord import Interaction
 from nextcord.ext import commands
 from termcolor import colored
 
 from config.loader import default_language, lang, status_text, use_ytdlp
+from config.perm import auth_guard
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
 
@@ -72,6 +77,33 @@ class System(commands.Cog):
                 )
             )
 
+        print(
+            colored(
+                "=============================================================",
+                color="white",
+            )
+        )
+
+        yt_dlp_version = yt_dlp.version.__version__
+        print(colored(f"Installed yt-dlp version: {yt_dlp_version}", color="dark_grey"))
+
+        r = requests.get("https://pypi.org/pypi/yt-dlp/json")
+        latest_yt_dlp_version = r.json()["info"]["version"]
+
+        yt_dlp_version = datetime.strptime(yt_dlp_version, "%Y.%m.%d").strftime(
+            "%Y.%m.%d"
+        )
+
+        latest_yt_dlp_version = datetime.strptime(
+            latest_yt_dlp_version, "%Y.%m.%d"
+        ).strftime("%Y.%m.%d")
+
+        print(
+            colored(
+                f"Latest yt-dlp version: {latest_yt_dlp_version}", color="dark_grey"
+            )
+        )
+
         if use_ytdlp:
             print(colored(text="Using YTDLP to extract video data", color="dark_grey"))
         else:
@@ -80,9 +112,22 @@ class System(commands.Cog):
             )
         print(colored(text=f"Default language: {default_language}", color="dark_grey"))
 
+        if yt_dlp_version != latest_yt_dlp_version:
+            print(
+                colored(
+                    "Update yt-dlp to the latest version by running 'pip install -U yt-dlp' to avoid any issues.",
+                    color="red",
+                )
+            )
+        else:
+            print(
+                colored("yt-dlp is up to date with the latest version.", color="green")
+            )
+
     @nextcord.slash_command(
         description=lang[default_language]["system_ping_description"]
     )
+    @auth_guard.check_permissions("status/ping")
     async def ping(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         ping = round((self.bot.latency) * 1000)
@@ -102,6 +147,7 @@ class System(commands.Cog):
     @nextcord.slash_command(
         description=lang[default_language]["system_info_description"]
     )
+    @auth_guard.check_permissions("status/info")
     async def info(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
 

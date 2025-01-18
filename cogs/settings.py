@@ -26,6 +26,7 @@ from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, lang_list, lang_mapping
+from config.perm import auth_guard
 from database.guild_handler import (
     change_guild_language,
     change_guild_settings,
@@ -51,6 +52,7 @@ class Settings(commands.Cog):
     @setting.subcommand(
         description=lang[default_language]["setting_language_description"]
     )
+    @auth_guard.check_permissions("setting/language")
     async def language(
         self,
         interaction: Interaction,
@@ -90,6 +92,42 @@ class Settings(commands.Cog):
                 )
             )
 
+    @setting.subcommand(description=lang[default_language]["setting_game_description"])
+    async def game(self, interaction: Interaction):
+        return
+
+    @game.subcommand(
+        description=lang[default_language]["setting_game_announce_channel_description"]
+    )
+    @auth_guard.check_permissions("setting/game/game_announce_channel")
+    async def game_announce_channel(
+        self,
+        interaction: Interaction,
+        channel: nextcord.TextChannel = SlashOption(
+            name="channel",
+            description=lang[default_language][
+                "setting_game_announce_channel_option_description"
+            ],
+            required=True,
+        ),
+    ):
+        await interaction.response.defer(with_message=True)
+        await change_guild_settings(
+            interaction.guild.id, "game_announce_channel", channel.id
+        )
+
+        await interaction.followup.send(
+            embed=Embeds.message(
+                title=lang[await get_guild_language(interaction.guild.id)][
+                    class_namespace
+                ],
+                message=lang[await get_guild_language(interaction.guild.id)][
+                    "game_announce_channel_changed"
+                ].format(channel=channel.mention),
+                message_type="info",
+            )
+        )
+
     @setting.subcommand(description=lang[default_language]["setting_music_description"])
     async def music(self, interaction: Interaction):
         return
@@ -97,6 +135,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_volume_description"]
     )
+    @auth_guard.check_permissions("setting/music/silent_mode")
     async def silent_mode(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         toggle = not (
@@ -125,6 +164,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_auto_leave_description"]
     )
+    @auth_guard.check_permissions("setting/music/auto_leave")
     async def auto_leave(self, interaction: Interaction):
         await interaction.response.defer(with_message=True)
         toggle = not (
@@ -153,6 +193,7 @@ class Settings(commands.Cog):
     @music.subcommand(
         description=lang[default_language]["setting_music_default_loop_description"]
     )
+    @auth_guard.check_permissions("setting/music/default_loop_mode")
     async def default_loop_mode(
         self,
         interaction: Interaction,

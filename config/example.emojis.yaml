@@ -1,0 +1,17 @@
+search: 0
+arrow_left: 0
+arrow_right: 0
+double_arrow_left: 0
+double_arrow_right: 0
+
+music_resume: 0
+music_pause: 0
+music_loop: 0
+music_next: 0
+music_previous: 0
+
+note_stalled: 0
+note_finished: 0
+note_ongoing: 0
+note_remove: 0
+note_unbegan: 0

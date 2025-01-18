@@ -38,12 +38,15 @@ from dotenv import load_dotenv
 nest_asyncio.apply()
 load_dotenv()
 
+from module.emoji import load_dict
+from module.embeds.generic import Embeds
 from nextcord.ext import commands
 from termcolor import colored
 
 from config.loader import bot_owner_id, error_log_channel_id, lang
+
 from database.guild_handler import get_guild_language
-from module.embeds.generic import Embeds
+
 
 TOKEN = os.getenv("TOKEN")
 intents = nextcord.Intents.default()
@@ -70,6 +73,8 @@ handler.setFormatter(
     logging.Formatter("%(asctime)s:%(levelname)s:%(name)s: %(message)s")
 )
 logger.addHandler(handler)
+
+load_dict()
 
 
 @bot.event
@@ -188,91 +193,6 @@ async def setup():
 
     return cogs
 
-
-async def reloadSetup():
-    cogs = 0
-    for root, dirs, files in os.walk("./cogs"):
-        dirs[:] = [d for d in dirs if "disabled" and "__init__" not in d]
-        files = [
-            f for f in files if f.endswith(".py") and "disabled" and "__init__" not in f
-        ]
-
-        for filename in files:
-            if (
-                os.path.normpath(root) == os.path.normpath("./cogs/games")
-                and filename != "base.py"
-            ):
-                continue
-            cog_path = os.path.join(root, filename)
-            relative_path = os.path.relpath(cog_path, "./cogs")
-            module_name = relative_path.replace(os.sep, ".")[:-3]
-
-            try:
-                bot.reload_extension(f"cogs.{module_name}")
-                print(colored(text=f"Cogs: {module_name} is reloaded!", color="green"))
-                cogs += 1
-            except Exception as e:
-                print(
-                    colored(
-                        text=f"Unable to reload {module_name} Error: {e}", color="red"
-                    )
-                )
-        for d in dirs:
-            print(colored(text=f"Passed directory {d}", color="yellow"))
-
-    return cogs
-
-
-@bot.command()
-async def reloadcogs(ctx):
-    if ctx.author.id == bot_owner_id:
-        newcogs = await setup()
-        reloadedcogs = await reloadSetup()
-        await ctx.send(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(ctx.guild.id)][class_namespace],
-                message=f"Reloaded {reloadedcogs} cogs, loaded {newcogs} new cogs.",
-                message_type="info",
-            )
-        )
-    else:
-        await ctx.send(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(ctx.guild.id)][class_namespace],
-                message=lang[await get_guild_language(ctx.guild.id)][
-                    "missing_permission"
-                ],
-                message_type="error",
-            )
-        )
-
-
-@bot.slash_command(
-    name="list",
-    description="🤖 | See a list of servers that I am in!",
-)
-async def list(
-    interaction: nextcord.Interaction,
-):
-    if interaction.user.id == bot_owner_id:
-        para = "========= Guilds ========="
-        for guild in bot.guilds:
-            para = para + f"\nGuild: {guild.name} | Member: {guild.member_count}"
-
-        await interaction.response.send_message(para, ephemeral=True)
-    else:
-        await interaction.response.send_message(
-            embed=Embeds.message(
-                title=lang[await get_guild_language(interaction.guild.id)][
-                    class_namespace
-                ],
-                message=lang[await get_guild_language(interaction.guild.id)][
-                    "missing_permission"
-                ],
-                message_type="warn",
-            ),
-            ephemeral=True,
-        )
 
 asyncio.run(setup())
 bot.run(TOKEN)

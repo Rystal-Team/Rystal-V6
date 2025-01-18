@@ -22,6 +22,7 @@
 #
 
 import datetime
+import json
 import logging
 
 import nextcord
@@ -69,7 +70,7 @@ class Logger(commands.Cog):
         if "options" in interaction.data:
             embed.add_field(
                 name="Options",
-                value=f"{str(interaction.data['options'])}",
+                value=f"```json\n{str(json.dumps(interaction.data['options'], indent=2))}```",
                 inline=False,
             )
         await channel.send(embed=embed)

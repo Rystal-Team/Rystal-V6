@@ -6,7 +6,6 @@ must_be_positive: "`{option}` 값은 양수여야 합니다!"
 
 # embed titles
 music_class_title: "🎵 | 음악 모듈"
-level_class_title: "🎖️ | 레벨 모듈"
 system_class_title: "🤖 | 시스템"
 setting_class_title: "⚙️ | 설정"
 note_class_title: "📒 | 노트"
@@ -57,7 +56,6 @@ resumed_queue: "대기열을 재개했습니다!"
 skipped_from: "**{old}**에서 **{new}**으로 건너뛰었습니다!"
 skipped: "**{old}**을 건너뛰었습니다!"
 
-music_registered_secret: "비밀이 성공적으로 등록되었습니다. 추가 세부 사항은 개인 메시지에서 확인하세요. 메시지를 받지 못한 경우, 개인 정보 설정에서 '서버 구성원에게서 직접 메시지 허용'이 활성화되어 있는지 확인하세요."
 music_secret: "이것이 새로운 비밀입니다\n ```{secret}```"
 
 # level
@@ -76,7 +74,7 @@ not_implemented: "이 명령어는 아직 구현되지 않았습니다!"
 command_slowdown: "속도를 줄이고 나중에 다시 시도해 주세요!"
 
 # queue search query
-queue_serach_query: "검색 쿼리 (모든 항목을 보려면 비워 두세요)"
+queue_search_query: "검색 쿼리 (모든 항목을 보려면 비워 두세요)"
 queue_query: "쿼리"
 queue_search: "🔎"
 queue_footer: "{page}/{total_pages}"

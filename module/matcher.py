@@ -103,6 +103,22 @@ class SongMatcher:
         return cls.calc_score(dist, max_len)
 
     @classmethod
+    def normalize_text(cls, text):
+        """
+        Normalizes the text by replacing various types of spaces and punctuation with a standard space.
+
+        Args:
+            text (str): The text to normalize.
+
+        Returns:
+            str: The normalized text.
+        """
+        text = re.sub(r"[『』【】\[\]()・]", "", text)
+        text = re.sub(r"[^\w\sぁ-んァ-ン一-龯]", "", text)
+        text = re.sub(r"\s+", " ", text).strip()
+        return text
+
+    @classmethod
     def match(cls, song_queue, query, case_sens=True, threshold=0.8, debug=False):
         """
         Matches songs from the song queue based on the query string.
@@ -117,16 +133,16 @@ class SongMatcher:
         Returns:
             list of tuple: A list of tuples containing matched songs and their scores.
         """
-        highest_score = 0
         if not case_sens:
             query = query.lower()
 
+        query = cls.normalize_text(query)
         q_terms = cls.split(query)
         results = []
 
         for song in song_queue:
-            song_title = song.name
-            song_channel = song.channel
+            song_title = cls.normalize_text(song.name)
+            song_channel = cls.normalize_text(song.channel)
 
             title_proc = song_title.lower() if not case_sens else song_title
             channel_proc = song_channel.lower() if not case_sens else song_channel
@@ -145,6 +161,7 @@ class SongMatcher:
                     match_found = True
                     break
 
+                # Compare against split terms
                 for t_term in combined_terms:
                     sim_score = cls.term_sim(q_term, t_term)
                     highest_score = max(highest_score, sim_score)
@@ -197,6 +214,33 @@ if __name__ == "__main__":
             channel="夢追翔のJUKEBOX",
         ),
         Song(name="[MV] We don't talk anymore", channel="Justin Bieber"),
+        Song(
+            name="【歌衣メイカ爆誕祭2024】W/X/Y／歌衣メイカ × アステル・レダ",
+            channel="歌衣メイカ",
+        ),
+        Song(
+            name="【Original MV&Inst】可愛くてごめん/HoneyWorks 歌ってみた【Covered by 七海うらら】",
+            channel="七海うらら",
+        ),
+        Song(
+            name="【アステル4周年LIVE】でんでんぱっしょん／アステル・レダ × 奏手イヅル × 影山シエン × 夜十神封魔 × 羽継烏有 × 緋崎ガンマ〈AI 高画質化〉",
+            channel="アステル・レダ",
+        ),
+        Song(
+            name="Masayoshi Oishi - SHINDA! [Official Video]", channel="Oishi Masayoshi"
+        ),
+        Song(
+            name="【MV】常夜鬼譚／竜胆尊【オリジナル曲】",
+            channel="竜胆 尊 / Rindou Mikoto",
+        ),
+        Song(
+            name="Alice in Musicland ・*✧Special Edition",
+            channel="VOCALOID",
+        ),
+        Song(
+            name="四月は君の嘘『オレンジ』 / Kaga Sumire＆Nazuna (Cover)",
+            channel="Kaga Sumire",
+        ),
     ]
 
     queries = [
@@ -208,6 +252,10 @@ if __name__ == "__main__":
         "   一度だ  け  の   恋   なら",
         "カグラナナ",
         "アステル レダ",
+        "アステルレダ",
+        "w/x/y",
+        "alice in musicland",
+        "オレンジ",
     ]
 
     for q in queries:

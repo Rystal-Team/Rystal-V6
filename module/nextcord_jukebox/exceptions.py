@@ -80,3 +80,7 @@ class EmptyQueue(QueueError):
 
 class InvalidPlaylist(QueueError):
     """The playlist is invalid."""
+
+
+class InvalidVideo(QueueError):
+    """The video is invalid."""

@@ -30,9 +30,11 @@ from nextcord import File
 from nextcord.ext import commands
 
 from config.loader import default_language, lang, theme_color
+from config.perm import auth_guard
 from database import user_handler
 from database.guild_handler import get_guild_language
 from module.embeds.generic import Embeds
+from module.utils import format_number
 
 class_namespace = "rank_class_title"
 
@@ -84,6 +86,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_card_description"],
     )
+    @auth_guard.check_permissions("rank/card")
     async def card(
         self,
         interaction: nextcord.Interaction,
@@ -154,7 +157,7 @@ class RankSystem(commands.Cog):
         draw.text(
             (560, 160),
             lang[await get_guild_language(interaction.guild.id)]["level_xp"].format(
-                xp=xp, totalxp=(lvl + 1) * 100
+                xp=format_number(xp), totalxp=format_number((lvl + 1) * 100)
             ),
             font=description_font,
             fill="#fff",
@@ -169,6 +172,7 @@ class RankSystem(commands.Cog):
     @rank.subcommand(
         description=lang[default_language]["rank_leaderboard_description"],
     )
+    @auth_guard.check_permissions("rank/leaderboard")
     async def leaderboard(
         self,
         interaction: nextcord.Interaction,
@@ -212,7 +216,10 @@ class RankSystem(commands.Cog):
                 name=member.display_name,
                 value=lang[await get_guild_language(interaction.guild.id)][
                     "leaderboard_user_row"
-                ].format(level=data["level"], totalxp=data["totalxp"]),
+                ].format(
+                    level=format_number(data["level"]),
+                    totalxp=format_number(data["totalxp"]),
+                ),
                 inline=False,
             )
 
