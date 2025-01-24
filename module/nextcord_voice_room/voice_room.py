@@ -111,7 +111,8 @@ class VoiceRoom:
             "sqlite": "SELECT * FROM voice_rooms WHERE user_id = ?",
             "mysql": "SELECT * FROM voice_rooms WHERE user_id = %s",
         }
-        result = self.db.execute(statement, (member.id,))
+        self.db.execute(statement, (member.id,))
+        result = self.db.fetchall()
         return result
 
     async def delete_voiceroom(self, member):
