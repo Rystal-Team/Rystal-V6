@@ -127,6 +127,18 @@ class PlayerManager:
                 raise VoiceChannelMismatch
         return self.players[interaction.guild.id]
 
+    async def get_player_by_guild_id(self, guild_id: int) -> MusicPlayer | None:
+        """
+        Retrieves the MusicPlayer for the guild associated with the given guild ID. If no player exists, a new one is created and connected.
+
+        Args:
+            guild_id (int): The ID of the guild.
+
+        Returns:
+            MusicPlayer | None: The MusicPlayer instance for the guild, or None if no player exists
+        """
+        return self.players.get(guild_id)
+
     async def remove_player(self, interaction: Interaction) -> bool:
         """
         Removes the MusicPlayer for the guild associated with the given interaction.
@@ -140,6 +152,22 @@ class PlayerManager:
         if interaction.guild.id in self.players:
             await self.players[interaction.guild.id].cleanup()
             self.players.pop(interaction.guild.id, None)
+            return True
+        return False
+
+    async def remove_player_by_guild_id(self, guild_id: int) -> bool:
+        """
+        Removes the MusicPlayer for the guild associated with the given guild ID.
+
+        Args:
+            guild_id (int): The ID of the guild.
+
+        Returns:
+            bool: True if a player was removed, False otherwise.
+        """
+        if guild_id in self.players:
+            await self.players[guild_id].cleanup()
+            self.players.pop(guild_id, None)
             return True
         return False
 

@@ -88,6 +88,33 @@ class Music(commands.Cog, EventManager):
     async def on_voice_state_update(self, member, before, after):
         await self.manager.fire_voice_state_update(member, before, after)
 
+        voice_state = member.guild.voice_client
+        if voice_state is None:
+            return
+
+        if len(voice_state.channel.members) == 1:
+            player = await self.manager.get_player_by_guild_id(member.guild.id)
+            if player is not None:
+                if await get_guild_settings(member.guild.id, "music_auto_leave"):
+                    await player.interaction.channel.send(
+                        embed=Embeds.message(
+                            title=lang[
+                                await get_guild_language(player.interaction.guild.id)
+                            ][class_namespace],
+                            message=lang[
+                                await get_guild_language(player.interaction.guild.id)
+                            ]["stopped_player"],
+                            message_type="success",
+                        )
+                    )
+
+                    await player.stop()
+                    await self.manager.remove_player_by_guild_id(member.guild.id)
+
+                    print(colored(text="[PLAYER] LEFT WHEN EMPTY", color="dark_grey"))
+                else:
+                    return
+
     async def ensure_voice_state(self, bot, interaction):
         try:
             player = await self.manager.get_player(interaction, bot)
