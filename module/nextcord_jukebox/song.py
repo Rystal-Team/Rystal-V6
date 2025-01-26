@@ -69,14 +69,17 @@ class Song:
             thumbnails (Optional[List[str]]): A list of thumbnail URLs for the song.
         """
         self.url: str = url
-        self.title: Optional[str] = title
-        self.name: Optional[str] = title
-        self.views: Optional[int] = views
-        self.duration: Optional[int] = duration
-        self.thumbnail: Optional[str] = thumbnail
-        self.channel: Optional[str] = channel
-        self.channel_url: Optional[str] = channel_url
-        self.thumbnails: Optional[List[str]] = thumbnails
+        self.title: Optional[str] = title or "Unknown"
+        self.name: Optional[str] = title or "Unknown"
+        self.views: Optional[int] = views or 0
+        self.duration: Optional[int] = duration or 1
+        self.thumbnail: Optional[str] = thumbnail or ""
+        self.channel: Optional[str] = channel or "Unknown"
+        self.channel_url: Optional[str] = channel_url or ""
+        self.thumbnails: Optional[List[str]] = thumbnails or []
+
+        if self.duration < 1:
+            self.duration = 1
 
         self.timer: CountTimer = CountTimer()
         self.source_url: Optional[str] = None
