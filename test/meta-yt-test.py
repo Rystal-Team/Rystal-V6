@@ -26,11 +26,5 @@ from meta_yt import YouTube
 yt = YouTube("cat videos")
 print(yt.video.title)
 
-yt = YouTube("https://www.youtube.com/watch?v=dQw4w9WgXcQ", isUrl=False)
+yt = YouTube("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 print(yt.video.title)
-
-captions = yt.video.get_captions(include_generated=True)
-for lang, caption in captions.items():
-    print(f"Captions in {lang}:")
-    for line in caption.transcript:
-        print(f"{line['start']} - {line['end']}: {line['text']}")

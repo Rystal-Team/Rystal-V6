@@ -311,7 +311,7 @@ class Music(commands.Cog, EventManager):
                 )
 
             if failed_songs:
-                failed_msg = "\n".join([f"• {song}" for song in failed_songs])
+                failed_msg = "\n".join([f"• `{song}`" for song in failed_songs])
                 await interaction.followup.send(
                     embed=Embeds.message(
                         title=lang[await get_guild_language(interaction.guild.id)][

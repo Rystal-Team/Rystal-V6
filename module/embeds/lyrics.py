@@ -254,6 +254,31 @@ class TranslateDropdown(nextcord.ui.Select):
             except Exception as e:
                 raise e
 
+        def clean_text(raw_text):
+            """Remove HTML-like tags and extra spaces from the caption text."""
+            cleaned_text = re.sub(r"<[^>]+>", "", raw_text)
+            return cleaned_text.strip()
+
+        def deduplicate_captions(captions):
+            """Deduplicate captions based on start and end times."""
+            unique_captions = {}
+            for caption in captions:
+                key = (caption["start"], caption["end"])
+                text = clean_text(caption["text"])
+                if key not in unique_captions:
+                    unique_captions[key] = text
+                else:
+                    if text not in unique_captions[key]:
+                        unique_captions[key] += f"\n{text}"
+
+            result = [
+                {"start": start, "end": end, "duration": end - start, "text": text}
+                for (start, end), text in unique_captions.items()
+            ]
+            return result
+
+        captions = deduplicate_captions(captions)
+
         menu = LyricsEmbed(
             interaction,
             player=self.player,
